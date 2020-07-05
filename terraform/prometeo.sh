@@ -4,114 +4,103 @@
 # set variables
 source variables.sh
 
-chmod +x *.sh
-chmod +x lxc_template/*.sh
+find . -name "*.sh" -exec chmod u+x {} \;
+#chmod +x *.sh
+#chmod +x lxc_template/*.sh
+#chmod +x lxc/*.sh
 
+scp variables.sh root@$PM_HOST:/root/prometeo/
 
-scp variables.sh root@$PM_HOST:/root/
 
-# Instalacion de la confiugracion basica en Proxmox
-scp proxmox_configuration.sh root@$PM_HOST:/root/
-ssh root@$PM_HOST 'bash /root/proxmox_configuration.sh'
 
+function basic_config_proxmox() {
+    # Instalacion de la confiugracion basica en Proxmox
+    scp proxmox_configuration.sh root@$PM_HOST:/root/prometeo/
+    ssh root@$PM_HOST 'bash /root/prometeo/proxmox_configuration.sh'
+}
 
-# Download template container alpine
-scp lxc_template/proxmox_download_template_ct.sh root@$PM_HOST:/root/
-ssh root@$PM_HOST 'bash /root/proxmox_download_template_ct.sh'
 
 
-#sed -i.back -re "s/default = \".*tar\.(xz|gz)\"/default = \"$CONTAINER_ALPINE\"/g" lxc/variables.tf
-# Crear contenedor alpine con la config por defecto
-#&& terraform validate && terraform plan && terraform apply -auto-approve
+function create_templates() {
+    # Download template container alpine
+    scp templates/proxmox_downloads_templates.sh root@$PM_HOST:/root/prometeo/
+    ssh root@$PM_HOST 'bash /root/prometeo/proxmox_downloads_templates.sh'
 
-terraform init 
-cp variables.tf lxc_template/variables.tf
-cp provider.tf lxc_template/provider.tf
 
-terraform validate lxc_template/ -with-deps # No es necesario
-#terraform plan -var "ct_ostemplate=$CONTAINER_ALPINE" lxc_template/ 
-terraform apply -auto-approve lxc_template/
+    #sed -i.back -re "s/default = \".*tar\.(xz|gz)\"/default = \"$TEMPLATE_ALPINE\"/g" lxc/variables.tf
+    # Crear contenedor alpine con la config por defecto
+    #&& terraform validate && terraform plan && terraform apply -auto-approve
 
-rm -f lxc_template/variables.tf
-rm -f lxc_template/provider.tf
 
+    #cp variables.tf lxc_template/variables.tf
+    #cp provider.tf lxc_template/provider.tf
 
+    #cd lxc_template/
 
-# Instalacion y configuracion del contenedor
-scp lxc_template/alpine.sh root@$PM_HOST:/root/
-scp lxc_template/configure_alpine.sh root@$PM_HOST:/root/
-ssh root@$PM_HOST 'bash /root/configure_alpine.sh'
+    #terraform destroy -auto-approve lxc_template/
+    #terraform validate lxc_template/ -with-deps # No es necesario
+    terraform plan --out='templates.tfplan' templates/
+    terraform apply -auto-approve 'templates.tfplan'
 
+    #cd -
 
+    #rm -f lxc_template/variables.tf
+    #rm -f lxc_template/provider.tf
 
+    # Instalacion y configuracion del contenedor
+    scp templates/alpine.sh root@$PM_HOST:/root/prometeo/
+    scp templates/configure_alpine.sh root@$PM_HOST:/root/prometeo/
+    ssh root@$PM_HOST 'bash /root/prometeo/configure_alpine.sh'
+}
 
 
 
 
-# Para contenedor
-#pct stop $(egrep -e  "vmid = ([0-9]+)" lxc/lxc_example.tf | awk '{ print $3 }')
+function create_container_health() {
+    # CREACION DE CONTENEDOR CUSTOM PARA HEALTH
+    #TEMPLATE_ALPINE_CUSTOM=$(ssh root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz' | awk '{ print $8 }'")
+    TEMPLATE_ALPINE=$(ssh root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz'")
 
+    TEMPLATE_ALPINE_CUSTOM=$(echo $TEMPLATE_ALPINE | xargs | awk '{ print $9 }')
 
+    #sed -i.back -re "s/default = \".*tar\.(xz|gz)\"/default = \"$TEMPLATE_ALPINE_CUSTOM\"/g" lxc/variables.tf
 
+    #ssh root@$PM_HOST 'pct shutdown 4010; pct shutdown 4011; pct shutdown 4012; pct shutdown 4013;' 2> /dev/null
 
-# CREACION DE CONTENEDOR CUSTOM PARA HEALTH
-#CONTAINER_ALPINE_CUSTOM=$(ssh root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz' | awk '{ print $8 }'")
-CONTAINER_ALPINE_CUSTOM=$(ssh root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz'")
+    #cp variables.tf lxc/variables.tf
+    #cp provider.tf lxc/provider.tf
 
-CONTAINER_ALPINE_CUSTOM=$(echo $CONTAINER_ALPINE_CUSTOM | xargs | awk '{ print $9 }')
+    #cd lxc/
 
-#sed -i.back -re "s/default = \".*tar\.(xz|gz)\"/default = \"$CONTAINER_ALPINE_CUSTOM\"/g" lxc/variables.tf
+    #terraform destroy -auto-approve lxc/
+    #terraform validate lxc/ -with-deps # No es necesario
+    terraform plan -var "ct_ostemplate=$TEMPLATE_ALPINE_CUSTOM" --out='lxc_pro.tfplan' lxc/
+    terraform apply -auto-approve 'lxc_pro.tfplan'
 
-###########################3
-## creacion contenedores health
-#############################
 
-cp variables.tf lxc/variables.tf
-cp provider.tf lxc/provider.tf
+    #cd -
 
-terraform validate lxc/ -with-deps # No es necesario
-#terraform plan -var "ct_ostemplate=$CONTAINER_ALPINE" lxc_template/ 
-terraform apply -var "ct_ostemplate=$CONTAINER_ALPINE" -auto-approve lxc/
+    #rm -f lxc/variables.tf
+    #rm -f lxc/provider.tf
+}
 
-rm -f lxc/variables.tf
-rm -f lxc/provider.tf
 
 
 
 
 
 
+function main() {
 
+    #basic_config_proxmox
+    ssh root@$PM_HOST 'mkdir -p /root/prometeo/'
+    #scp delete_vm.sh root@$PM_HOST:/root/prometeo/ && ssh root@$PM_HOST 'bash /root/prometeo/delete_vm.sh'
+    ! test -f terraform.tfstate && terraform init
+    #test -f asd.tfstate && terraform init -state=asd.tfstate
 
+    create_templates
+    #create_container_health
 
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Remove suscription message
-sed -i.back "s/data.status !== 'Active'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
-systemctl restart pveproxy.service
+main "$@"

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Remove suscription message
+sed -i.back "s/data.status !== 'Active'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+systemctl restart pveproxy.service
+
 
 mkdir -p /root/.ssh
 chmod 700 /root/.ssh

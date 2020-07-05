@@ -5,4 +5,6 @@ provider "proxmox" {
   pm_password       = var.pm_password
   pm_user           = var.pm_user
 #  pm_otp = ""
+  pm_parallel       = 20
+
 }

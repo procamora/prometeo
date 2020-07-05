@@ -4,7 +4,7 @@
 # vmid = 4001 esta definido en lxc_template.tf
 
 # Copiamos script en contenedor
-pct push 4001 /root/alpine.sh /root/alpine.sh
+pct push 4001 /root/prometeo/alpine.sh /root/alpine.sh
 
 # Ejecutamos script en el contenedor para su configuracion
 echo 'sh /root/alpine.sh' | pct enter 4001
