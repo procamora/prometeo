@@ -13,10 +13,10 @@ test ! $ALPINE && echo -e "${RED}missing image alpine :( ${NC}" && exit 1
 pveam download local $ALPINE
 echo -e "${GREEN}Download image $ALPINE${NC}"
  
-#CENTOS=$(pveam available | grep "$TEMPLATE_CENTOS" | awk '{ print $2 }')
-#test ! $CENTOS && echo -e "${RED}missing image alpine :( ${NC}" && exit 1
-#pveam download local $CENTOS
-#echo -e "${GREEN}Download image $CENTOS${NC}"
+CENTOS=$(pveam available | grep "$TEMPLATE_CENTOS" | awk '{ print $2 }')
+test ! $CENTOS && echo -e "${RED}missing image alpine :( ${NC}" && exit 1
+pveam download local $CENTOS
+echo -e "${GREEN}Download image $CENTOS${NC}"
  
 #DEBIAN=$(pveam available | grep "$TEMPLATE_DEBIAN" | awk '{ print $2 }')
 #test ! $DEBIAN && echo -e "${RED}missing image alpine :( ${NC}" && exit 1

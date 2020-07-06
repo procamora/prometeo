@@ -94,7 +94,7 @@ function main() {
 
     #basic_config_proxmox
     ssh root@$PM_HOST 'mkdir -p /root/prometeo/'
-    #scp delete_vm.sh root@$PM_HOST:/root/prometeo/ && ssh root@$PM_HOST 'bash /root/prometeo/delete_vm.sh'
+    scp delete_vm.sh root@$PM_HOST:/root/prometeo/ && ssh root@$PM_HOST 'bash /root/prometeo/delete_vm.sh'
     ! test -f terraform.tfstate && terraform init
     #test -f asd.tfstate && terraform init -state=asd.tfstate
 
