@@ -1,16 +1,18 @@
 #!/bin/bash
 
+source /root/prometeo/variables.sh
 
-# vmid = 4001 esta definido en lxc_template.tf
+
+# vmid = $VMID_TEMPLATE_ALPINE esta definido en lxc_template.tf
 
 # Copiamos script en contenedor
-pct push 4001 /root/prometeo/alpine.sh /root/alpine.sh
+pct push $VMID_TEMPLATE_ALPINE /root/prometeo/alpine.sh /root/alpine.sh
 
 # Ejecutamos script en el contenedor para su configuracion
-echo 'sh /root/alpine.sh' | pct enter 4001
+echo 'sh /root/alpine.sh' | pct enter $VMID_TEMPLATE_ALPINE
 
 # Paramos contenedor
-pct shutdown 4001
+pct shutdown $VMID_TEMPLATE_ALPINE
 
 # Creamos backup del contenedor para usarlo como template
-vzdump 4001 --compress gzip --dumpdir /var/lib/vz/template/ --maxfiles 1
+vzdump $VMID_TEMPLATE_ALPINE --compress gzip --dumpdir /var/lib/vz/template/ --maxfiles 1
