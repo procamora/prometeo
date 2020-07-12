@@ -36,6 +36,36 @@ echo -e "${GREEN}Download image $DEBIAN${NC}"
 
 
 
+function create_vm_mikrotik() {
+    # https://mikrotik.com/download
+    FILE="/root/prometeo/chr-6.47.1.img"
+    ! test -f "/$FILE.zip" && \
+     wget https://download.mikrotik.com/routeros/6.47.1/chr-6.47.1.img.zip \
+     -O  "/$FILE.zip"
+
+    unzip $FILE -d /root/prometeo/
+
+    qemu-img convert \
+     -f raw \
+     -O qcow2 \
+     $FILE /root/prometeo/mk.qcow2
+
+    rm $FILE
+    qm importdisk $VMID_MK /root/prometeo/mk.qcow2 $PM_STORAGE
+
+    qm create $VMID_MK \
+     --name mikrotik \
+     --net0 virtio,bridge=vmbr0 \
+     --bootdisk virtio0 \
+     --ostype l26 \
+     --memory 256 \
+     --onboot no \
+     --sockets 1 \
+     --cores 1 \
+
+    qm set $VMID_MK --scsihw virtio-scsi-pci --scsi0 $PM_STORAGE:vm-$VMID_MK-disk-0
+}
+
 
 #  --ostype <l24 | l26 | other | solaris | w2k | w2k3 | w2k8 | win10 | win7 | win8 | wvista | wxp> 
 function create_template_vm_centos() {
@@ -52,9 +82,9 @@ function create_template_vm_centos() {
      --agent 1 \
      --numa 1
     
-    qm importdisk $VMID_TEMPLATE_CENTOS /root/prometeo/CentOS-8.qcow2 local-lvm
+    qm importdisk $VMID_TEMPLATE_CENTOS /root/prometeo/CentOS-8.qcow2 $PM_STORAGE
     qm set $VMID_TEMPLATE_CENTOS --scsihw virtio-scsi-pci --scsi0 $PM_STORAGE:vm-$VMID_TEMPLATE_CENTOS-disk-0
-    qm set $VMID_TEMPLATE_CENTOS --ide2 local-lvm:cloudinit
+    qm set $VMID_TEMPLATE_CENTOS --ide2 $PM_STORAGE:cloudinit
     qm set $VMID_TEMPLATE_CENTOS --boot c --bootdisk scsi0
     qm set $VMID_TEMPLATE_CENTOS --serial0 socket --vga serial0
     qm set $VMID_TEMPLATE_CENTOS --ciuser root
@@ -166,3 +196,5 @@ if [ "$?" -eq "1" ]; then
     create_ct_ansible
 fi
 
+
+create_vm_mikrotik
