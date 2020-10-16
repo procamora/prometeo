@@ -190,22 +190,10 @@ function ct_create_template_ansible() {
 
 
 function qm_create_mikrotik() {
-    echo -e "${BLUE_COLOUR}qm_create_mikrotik{RESET_COLOUR}"
-    set -x
     # https://mikrotik.com/download
-    #FILE="$MY_PATH/chr-6.47.1.img"
-    #! test -f "$FILE.zip" && \
-    # wget https://download.mikrotik.com/routeros/6.47.1/chr-6.47.1.img.zip \
-    # -O  "$FILE.zip"
+    # qemu-img convert -O qcow2 /dev/pve/vm-"$VMID_MK"-disk-0 /root/test.qcow2
+    echo -e "${BLUE_COLOUR}qm_create_mikrotik{RESET_COLOUR}"
 
-    #unzip $FILE -d $MY_PATH/
-
-    #qemu-img convert \
-    # -f raw \
-    # -O qcow2 \
-    # $FILE $MY_PATH/mk.qcow2
-
-    #rm $FILE
     # if exits ct then remove ct
     remove_qm "$VMID_MK"
 
@@ -239,4 +227,4 @@ function qm_create_mikrotik() {
 #ct_create_template_debian
 #ct_create_template_health
 #ct_create_template_ansible
-#qm_create_mikrotik
+qm_create_mikrotik

@@ -2,7 +2,7 @@
 
 - [ ] REVISAR LAS CLAVES SSH USADAS y la ubicacion de las mismas
 - [ ] Meter claves ssh en templates
-
+- [ ] Establecer el tamaño de los disco para los pct
 
 # Install
 
@@ -32,6 +32,11 @@ vsftp tener varios usuarios y cada uno con ciertos datos
 
 
 
+## Exportar imagen de mikrotik previamente configurada
+
+```bash
+qemu-img convert -O qcow2 /dev/pve/vm-601-disk-0 /root/test.qcow2
+```
 
 
 

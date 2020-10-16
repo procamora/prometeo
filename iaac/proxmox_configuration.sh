@@ -4,7 +4,8 @@ source ./variables.sh
 
 #set -x
 
-
+apt -y update
+apt -y install vim ceph-base ceph-mgr ceph-mon ceph-osd
 
 DEBIAN_FRONTEND=noninteractive apt update -qq < /dev/null > /dev/null
 DEBIAN_FRONTEND=noninteractive apt upgrade -y -qq < /dev/null > /dev/null
