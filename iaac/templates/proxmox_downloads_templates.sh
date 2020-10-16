@@ -235,12 +235,8 @@ function qm_create_mikrotik() {
 
 
 #ct_create_template_alpine
-
-
 #ct_create_template_centos
-
-
-ct_create_template_debian
+#ct_create_template_debian
 #ct_create_template_health
-ct_create_template_ansible
+#ct_create_template_ansible
 #qm_create_mikrotik

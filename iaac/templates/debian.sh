@@ -2,22 +2,17 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-
-#update-locale LANG=en_US.UTF-8
-#dpkg-reconfigure --frontend noninteractive locales
-
-apt -y install multipath-tools
-locale-gen en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-locale-gen en_US.UTF-8
-#dpkg-reconfigure locales
 
-#echo "# You may need to manually set your language environment
-#export LANG=en_US.UTF-8
-#export LC_ALL=en_US.UTF-8
-#export LANGUAGE=en_US.UTF-8" >> /root/.bashrc
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen en_US.UTF-8
+
+echo "# You may need to manually set your language environment
+export LC_ALL=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8" >> /root/.bashrc
+
 
 apt update && apt list --upgradable && apt -y upgrade
 apt install -y vim git
