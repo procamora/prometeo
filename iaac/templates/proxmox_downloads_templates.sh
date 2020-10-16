@@ -33,13 +33,11 @@ TEMPLATE_DEBIAN=$(cat ./.name_debian_ct)
 test "$TEMPLATE_DEBIAN" || (echo -e "${RED_COLOUR}Missing image debian :( ${RESET_COLOUR}" && exit 1)
 pveam download local "$TEMPLATE_DEBIAN" && echo -e "${GREEN_COLOUR}Download image $TEMPLATE_DEBIAN${RESET_COLOUR}"
 
-
 function remove_pct() {
     # destroy execute becasue shutdown failed
     pct list | grep -q "$1" && pct shutdown "$1"
     pct destroy "$1"
 }
-
 
 function remove_qm() {
     # destroy execute becasue shutdown failed
@@ -48,46 +46,42 @@ function remove_qm() {
 }
 
 
-#  --ostype <l24 | l26 | other | solaris | w2k | w2k3 | w2k8 | win10 | win7 | win8 | wvista | wxp>
-function create_template_vm_centos() {
+function ct_create_template_alpine() {
+    echo -e "${BLUE_COLOUR}ct_create_template_alpine${RESET_COLOUR}"
+
     # if exits ct then remove ct
-    remove_qm "$VMID_TEMPLATE_CENTOS"
+    remove_pct "$VMID_TEMPLATE_ALPINE"
 
-    qm create "$VMID_TEMPLATE_CENTOS" \
-        --name centos-template \
-        --description "CentOS KVM Template" \
-        --net0 virtio,bridge=vmbr0 \
-        --cores 2 \
-        --sockets 2 \
-        --memory 4096 \
-        --cpu cputype=kvm64 \
-        --ostype l26 \
-        --kvm 1 \
-        --agent 1 \
-        --numa 1
+    pct create "$VMID_TEMPLATE_ALPINE" "local:vztmpl/$TEMPLATE_ALPINE" \
+        --description "Alpine Container Template" \
+        --cores 1 \
+        --force 1 \
+        --hostname "alpine-template" \
+        --memory 1024 \
+        --ostype alpine \
+        --password "$PASSWORD" \
+        --storage "$PM_STORAGE" \
+        --pool "$PM_POOL"
+#        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    qm importdisk "$VMID_TEMPLATE_CENTOS" "$MY_PATH/CentOS.qcow2" "$PM_STORAGE"
-    qm set "$VMID_TEMPLATE_CENTOS" --scsihw virtio-scsi-pci --scsi0 "$PM_STORAGE:vm-$VMID_TEMPLATE_CENTOS-disk-0"
-    qm set "$VMID_TEMPLATE_CENTOS" --ide2 "$PM_STORAGE":cloudinit
-    qm set "$VMID_TEMPLATE_CENTOS" --boot c --bootdisk scsi0
-    qm set "$VMID_TEMPLATE_CENTOS" --serial0 socket --vga serial0
-    qm set "$VMID_TEMPLATE_CENTOS" --ciuser root
-    qm set "$VMID_TEMPLATE_CENTOS" --cipassword toor
-    qm set "$VMID_TEMPLATE_CENTOS" --nameserver 1.1.1.1
-    qm set "$VMID_TEMPLATE_CENTOS" --ipconfig0 ip=dhcp
-    qm set "$VMID_TEMPLATE_CENTOS" --sshkey ~/.ssh/id_rsa.pub
+    pct set "$VMID_TEMPLATE_ALPINE" -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    #pct set "$VMID_TEMPLATE_ALPINE" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
-    qm start "$VMID_TEMPLATE_CENTOS"
+    pct start "$VMID_TEMPLATE_ALPINE"
+    sleep "$TIME_SLEEP"
 
-    #ssh -o StrictHostKeyChecking=no root@10.1.2.123
+    pct push "$VMID_TEMPLATE_ALPINE" /root/.ssh/id_rsa /root/id_rsa
+    pct push "$VMID_TEMPLATE_ALPINE" /root/.ssh/id_rsa.pub /root/id_rsa.pub
+    pct push "$VMID_TEMPLATE_ALPINE" "$MY_PATH/alpine.sh" /root/alpine.sh
+    echo 'sh /root/alpine.sh' | pct enter "$VMID_TEMPLATE_ALPINE"
 
-    qm stop "$VMID_TEMPLATE_CENTOS"
-    qm wait "$VMID_TEMPLATE_CENTOS"
-    # Convert to a template
-    #qm template "$VMID_TEMPLATE_CENTOS"
+    pct shutdown "$VMID_TEMPLATE_ALPINE"
+    pct template "$VMID_TEMPLATE_ALPINE"
 }
 
-function create_template_ct_centos() {
+function ct_create_template_centos() {
+    echo -e "${BLUE_COLOUR}ct_create_template_centos${RESET_COLOUR}"
+
     # if exits ct then remove ct
     remove_pct "$VMID_TEMPLATE_CENTOS"
 
@@ -98,22 +92,20 @@ function create_template_ct_centos() {
         --force 1 \
         --hostname "centos-template" \
         --memory 1024 \
-        --ostype debian \
+        --ostype centos \
         --password "$PASSWORD" \
         --storage "$PM_STORAGE" \
-        --ssh-public-keys /root/.ssh/id_rsa.pub \
         --pool "$PM_POOL"
+#        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_CENTOS" -net0 name=eth0,bridge=vmbr0,ip=dhcp
     #pct set "$VMID_TEMPLATE_CENTOS" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_CENTOS"
-    sleep 10
+    sleep "$TIME_SLEEP"
 
-    echo 'mkdir -p /root/.ssh/ && chmod 700 /root/.ssh/' | pct enter "$VMID_TEMPLATE_CENTOS"
-    pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa /root/.ssh/id_rsa
-    pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
-    pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+    pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa /root/id_rsa
+    pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa.pub /root/id_rsa.pub
     pct push "$VMID_TEMPLATE_CENTOS" "$MY_PATH/centos.sh" /root/centos.sh
     echo 'sh /root/centos.sh' | pct enter "$VMID_TEMPLATE_CENTOS"
 
@@ -121,8 +113,9 @@ function create_template_ct_centos() {
     #pct template "$VMID_TEMPLATE_CENTOS"
 }
 
+function ct_create_template_debian() {
+    echo -e "${BLUE_COLOUR}ct_create_template_debian${RESET_COLOUR}"
 
-function create_template_ct_debian() {
     # if exits ct then remove ct
     remove_pct "$VMID_TEMPLATE_DEBIAN"
 
@@ -136,19 +129,17 @@ function create_template_ct_debian() {
         --ostype debian \
         --password "$PASSWORD" \
         --storage "$PM_STORAGE" \
-        --ssh-public-keys /root/.ssh/id_rsa.pub \
         --pool "$PM_POOL"
+#        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_DEBIAN" -net0 name=eth0,bridge=vmbr0,ip=dhcp
     #pct set "$VMID_TEMPLATE_DEBIAN" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_DEBIAN"
-    sleep 10
+    sleep "$TIME_SLEEP"
 
-    echo 'mkdir -p /root/.ssh/ && chmod 700 /root/.ssh/' | pct enter "$VMID_TEMPLATE_DEBIAN"
-    pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa /root/.ssh/id_rsa
-    pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
-    pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+    pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa /root/id_rsa
+    pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa.pub /root/id_rsa.pub
     pct push "$VMID_TEMPLATE_DEBIAN" "$MY_PATH/debian.sh" /root/debian.sh
     echo 'sh /root/debian.sh' | pct enter "$VMID_TEMPLATE_DEBIAN"
 
@@ -156,24 +147,50 @@ function create_template_ct_debian() {
     #pct template "$VMID_TEMPLATE_DEBIAN"
 }
 
-function create_ct_ansible() {
+
+function ct_create_template_health() {
+    echo -e "${BLUE_COLOUR}ct_create_template_health${RESET_COLOUR}"
+
+    # if exits ct then remove ct
+    remove_pct "$VMID_TEMPLATE_HEALTH"
+
+    pct clone "$VMID_TEMPLATE_ALPINE" "$VMID_TEMPLATE_HEALTH" \
+        --description "Health Container Template" \
+        --hostname "health" \
+        --pool "$PM_POOL"
+    # --storage $PM_STORAGE \
+
+    #pct set $VMID_ANSIBLE -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    pct start "$VMID_TEMPLATE_HEALTH"
+    sleep "$TIME_SLEEP"
+
+    pct push "$VMID_TEMPLATE_HEALTH" "$MY_PATH/health.sh" /root/health.sh
+    echo 'sh /root/health.sh' | pct enter "$VMID_TEMPLATE_HEALTH"
+}
+
+
+function ct_create_template_ansible() {
+    echo -e "${BLUE_COLOUR}ct_create_template_ansible${RESET_COLOUR}"
+
+    # if exits ct then remove ct
     remove_pct "$VMID_ANSIBLE"
 
     pct clone "$VMID_TEMPLATE_DEBIAN" "$VMID_ANSIBLE" \
-        --description "Debian Container Template" \
+        --description "Ansible Container Template" \
         --hostname "ansible" \
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
     #pct set $VMID_ANSIBLE -net0 name=eth0,bridge=vmbr0,ip=dhcp
     pct start "$VMID_ANSIBLE"
-    sleep 10
-    pct push "$VMID_ANSIBLE" "$MY_PATH/ansible.sh" /root/debian.sh
+    sleep "$TIME_SLEEP"
+    pct push "$VMID_ANSIBLE" "$MY_PATH/ansible.sh" /root/ansible.sh
     echo 'sh /root/ansible.sh' | pct enter "$VMID_ANSIBLE"
 }
 
 
-function create_vm_mikrotik() {
+function qm_create_mikrotik() {
+    echo -e "${BLUE_COLOUR}qm_create_mikrotik{RESET_COLOUR}"
     set -x
     # https://mikrotik.com/download
     #FILE="$MY_PATH/chr-6.47.1.img"
@@ -216,10 +233,14 @@ function create_vm_mikrotik() {
     #python3 mk.py $ip
 }
 
-create_template_ct_centos
-create_template_ct_debian
-#create_ct_ansible
-#create_vm_mikrotik
 
-#create_vm_db
-#create_template_vm_centos
+#ct_create_template_alpine
+
+
+#ct_create_template_centos
+
+
+ct_create_template_debian
+#ct_create_template_health
+ct_create_template_ansible
+#qm_create_mikrotik

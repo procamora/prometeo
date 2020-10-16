@@ -8,7 +8,10 @@ declare -r KEY="$(pwd)/../certificates/openssh/id_rsa"
 declare -r SSH="ssh -i $KEY"
 declare -r SCP="scp -i $KEY"
 
+declare -r TIME_SLEEP=10  # pause afer run machine in seconds
+
 #############################################################################################
+
 declare -r PM_HOST="192.168.1.254"
 declare -r PM_CNAME="c.prometeo.01"
 declare -r PM_NODE="proxmox"
@@ -18,6 +21,7 @@ declare -r PM_STORAGE="local-lvm"
 declare -r PASSWORD="password"
 
 #############################################################################################
+
 # VMID TEMPLATES
 declare -r VMID_TEMPLATE_ALPINE="4001"
 declare -r VMID_TEMPLATE_CENTOS="4002"

@@ -3,7 +3,7 @@
 # https://wiki.alpinelinux.org/wiki/Writing_Init_Scripts
 # https://wiki.alpinelinux.org/wiki/Alpine_Linux_Init_System
 
-apk update && apk upgrade && apk add git python3 
+apk update && apk upgrade && apk add git python3 py3-pip
 git clone https://github.com/procamora/flask-health.git /root/health/
 pip3 install -r /root/health/requirements.txt
 
@@ -24,3 +24,4 @@ rc-update add health default
 
 #/etc/init.d/health start
 
+rm -f /root/health.sh

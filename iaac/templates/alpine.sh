@@ -4,3 +4,11 @@
 # https://wiki.alpinelinux.org/wiki/Alpine_Linux_Init_System
 
 apk update && apk upgrade && apk add vim git
+
+mkdir -p /root/.ssh/
+chmod 700 /root/.ssh/
+mv -f /root/id_rsa* /root/.ssh/
+cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/*
+
+rm -f /root/alpine.sh

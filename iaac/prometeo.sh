@@ -1,10 +1,7 @@
 #!/bin/bash
 
-
-
 # set variables
 source variables.sh
-
 
 find . -name "*.sh" -exec chmod u+x {} \;
 #chmod +x *.sh

@@ -2,15 +2,31 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
+
+#update-locale LANG=en_US.UTF-8
+#dpkg-reconfigure --frontend noninteractive locales
+
+apt -y install multipath-tools
+locale-gen en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-
 locale-gen en_US.UTF-8
-dpkg-reconfigure locales
+#dpkg-reconfigure locales
 
+#echo "# You may need to manually set your language environment
+#export LANG=en_US.UTF-8
+#export LC_ALL=en_US.UTF-8
+#export LANGUAGE=en_US.UTF-8" >> /root/.bashrc
 
 apt update && apt list --upgradable && apt -y upgrade
 apt install -y vim git
 
-chmod 600 /root/.ssh/id_rsa*
+
+mkdir -p /root/.ssh/
+chmod 700 /root/.ssh/
+mv -f /root/id_rsa* /root/.ssh/
+cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/*
+
+rm -f /root/debian.sh
