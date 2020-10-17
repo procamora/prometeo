@@ -95,7 +95,7 @@ function main() {
 
     $SCP variables.sh root@"$PM_HOST":"$MY_PATH"/
 
-    clear
+    #clear
 
     #! test -f terraform.tfstate && terraform init
     #test -f asd.tfstate && terraform init -state=asd.tfstate

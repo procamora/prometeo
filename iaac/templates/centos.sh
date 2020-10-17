@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dnf update -y && dnf install -y vim gcc make git
+dnf upgrade -yq && dnf install -y vim gcc make git
 
 
 mkdir -p /root/.ssh/

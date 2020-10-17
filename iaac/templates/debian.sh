@@ -14,7 +14,7 @@ export LC_ALL=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8" >> /root/.bashrc
 
 
-apt update && apt list --upgradable && apt -y upgrade
+apt-get -yq update && apt list --upgradable && apt-get -yq upgrade
 apt install -y vim git
 
 

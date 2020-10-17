@@ -3,6 +3,8 @@
 source ./variables.sh
 
 #set -x
+ENTERPRISE="/etc/apt/sources.list.d/pve-enterprise.list"
+test -f $ENTERPRISE && rm -f $ENTERPRISE
 
 apt -y update
 apt -y install vim ceph-base ceph-mgr ceph-mon ceph-osd

@@ -26,11 +26,10 @@ declare -r PASSWORD="password"
 declare -r VMID_TEMPLATE_ALPINE="4001"
 declare -r VMID_TEMPLATE_CENTOS="4002"
 declare -r VMID_TEMPLATE_DEBIAN="4003"
-declare -r VMID_TEMPLATE_HEALTH="4003"
+declare -r VMID_TEMPLATE_HEALTH="4004"
 
 
 # VMID HOSTS
-declare -r VMID_DB="201"
 declare -r VMID_ANSIBLE="501"
 declare -r VMID_MK="601"
 

@@ -36,15 +36,14 @@ pveam download local "$TEMPLATE_DEBIAN" && echo -e "${GREEN_COLOUR}Download imag
 function remove_pct() {
     # destroy execute becasue shutdown failed
     pct list | grep -q "$1" && pct shutdown "$1"
-    pct destroy "$1"
+    pct list | grep -q "$1" && pct destroy "$1"
 }
 
 function remove_qm() {
     # destroy execute becasue shutdown failed
     qm list | grep -q "$1" && qm shutdown "$1"
-    qm destroy "$1"
+    qm list | grep -q "$1" && qm destroy "$1"
 }
-
 
 function ct_create_template_alpine() {
     echo -e "${BLUE_COLOUR}ct_create_template_alpine${RESET_COLOUR}"
@@ -62,7 +61,7 @@ function ct_create_template_alpine() {
         --password "$PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
-#        --ssh-public-keys /root/.ssh/id_rsa.pub \
+    #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_ALPINE" -net0 name=eth0,bridge=vmbr0,ip=dhcp
     #pct set "$VMID_TEMPLATE_ALPINE" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
@@ -96,7 +95,7 @@ function ct_create_template_centos() {
         --password "$PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
-#        --ssh-public-keys /root/.ssh/id_rsa.pub \
+    #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_CENTOS" -net0 name=eth0,bridge=vmbr0,ip=dhcp
     #pct set "$VMID_TEMPLATE_CENTOS" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
@@ -110,7 +109,7 @@ function ct_create_template_centos() {
     echo 'sh /root/centos.sh' | pct enter "$VMID_TEMPLATE_CENTOS"
 
     pct shutdown "$VMID_TEMPLATE_CENTOS"
-    #pct template "$VMID_TEMPLATE_CENTOS"
+    pct template "$VMID_TEMPLATE_CENTOS"
 }
 
 function ct_create_template_debian() {
@@ -130,7 +129,7 @@ function ct_create_template_debian() {
         --password "$PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
-#        --ssh-public-keys /root/.ssh/id_rsa.pub \
+    #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_DEBIAN" -net0 name=eth0,bridge=vmbr0,ip=dhcp
     #pct set "$VMID_TEMPLATE_DEBIAN" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
@@ -144,9 +143,8 @@ function ct_create_template_debian() {
     echo 'sh /root/debian.sh' | pct enter "$VMID_TEMPLATE_DEBIAN"
 
     pct shutdown "$VMID_TEMPLATE_DEBIAN"
-    #pct template "$VMID_TEMPLATE_DEBIAN"
+    pct template "$VMID_TEMPLATE_DEBIAN"
 }
-
 
 function ct_create_template_health() {
     echo -e "${BLUE_COLOUR}ct_create_template_health${RESET_COLOUR}"
@@ -156,21 +154,23 @@ function ct_create_template_health() {
 
     pct clone "$VMID_TEMPLATE_ALPINE" "$VMID_TEMPLATE_HEALTH" \
         --description "Health Container Template" \
-        --hostname "health" \
+        --hostname "health-template" \
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_ANSIBLE -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    #pct set $VMID_TEMPLATE_HEALTH -net0 name=eth0,bridge=vmbr0,ip=dhcp
     pct start "$VMID_TEMPLATE_HEALTH"
     sleep "$TIME_SLEEP"
 
     pct push "$VMID_TEMPLATE_HEALTH" "$MY_PATH/health.sh" /root/health.sh
     echo 'sh /root/health.sh' | pct enter "$VMID_TEMPLATE_HEALTH"
+
+    pct shutdown "$VMID_TEMPLATE_HEALTH"
+    pct template "$VMID_TEMPLATE_HEALTH"
 }
 
-
-function ct_create_template_ansible() {
-    echo -e "${BLUE_COLOUR}ct_create_template_ansible${RESET_COLOUR}"
+function ct_create_ansible() {
+    echo -e "${BLUE_COLOUR}ct_create_ansible${RESET_COLOUR}"
 
     # if exits ct then remove ct
     remove_pct "$VMID_ANSIBLE"
@@ -184,15 +184,15 @@ function ct_create_template_ansible() {
     #pct set $VMID_ANSIBLE -net0 name=eth0,bridge=vmbr0,ip=dhcp
     pct start "$VMID_ANSIBLE"
     sleep "$TIME_SLEEP"
+
     pct push "$VMID_ANSIBLE" "$MY_PATH/ansible.sh" /root/ansible.sh
     echo 'sh /root/ansible.sh' | pct enter "$VMID_ANSIBLE"
 }
 
-
 function qm_create_mikrotik() {
     # https://mikrotik.com/download
     # qemu-img convert -O qcow2 /dev/pve/vm-"$VMID_MK"-disk-0 /root/test.qcow2
-    echo -e "${BLUE_COLOUR}qm_create_mikrotik{RESET_COLOUR}"
+    echo -e "${BLUE_COLOUR}qm_create_mikrotik${RESET_COLOUR}"
 
     # if exits ct then remove ct
     remove_qm "$VMID_MK"
@@ -221,10 +221,9 @@ function qm_create_mikrotik() {
     #python3 mk.py $ip
 }
 
-
-#ct_create_template_alpine
-#ct_create_template_centos
-#ct_create_template_debian
-#ct_create_template_health
-#ct_create_template_ansible
+ct_create_template_alpine
+ct_create_template_centos
+ct_create_template_debian
+ct_create_template_health
+ct_create_ansible
 qm_create_mikrotik
