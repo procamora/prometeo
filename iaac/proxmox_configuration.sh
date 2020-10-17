@@ -33,8 +33,9 @@ function create_users() {
   # Create Pool, Group, User and Permission
   pvesh create pools -poolid "$PM_POOL" --comment "Pool group Prometeo"
   pveum group add "$PM_GROUP" --comment "Group for proyect Prometeo"
-  pveum user add user1@pve --groups "$PM_GROUP" --password 11111 --comment "user 1 prometeo"
-  pveum user add user2@pve --groups "$PM_GROUP" --password 11111 --comment "user 2 prometeo"
+  #pveum user add user1@pve --groups "$PM_GROUP" --password "$PM_PASSWORD" --comment "user 1 prometeo"
+  #pveum user add user2@pve --groups "$PM_GROUP" --password "$PM_PASSWORD" --comment "user 2 prometeo"
+  pveum user add prometeo@pve --groups "$PM_GROUP" --password "$PM_PASSWORD" --comment "admin prometeo"
   # Creacion del pool dev-prometeo para grupo prometeo con permisos PVEAdmin
   pveum aclmod /pool/"$PM_POOL"/ -group "$PM_GROUP" -role PVEAdmin
 }

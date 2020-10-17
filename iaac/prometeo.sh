@@ -8,6 +8,19 @@ find . -name "*.sh" -exec chmod u+x {} \;
 #chmod +x lxc_template/*.sh
 #chmod +x lxc/*.sh
 
+# check vmid duplicates in file variables.sh
+function check_vmid_duplicates() {
+    duplicates_num=$(grep "VMID_" variables.sh | awk -F "=" '{print $2}' | sort | uniq -D | wc -l)
+    if [[ "$duplicates_num" == "0" ]]; then
+        echo -e "${GREEN_COLOUR}check_vmid_duplicates OK${RESET_COLOUR}"
+    else
+        echo -e "${RED_COLOUR}ct_create_ansible ERROR${RESET_COLOUR}"
+        duplicates=$(grep "VMID_" variables.sh | awk -F "=" '{print $2}' | sort | uniq -D | head -n 1)
+        echo -e "${RED_COLOUR}$(grep "$duplicates" variables.sh)${RESET_COLOUR}"
+        exit 1
+    fi
+}
+
 function basic_config_proxmox() {
     # Instalacion de la confiugracion basica en Proxmox
     $SSH root@"$PM_HOST" "mkdir -p $MY_PATH/"
@@ -43,9 +56,9 @@ function create_templates() {
 function create_containers() {
     # CREACION DE CONTENEDOR CUSTOM PARA HEALTH
     #TEMPLATE_ALPINE_CUSTOM=$($SSH root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz' | awk '{ print $8 }'")
-    TEMPLATE_ALPINE=$($SSH root@"$PM_HOST" "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz'")
+    #TEMPLATE_ALPINE=$($SSH root@"$PM_HOST" "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz'")
 
-    TEMPLATE_ALPINE_CUSTOM=$(echo "$TEMPLATE_ALPINE" | xargs | awk '{ print $9 }')
+    #TEMPLATE_ALPINE_CUSTOM=$(echo "$TEMPLATE_ALPINE" | xargs | awk '{ print $9 }')
 
     #sed -i.back -re "s/default = \".*tar\.(xz|gz)\"/default = \"$TEMPLATE_ALPINE_CUSTOM\"/g" lxc/variables.tf
 
@@ -57,8 +70,8 @@ function create_containers() {
     #cd lxc/
 
     #terraform destroy -auto-approve lxc/
-    #terraform validate lxc/ -with-deps # No es necesario
-    terraform plan -var "ct_ostemplate=$TEMPLATE_ALPINE_CUSTOM" --out='lxc_pro.tfplan' lxc/
+    terraform validate . -with-deps # No es necesario
+    terraform plan --out='lxc_pro.tfplan' .
     terraform apply -auto-approve 'lxc_pro.tfplan'
 
     #cd -
@@ -75,6 +88,8 @@ function clear() {
 }
 
 function main() {
+    check_vmid_duplicates
+
     basic_config_proxmox
 
     $SCP variables.sh root@"$PM_HOST":"$MY_PATH"/
@@ -86,7 +101,7 @@ function main() {
 
     #create_templates
     python3 update_variables.py
-    #create_containers
+    create_containers
 
 }
 
