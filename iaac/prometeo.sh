@@ -21,6 +21,16 @@ function check_vmid_duplicates() {
     fi
 }
 
+function waiting_online() {
+    sleep 20 # need becasue script run thread "sleep 5 && reboot" and reboot is slow
+    echo -e "${ORANGE_COLOUR}waiting for Server ${PM_HOST}${RESET_COLOUR}"
+    while ! timeout 0.2 ping -c 1 -n "$PM_HOST" &>/dev/null; do
+        printf "%c" "."
+    done
+    echo -e "\n${GREEN_COLOUR}Server is back online ${PM_HOST}${RESET_COLOUR}"
+    sleep 5 # fix errors
+}
+
 function basic_config_proxmox() {
     # Instalacion de la confiugracion basica en Proxmox
     $SSH root@"$PM_HOST" "mkdir -p $MY_PATH/"
@@ -29,6 +39,7 @@ function basic_config_proxmox() {
     $SCP "$KEY" root@"$PM_HOST":"$MY_PATH"/
     $SCP "$KEY.pub" root@"$PM_HOST":"$MY_PATH"/
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash proxmox_configuration.sh"
+    waiting_online
 }
 
 function create_templates() {
@@ -69,7 +80,7 @@ function create_containers() {
 
     #cd lxc/
 
-    #terraform destroy -auto-approve lxc/
+    #terraform destroy -auto-approve .
     terraform validate . -with-deps # No es necesario
     terraform plan --out='lxc_pro.tfplan' .
     terraform apply -auto-approve 'lxc_pro.tfplan'
@@ -90,7 +101,7 @@ function clear() {
 function main() {
     check_vmid_duplicates
 
-    basic_config_proxmox
+    #basic_config_proxmox
 
     $SCP variables.sh root@"$PM_HOST":"$MY_PATH"/
 

@@ -45,6 +45,15 @@ function remove_qm() {
     qm list | grep -q "$1" && qm destroy "$1"
 }
 
+# dump container and rename dump with simple name
+# need for terraform
+function dump_and_rename() {
+    # $1 vmid $2 new_name
+    name=$(vzdump "$1" --compress gzip --dumpdir "$DUMP_PATH/" --maxfiles 1 | grep "creating" | awk -F "'" '{print  $2}')
+    mv -fv "$name" "$DUMP_PATH/$2"
+    find "$DUMP_PATH/" -name "*.log" -exec rm -f {} \;
+}
+
 function ct_create_template_alpine() {
     echo -e "${BLUE_COLOUR}ct_create_template_alpine${RESET_COLOUR}"
 
@@ -58,12 +67,12 @@ function ct_create_template_alpine() {
         --hostname "alpine-template" \
         --memory 1024 \
         --ostype alpine \
-        --password "$PASSWORD" \
+        --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    pct set "$VMID_TEMPLATE_ALPINE" -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    pct set "$VMID_TEMPLATE_ALPINE" -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_ALPINE" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_ALPINE"
@@ -75,7 +84,9 @@ function ct_create_template_alpine() {
     echo 'sh /root/alpine.sh' | pct enter "$VMID_TEMPLATE_ALPINE"
 
     pct shutdown "$VMID_TEMPLATE_ALPINE"
+
     pct template "$VMID_TEMPLATE_ALPINE"
+    dump_and_rename "$VMID_TEMPLATE_ALPINE" "$TEMPLATE_ALPINE_NAME"
 }
 
 function ct_create_template_centos() {
@@ -92,12 +103,12 @@ function ct_create_template_centos() {
         --hostname "centos-template" \
         --memory 1024 \
         --ostype centos \
-        --password "$PASSWORD" \
+        --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    pct set "$VMID_TEMPLATE_CENTOS" -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    pct set "$VMID_TEMPLATE_CENTOS" -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_CENTOS" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_CENTOS"
@@ -109,7 +120,9 @@ function ct_create_template_centos() {
     echo 'sh /root/centos.sh' | pct enter "$VMID_TEMPLATE_CENTOS"
 
     pct shutdown "$VMID_TEMPLATE_CENTOS"
+
     pct template "$VMID_TEMPLATE_CENTOS"
+    dump_and_rename "$VMID_TEMPLATE_CENTOS" "$TEMPLATE_CENTOS_NAME"
 }
 
 function ct_create_template_debian() {
@@ -126,12 +139,12 @@ function ct_create_template_debian() {
         --hostname "debian-template" \
         --memory 1024 \
         --ostype debian \
-        --password "$PASSWORD" \
+        --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    pct set "$VMID_TEMPLATE_DEBIAN" -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    pct set "$VMID_TEMPLATE_DEBIAN" -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_DEBIAN" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_DEBIAN"
@@ -144,6 +157,7 @@ function ct_create_template_debian() {
 
     pct shutdown "$VMID_TEMPLATE_DEBIAN"
     pct template "$VMID_TEMPLATE_DEBIAN"
+    dump_and_rename "$VMID_TEMPLATE_DEBIAN" "$TEMPLATE_DEBIAN_NAME"
 }
 
 function ct_create_template_health() {
@@ -158,7 +172,7 @@ function ct_create_template_health() {
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_TEMPLATE_HEALTH -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    #pct set $VMID_TEMPLATE_HEALTH -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
     pct start "$VMID_TEMPLATE_HEALTH"
     sleep "$TIME_SLEEP"
 
@@ -166,7 +180,9 @@ function ct_create_template_health() {
     echo 'sh /root/health.sh' | pct enter "$VMID_TEMPLATE_HEALTH"
 
     pct shutdown "$VMID_TEMPLATE_HEALTH"
+
     pct template "$VMID_TEMPLATE_HEALTH"
+    dump_and_rename "$VMID_TEMPLATE_HEALTH" "$TEMPLATE_HEALTH_NAME"
 }
 
 function ct_create_ansible() {
@@ -181,7 +197,7 @@ function ct_create_ansible() {
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_ANSIBLE -net0 name=eth0,bridge=vmbr0,ip=dhcp
+    #pct set $VMID_ANSIBLE -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
     pct start "$VMID_ANSIBLE"
     sleep "$TIME_SLEEP"
 
@@ -199,11 +215,11 @@ function qm_create_mikrotik() {
 
     qm create "$VMID_MK" \
         --name mikrotik \
-        --net0 virtio,bridge=vmbr0,macaddr="$MAC_WAN_MK" \
-        --net1 virtio,bridge=vmbr0 \
-        --net2 virtio,bridge=vmbr0 \
-        --net3 virtio,bridge=vmbr0 \
-        --net4 virtio,bridge=vmbr0 \
+        --net0 virtio,bridge="$PM_BRIDGE",macaddr="$MAC_WAN_MK" \
+        --net1 virtio,bridge="$PM_BRIDGE" \
+        --net2 virtio,bridge="$PM_BRIDGE" \
+        --net3 virtio,bridge="$PM_BRIDGE" \
+        --net4 virtio,bridge="$PM_BRIDGE" \
         --bootdisk virtio0 \
         --ostype l26 \
         --memory 256 \
@@ -217,7 +233,7 @@ function qm_create_mikrotik() {
     #qm set $VMID_MK --scsihw virtio-scsi-pci --scsi0 $PM_STORAGE:vm-$VMID_MK-disk-0
     qm start "$VMID_MK"
     #sleep 15
-    #ip=$(arp-scan -I vmbr0 192.168.1.0/24 | grep -i $MAC_WAN_MK | awk '{print $1}')
+    #ip=$(arp-scan -I "$PM_BRIDGE" 192.168.1.0/24 | grep -i $MAC_WAN_MK | awk '{print $1}')
     #python3 mk.py $ip
 }
 
@@ -227,3 +243,7 @@ ct_create_template_debian
 ct_create_template_health
 ct_create_ansible
 qm_create_mikrotik
+
+
+# autoclean
+rm alpine.sh && rm debian.sh && rm health.sh && rm ansible.sh && rm centos.sh && rm proxmox_downloads_templates.sh

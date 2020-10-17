@@ -20,7 +20,7 @@ declare -r PM_POOL="p.prometeo"
 declare -r PM_GROUP="g.prometeo"
 declare -r PM_STORAGE="local-lvm"
 declare -r PM_BRIDGE="vmbr0"
-declare -r PM_USERNAME="prometeo@pve"
+declare -r PM_USERNAME="root@pam"  # system user is "prometeo"
 declare -r PM_PASSWORD="password"
 
 #############################################################################################
@@ -42,6 +42,7 @@ declare -r TEMPLATE_HEALTH_NAME="health.tar.gz"
 # VMID EXPECIAL SERVER
 declare -r VMID_ANSIBLE="110"
 declare -r VMID_MK="111"
+declare -r MAC_WAN_MK="4C:5E:0C:BB:8A:01"
 
 
 # VMID HEALTH SERVERS
@@ -78,8 +79,6 @@ declare -r VMID_DMZ_VSFTPD="513"
 
 # VMID SURICATA
 declare -r VMID_MIR_IDS="611"
-
-#declare -r MAC_WAN_MK="4C:5E:0C:BB:8A:01"
 
 
 #############################################################################################
