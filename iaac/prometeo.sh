@@ -8,8 +8,6 @@ find . -name "*.sh" -exec chmod u+x {} \;
 #chmod +x lxc_template/*.sh
 #chmod +x lxc/*.sh
 
-
-
 function basic_config_proxmox() {
     # Instalacion de la confiugracion basica en Proxmox
     $SSH root@"$PM_HOST" "mkdir -p $MY_PATH/"
@@ -20,12 +18,6 @@ function basic_config_proxmox() {
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash proxmox_configuration.sh"
 }
 
-
-
-
-
-
-
 function create_templates() {
     # Download template container alpine
     $SCP templates/proxmox_downloads_templates.sh root@"$PM_HOST":"$MY_PATH"/
@@ -34,7 +26,7 @@ function create_templates() {
     $SCP templates/centos.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP templates/debian.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP templates/health.sh root@"$PM_HOST":"$MY_PATH"/
-    #$SCP mikrotik.qcow2 root@"$PM_HOST":"$MY_PATH"/  # FIXME remove comment
+    #$SCP mk/mikrotik.qcow2 root@"$PM_HOST":"$MY_PATH"/  # FIXME remove comment
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash proxmox_downloads_templates.sh"
 
     #terraform destroy -auto-approve lxc_template/
@@ -48,10 +40,7 @@ function create_templates() {
     #$SSH root@$PM_HOST 'bash $MY_PATH/configure_alpine.sh'
 }
 
-
-
-
-function create_container_health() {
+function create_containers() {
     # CREACION DE CONTENEDOR CUSTOM PARA HEALTH
     #TEMPLATE_ALPINE_CUSTOM=$($SSH root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz' | awk '{ print $8 }'")
     TEMPLATE_ALPINE=$($SSH root@"$PM_HOST" "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz'")
@@ -72,15 +61,11 @@ function create_container_health() {
     terraform plan -var "ct_ostemplate=$TEMPLATE_ALPINE_CUSTOM" --out='lxc_pro.tfplan' lxc/
     terraform apply -auto-approve 'lxc_pro.tfplan'
 
-
     #cd -
 
     #rm -f lxc/variables.tf
     #rm -f lxc/provider.tf
 }
-
-
-
 
 function clear() {
     #rm *.tfstate
@@ -88,7 +73,6 @@ function clear() {
     $SCP delete_vm.sh root@"$PM_HOST":"$MY_PATH"/
     $SSH root@"$PM_HOST" "bash $MY_PATH/delete_vm.sh"
 }
-
 
 function main() {
     basic_config_proxmox
@@ -100,8 +84,9 @@ function main() {
     #! test -f terraform.tfstate && terraform init
     #test -f asd.tfstate && terraform init -state=asd.tfstate
 
-    create_templates
-    #create_container_health
+    #create_templates
+    python3 update_variables.py
+    #create_containers
 
 }
 
