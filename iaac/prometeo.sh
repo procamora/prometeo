@@ -64,31 +64,37 @@ function create_templates() {
     #$SSH root@$PM_HOST 'bash $MY_PATH/configure_alpine.sh'
 }
 
-function create_containers() {
-    # CREACION DE CONTENEDOR CUSTOM PARA HEALTH
-    #TEMPLATE_ALPINE_CUSTOM=$($SSH root@$PM_HOST "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz' | awk '{ print $8 }'")
-    #TEMPLATE_ALPINE=$($SSH root@"$PM_HOST" "ls -l /var/lib/vz/template/cache/ | grep -e 'vzdump-lxc-200.*.tar.gz'")
-
-    #TEMPLATE_ALPINE_CUSTOM=$(echo "$TEMPLATE_ALPINE" | xargs | awk '{ print $9 }')
-
-    #sed -i.back -re "s/default = \".*tar\.(xz|gz)\"/default = \"$TEMPLATE_ALPINE_CUSTOM\"/g" lxc/variables.tf
-
-    #$SSH root@$PM_HOST 'pct shutdown 4010; pct shutdown 4011; pct shutdown 4012; pct shutdown 4013;' 2> /dev/null
-
-    #cp variables.tf lxc/variables.tf
-    #cp provider.tf lxc/provider.tf
-
-    #cd lxc/
+function create_containers_health() {
+    directory="health"
 
     #terraform destroy -auto-approve .
-    terraform validate . -with-deps # No es necesario
-    terraform plan --out='lxc_pro.tfplan' .
-    terraform apply -auto-approve 'lxc_pro.tfplan'
+    test -L "$directory/variables.tf" || ln -s ../variables.tf "$directory/"
+    test -L "$directory/provider.tf" || ln -s ../provider.tf "$directory/"
+    terraform validate "./$directory/" -with-deps || exit 1
+    terraform plan -state="$TERRAFORM_STATE" --out='lxc_pro.tfplan' -var-file="terraform.tfvars" "./$directory/"
+    terraform apply -state="$TERRAFORM_STATE" -auto-approve 'lxc_pro.tfplan'
+}
 
-    #cd -
+function create_containers_dmz() {
+    directory="dmz"
 
-    #rm -f lxc/variables.tf
-    #rm -f lxc/provider.tf
+    test -L "$directory/variables.tf" || ln -s ../variables.tf "$directory/"
+    test -L "$directory/provider.tf" || ln -s ../provider.tf "$directory/"
+    #set -x
+    terraform validate "./$directory/" -with-deps || exit 1
+    terraform plan -destroy -state="$TERRAFORM_STATE" --out='lxc_pro.tfplan' -var-file="terraform.tfvars" "./$directory/" && terraform apply -state="$TERRAFORM_STATE" -auto-approve 'lxc_pro.tfplan'
+    terraform plan -state="$TERRAFORM_STATE" --out='lxc_pro.tfplan' -var-file="terraform.tfvars" "./$directory/"
+
+    if terraform apply -state="$TERRAFORM_STATE" -auto-approve 'lxc_pro.tfplan'; then
+        $SCP dmz/insert_vlan_pct.sh root@"$PM_HOST":"$MY_PATH"/
+        $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
+    fi
+}
+
+function create_containers() {
+    test -d .terraform/ || terraform init
+    #create_containers_health
+    create_containers_dmz
 }
 
 function clear() {
@@ -100,6 +106,7 @@ function clear() {
 
 function main() {
     check_vmid_duplicates
+    python3 update_variables.py
 
     #basic_config_proxmox
 
@@ -107,11 +114,7 @@ function main() {
 
     #clear
 
-    #! test -f terraform.tfstate && terraform init
-    #test -f asd.tfstate && terraform init -state=asd.tfstate
-
-    #create_templates
-    python3 update_variables.py
+    create_templates
     create_containers
 
 }

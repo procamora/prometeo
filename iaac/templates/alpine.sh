@@ -3,7 +3,10 @@
 # https://wiki.alpinelinux.org/wiki/Writing_Init_Scripts
 # https://wiki.alpinelinux.org/wiki/Alpine_Linux_Init_System
 
-apk update && apk upgrade && apk add vim git
+apk update && apk upgrade && apk add vim git vlan
+
+#modprobe 8021q
+#echo "8021q" >> /etc/modules
 
 mkdir -p /root/.ssh/
 chmod 700 /root/.ssh/

@@ -10,6 +10,8 @@ declare -r DUMP_PATH="/var/lib/vz/template"
 
 declare -r TIME_SLEEP=10  # pause afer run machine in seconds
 
+declare -r TERRAFORM_STATE=".myterraform.tfstate"
+
 #############################################################################################
 
 declare -r PM_HOST="192.168.1.254"
@@ -20,8 +22,14 @@ declare -r PM_POOL="p.prometeo"
 declare -r PM_GROUP="g.prometeo"
 declare -r PM_STORAGE="local-lvm"
 declare -r PM_BRIDGE="vmbr0"
-declare -r PM_USERNAME="root@pam"  # system user is "prometeo"
+declare -r PM_USERNAME="root@pam"  # system user is "root"
 declare -r PM_PASSWORD="password"
+
+declare -r PCT_ALPINE="alpine"
+declare -r PCT_DEBIAN="debian"
+declare -r PCT_CENTOS="centos"
+
+declare -r PCT_ETHERNET="eth0"
 
 #############################################################################################
 
@@ -34,6 +42,7 @@ declare -r TEMPLATE_CENTOS_NAME="centos.tar.gz"
 
 declare -r VMID_TEMPLATE_DEBIAN="4003"
 declare -r TEMPLATE_DEBIAN_NAME="debian.tar.gz"
+declare -r TEMPLATE_DEBIAN_ORIGINAL_NAME="debian_original.tar.gz"
 
 declare -r VMID_TEMPLATE_HEALTH="4004"
 declare -r TEMPLATE_HEALTH_NAME="health.tar.gz"
@@ -53,6 +62,9 @@ declare -r VMID_HEALTH_EXT="214"
 
 
 # VMID LAN SERVER
+declare -r VLAN_LAN="10"
+declare -r MASK_LAN="24"
+declare -r NETMASK_LAN="255.255.255.0"
 declare -r VMID_LAN_ASTERISK="311"
 declare -r VMID_LAN_LDAP="312"
 declare -r VMID_LAN_ELK="313"
@@ -64,6 +76,8 @@ declare -r VMID_LAN_SQLSERVER="318"
 
 
 # VMID LAN PCS
+declare -r MASK_PC="24"
+declare -r NETMASK_PC="255.255.255.0"
 declare -r VMID_PC_WIN10="411"
 declare -r VMID_PC_WIN7="412"
 declare -r VMID_PC_WINXP="413"
@@ -72,9 +86,16 @@ declare -r VMID_PC_MACOS="415"
 
 
 # VMID DMZ SERVERS
+declare -r VLAN_DMZ="20"
+declare -r MASK_DMZ="24"
+declare -r NETMASK_DMZ="255.255.255.0"
 declare -r VMID_DMZ_MONGO="511"
+declare -r IP_DMZ_MONGO="10.20.0.20"
 declare -r VMID_DMZ_MARIADB="512"
+declare -r IP_DMZ_MARIADB="10.20.0.21"
 declare -r VMID_DMZ_VSFTPD="513"
+declare -r IP_DMZ_VSFTPD="10.20.0.22"
+
 
 
 # VMID SURICATA

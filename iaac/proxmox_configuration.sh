@@ -53,6 +53,8 @@ function create_user_pam() {
     (echo -e "${GREEN_COLOUR}system reboot in 5 seconds for apply changes...${RESET_COLOUR}" && sleep 5 && reboot) &# becasue finish script
 }
 
+
+# unused becouse terraform need user root
 test -f /root/prometeo/apply_basic_config || create_users
 test -f /root/prometeo/apply_basic_config || create_user_pam
 

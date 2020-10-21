@@ -49,16 +49,22 @@ def get_keys_var() -> List[Tuple]:
 
 
 def generate_tfvars(list_var: List[Tuple]):
-    output: Text = "# DON'T EDIT, auto-generated file\n\n"
+    output_tfvars: Text = "# DON'T EDIT, auto-generated file\n\n"
+    output_vars: Text = "# DON'T EDIT, auto-generated file\n\n"
+
     for i in list_var:
         if len(i[0]) > 0:
-            output += f'''
+            output_tfvars += f'{i[0].lower()} = "{i[1].lower()}"\n'
+            output_vars += f'''
 variable "{i[0].lower()}" {{
-    default = "{i[1].lower()}"
+  type = string
+  description = "value set '{i[1].lower()}' in terraform.tfvars"
+  # default = "{i[1].lower()}"
 }}\n'''
 
     # print(output)
-    Path('./variables.tf').write_text(output)
+    Path('./terraform.tfvars').write_text(output_tfvars)
+    Path('./variables.tf').write_text(output_vars)
 
 
 def main():

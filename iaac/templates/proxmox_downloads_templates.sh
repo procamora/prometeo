@@ -32,6 +32,7 @@ pveam available --section system | grep debian | awk '{print $2}' | sort | head 
 TEMPLATE_DEBIAN=$(cat ./.name_debian_ct)
 test "$TEMPLATE_DEBIAN" || (echo -e "${RED_COLOUR}Missing image debian :( ${RESET_COLOUR}" && exit 1)
 pveam download local "$TEMPLATE_DEBIAN" && echo -e "${GREEN_COLOUR}Download image $TEMPLATE_DEBIAN${RESET_COLOUR}"
+#cp "$DUMP_PATH/cache/$TEMPLATE_DEBIAN" "$DUMP_PATH/$TEMPLATE_DEBIAN_ORIGINAL_NAME"
 
 function remove_pct() {
     # destroy execute becasue shutdown failed
@@ -66,13 +67,13 @@ function ct_create_template_alpine() {
         --force 1 \
         --hostname "alpine-template" \
         --memory 1024 \
-        --ostype alpine \
+        --ostype "$PCT_ALPINE" \
         --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    pct set "$VMID_TEMPLATE_ALPINE" -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
+    pct set "$VMID_TEMPLATE_ALPINE" -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_ALPINE" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_ALPINE"
@@ -102,13 +103,13 @@ function ct_create_template_centos() {
         --force 1 \
         --hostname "centos-template" \
         --memory 1024 \
-        --ostype centos \
+        --ostype "$PCT_CENTOS" \
         --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    pct set "$VMID_TEMPLATE_CENTOS" -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
+    pct set "$VMID_TEMPLATE_CENTOS" -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_CENTOS" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_CENTOS"
@@ -138,13 +139,13 @@ function ct_create_template_debian() {
         --force 1 \
         --hostname "debian-template" \
         --memory 1024 \
-        --ostype debian \
+        --ostype "$PCT_DEBIAN" \
         --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
-    pct set "$VMID_TEMPLATE_DEBIAN" -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
+    pct set "$VMID_TEMPLATE_DEBIAN" -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_DEBIAN" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
     pct start "$VMID_TEMPLATE_DEBIAN"
@@ -156,6 +157,7 @@ function ct_create_template_debian() {
     echo 'sh /root/debian.sh' | pct enter "$VMID_TEMPLATE_DEBIAN"
 
     pct shutdown "$VMID_TEMPLATE_DEBIAN"
+
     pct template "$VMID_TEMPLATE_DEBIAN"
     dump_and_rename "$VMID_TEMPLATE_DEBIAN" "$TEMPLATE_DEBIAN_NAME"
 }
@@ -172,7 +174,7 @@ function ct_create_template_health() {
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_TEMPLATE_HEALTH -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
+    #pct set $VMID_TEMPLATE_HEALTH -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     pct start "$VMID_TEMPLATE_HEALTH"
     sleep "$TIME_SLEEP"
 
@@ -197,7 +199,7 @@ function ct_create_ansible() {
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_ANSIBLE -net0 name=eth0,bridge="$PM_BRIDGE",ip=dhcp
+    #pct set $VMID_ANSIBLE -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     pct start "$VMID_ANSIBLE"
     sleep "$TIME_SLEEP"
 
