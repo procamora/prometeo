@@ -71,7 +71,6 @@ function ct_create_template_alpine() {
         --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
-    #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_ALPINE" -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_ALPINE" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
@@ -96,7 +95,6 @@ function ct_create_template_centos() {
     # if exits ct then remove ct
     remove_pct "$VMID_TEMPLATE_CENTOS"
 
-    #pct create "$VMID_TEMPLATE_CENTOS" "/var/lib/vz/template/cache/$TEMPLATE_DEBIAN" \
     pct create "$VMID_TEMPLATE_CENTOS" "local:vztmpl/$TEMPLATE_CENTOS" \
         --description "CentOS Container Template" \
         --cores 1 \
@@ -106,8 +104,8 @@ function ct_create_template_centos() {
         --ostype "$PCT_CENTOS" \
         --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
+        --unprivileged 0 \
         --pool "$PM_POOL"
-    #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_CENTOS" -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     #pct set "$VMID_TEMPLATE_CENTOS" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
@@ -142,13 +140,15 @@ function ct_create_template_debian() {
         --ostype "$PCT_DEBIAN" \
         --password "$PM_PASSWORD" \
         --storage "$PM_STORAGE" \
+        --unprivileged 0 \
         --pool "$PM_POOL"
     #        --ssh-public-keys /root/.ssh/id_rsa.pub \
 
     pct set "$VMID_TEMPLATE_DEBIAN" -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
+    #pct set "$VMID_TEMPLATE_DEBIAN" --mp0 "/lib/modules/$(uname -r),mp=/lib/modules/$(uname -r),ro=1"
     #pct set "$VMID_TEMPLATE_DEBIAN" -hookscript local:snippets/ansible.pl  # template in /usr/share/pve-docs/example/guest-example-hookscript.pl
 
-    pct start "$VMID_TEMPLATE_DEBIAN"
+    pct start "$VMID_TEMPLATE_DEBIAN" || echo -e "${RED_COLOUR}fail start $VMID_TEMPLATE_DEBIAN${RESET_COLOUR}"
     sleep "$TIME_SLEEP"
 
     pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa /root/id_rsa
@@ -174,7 +174,6 @@ function ct_create_template_health() {
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_TEMPLATE_HEALTH -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     pct start "$VMID_TEMPLATE_HEALTH"
     sleep "$TIME_SLEEP"
 
@@ -199,7 +198,6 @@ function ct_create_ansible() {
         --pool "$PM_POOL"
     # --storage $PM_STORAGE \
 
-    #pct set $VMID_ANSIBLE -net0 name="$PCT_ETHERNET",bridge="$PM_BRIDGE",ip=dhcp
     pct start "$VMID_ANSIBLE"
     sleep "$TIME_SLEEP"
 
@@ -245,7 +243,6 @@ ct_create_template_debian
 ct_create_template_health
 ct_create_ansible
 qm_create_mikrotik
-
 
 # autoclean
 rm alpine.sh && rm debian.sh && rm health.sh && rm ansible.sh && rm centos.sh && rm proxmox_downloads_templates.sh

@@ -3,7 +3,7 @@
 dnf upgrade -yq && dnf install -y vim gcc make git sudo
 
 #modprobe 8021q
-grep "8021q" /etc/modules || echo "8021q" >> /etc/modules
+#grep "8021q" /etc/modules || echo "8021q" >> /etc/modules
 
 echo '# disable ipv6
 net.ipv6.conf.all.disable_ipv6 = 1

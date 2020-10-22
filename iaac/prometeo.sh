@@ -4,9 +4,6 @@
 source variables.sh
 
 find . -name "*.sh" -exec chmod u+x {} \;
-#chmod +x *.sh
-#chmod +x lxc_template/*.sh
-#chmod +x lxc/*.sh
 
 # check vmid duplicates in file variables.sh
 function check_vmid_duplicates() {
@@ -34,7 +31,7 @@ function waiting_online() {
 function basic_config_proxmox() {
     # Instalacion de la confiugracion basica en Proxmox
     $SSH root@"$PM_HOST" "mkdir -p $MY_PATH/"
-    $SCP proxmox_configuration.sh root@"$PM_HOST":"$MY_PATH"/
+    $SCP proxmox_scripts/proxmox_configuration.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP variables.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP "$KEY" root@"$PM_HOST":"$MY_PATH"/
     $SCP "$KEY.pub" root@"$PM_HOST":"$MY_PATH"/
@@ -52,55 +49,34 @@ function create_templates() {
     $SCP templates/health.sh root@"$PM_HOST":"$MY_PATH"/
     #$SCP mk/mikrotik.qcow2 root@"$PM_HOST":"$MY_PATH"/  # FIXME remove comment
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash proxmox_downloads_templates.sh"
-
-    #terraform destroy -auto-approve lxc_template/
-    #terraform validate lxc_template/ -with-deps # No es necesario
-    #terraform plan --out='templates.tfplan' test/
-    #terraform apply -auto-approve 'templates.tfplan'
-
-    # Instalacion y configuracion del contenedor
-    #$SCP templates/configure_alpine.sh root@$PM_HOST:$MY_PATH/
-    #$SSH root@$PM_HOST 'bash $MY_PATH/configure_alpine.sh'
-    #$SSH root@$PM_HOST 'bash $MY_PATH/configure_alpine.sh'
 }
 
-function create_containers_health() {
-    directory="health"
+function create_containers() {
+    test -d .terraform/ || terraform init
 
-    #terraform destroy -auto-approve .
-    test -L "$directory/variables.tf" || ln -s ../variables.tf "$directory/"
-    test -L "$directory/provider.tf" || ln -s ../provider.tf "$directory/"
-    terraform validate "./$directory/" -with-deps || exit 1
-    terraform plan -state="$TERRAFORM_STATE" --out='lxc_pro.tfplan' -var-file="terraform.tfvars" "./$directory/"
-    terraform apply -state="$TERRAFORM_STATE" -auto-approve 'lxc_pro.tfplan'
-}
-
-function create_containers_dmz() {
-    directory="dmz"
+    directory="lxc"
+    plan="lxc.tfplan"
 
     test -L "$directory/variables.tf" || ln -s ../variables.tf "$directory/"
     test -L "$directory/provider.tf" || ln -s ../provider.tf "$directory/"
     #set -x
     terraform validate "./$directory/" -with-deps || exit 1
-    terraform plan -destroy -state="$TERRAFORM_STATE" --out='lxc_pro.tfplan' -var-file="terraform.tfvars" "./$directory/" && terraform apply -state="$TERRAFORM_STATE" -auto-approve 'lxc_pro.tfplan'
-    terraform plan -state="$TERRAFORM_STATE" --out='lxc_pro.tfplan' -var-file="terraform.tfvars" "./$directory/"
 
-    if terraform apply -state="$TERRAFORM_STATE" -auto-approve 'lxc_pro.tfplan'; then
-        $SCP dmz/insert_vlan_pct.sh root@"$PM_HOST":"$MY_PATH"/
+    #terraform plan -destroy -state="$TERRAFORM_STATE" --out="$plan" -var-file="terraform.tfvars" "./$directory/" && \
+    #  terraform apply -state="$TERRAFORM_STATE" -auto-approve "$plan"
+
+    terraform plan -state="$TERRAFORM_STATE" --out="$plan" -var-file="terraform.tfvars" "./$directory/"
+
+    if terraform apply -state="$TERRAFORM_STATE" -auto-approve "$plan"; then
+        $SCP proxmox_scripts/insert_vlan_pct.sh root@"$PM_HOST":"$MY_PATH"/
         $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
     fi
-}
-
-function create_containers() {
-    test -d .terraform/ || terraform init
-    #create_containers_health
-    create_containers_dmz
 }
 
 function clear() {
     #rm *.tfstate
     #rm *.tfplan
-    $SCP delete_vm.sh root@"$PM_HOST":"$MY_PATH"/
+    $SCP proxmox_scripts/delete_vm.sh root@"$PM_HOST":"$MY_PATH"/
     $SSH root@"$PM_HOST" "bash $MY_PATH/delete_vm.sh"
 }
 
@@ -114,7 +90,7 @@ function main() {
 
     #clear
 
-    create_templates
+    #create_templates
     create_containers
 
 }

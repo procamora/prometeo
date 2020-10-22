@@ -87,8 +87,8 @@ variable "pm_bridge" {
 
 variable "pm_username" {
   type = string
-  description = "value set 'root@pam"  # system user is "root' in terraform.tfvars"
-  # default = "root@pam"  # system user is "root"
+  description = "value set 'root@pam" # system user is "root' in terraform.tfvars"
+  # default = "root@pam" # system user is "root"
 }
 
 variable "pm_password" {
@@ -119,6 +119,12 @@ variable "pct_ethernet" {
   type = string
   description = "value set 'eth0' in terraform.tfvars"
   # default = "eth0"
+}
+
+variable "pct_ip_unicast" {
+  type = string
+  description = "value set '172.16.0.100/32' in terraform.tfvars"
+  # default = "172.16.0.100/32"
 }
 
 variable "vmid_template_alpine" {
@@ -157,12 +163,6 @@ variable "template_debian_name" {
   # default = "debian.tar.gz"
 }
 
-variable "template_debian_original_name" {
-  type = string
-  description = "value set 'debian_original.tar.gz' in terraform.tfvars"
-  # default = "debian_original.tar.gz"
-}
-
 variable "vmid_template_health" {
   type = string
   description = "value set '4004' in terraform.tfvars"
@@ -193,28 +193,64 @@ variable "mac_wan_mk" {
   # default = "4c:5e:0c:bb:8a:01"
 }
 
-variable "vmid_health_dmz" {
+variable "vmid_dmz_health" {
   type = string
-  description = "value set '211' in terraform.tfvars"
-  # default = "211"
+  description = "value set '221' in terraform.tfvars"
+  # default = "221"
 }
 
-variable "vmid_health_lan" {
+variable "ip_dmz_health" {
   type = string
-  description = "value set '212' in terraform.tfvars"
-  # default = "212"
+  description = "value set '10.20.0.254' in terraform.tfvars"
+  # default = "10.20.0.254"
 }
 
-variable "vmid_health_pc" {
+variable "vmid_lan_health" {
   type = string
-  description = "value set '213' in terraform.tfvars"
-  # default = "213"
+  description = "value set '222' in terraform.tfvars"
+  # default = "222"
 }
 
-variable "vmid_health_ext" {
+variable "ip_lan_health" {
   type = string
-  description = "value set '214' in terraform.tfvars"
-  # default = "214"
+  description = "value set '10.10.0.254' in terraform.tfvars"
+  # default = "10.10.0.254"
+}
+
+variable "vmid_pc_health" {
+  type = string
+  description = "value set '223' in terraform.tfvars"
+  # default = "223"
+}
+
+variable "ip_pc_health" {
+  type = string
+  description = "value set '10.10.11.254' in terraform.tfvars"
+  # default = "10.10.11.254"
+}
+
+variable "vmid_ids_health" {
+  type = string
+  description = "value set '224' in terraform.tfvars"
+  # default = "224"
+}
+
+variable "ip_ids_health" {
+  type = string
+  description = "value set '10.30.0.3' in terraform.tfvars"
+  # default = "10.30.0.3"
+}
+
+variable "vmid_ext_health" {
+  type = string
+  description = "value set '225' in terraform.tfvars"
+  # default = "225"
+}
+
+variable "ip_ext_health" {
+  type = string
+  description = "value set '10.200.0.254' in terraform.tfvars"
+  # default = "10.200.0.254"
 }
 
 variable "vlan_lan" {
@@ -235,52 +271,112 @@ variable "netmask_lan" {
   # default = "255.255.255.0"
 }
 
+variable "gateway_lan" {
+  type = string
+  description = "value set '10.10.0.1' in terraform.tfvars"
+  # default = "10.10.0.1"
+}
+
 variable "vmid_lan_asterisk" {
   type = string
-  description = "value set '311' in terraform.tfvars"
-  # default = "311"
+  description = "value set '321' in terraform.tfvars"
+  # default = "321"
+}
+
+variable "ip_lan_asterisk" {
+  type = string
+  description = "value set '10.10.0.21' in terraform.tfvars"
+  # default = "10.10.0.21"
 }
 
 variable "vmid_lan_ldap" {
   type = string
-  description = "value set '312' in terraform.tfvars"
-  # default = "312"
+  description = "value set '322' in terraform.tfvars"
+  # default = "322"
+}
+
+variable "ip_lan_ldap" {
+  type = string
+  description = "value set '10.10.0.22' in terraform.tfvars"
+  # default = "10.10.0.22"
 }
 
 variable "vmid_lan_elk" {
   type = string
-  description = "value set '313' in terraform.tfvars"
-  # default = "313"
+  description = "value set '323' in terraform.tfvars"
+  # default = "323"
+}
+
+variable "ip_lan_elk" {
+  type = string
+  description = "value set '10.10.0.23' in terraform.tfvars"
+  # default = "10.10.0.23"
 }
 
 variable "vmid_lan_splunk" {
   type = string
-  description = "value set '314' in terraform.tfvars"
-  # default = "314"
+  description = "value set '324' in terraform.tfvars"
+  # default = "324"
+}
+
+variable "ip_lan_splunk" {
+  type = string
+  description = "value set '10.10.0.24' in terraform.tfvars"
+  # default = "10.10.0.24"
 }
 
 variable "vmid_lan_winserver" {
   type = string
-  description = "value set '315' in terraform.tfvars"
-  # default = "315"
+  description = "value set '325' in terraform.tfvars"
+  # default = "325"
+}
+
+variable "ip_lan_winserver" {
+  type = string
+  description = "value set '10.10.0.25' in terraform.tfvars"
+  # default = "10.10.0.25"
 }
 
 variable "vmid_lan_oauth" {
   type = string
-  description = "value set '316' in terraform.tfvars"
-  # default = "316"
+  description = "value set '326' in terraform.tfvars"
+  # default = "326"
+}
+
+variable "ip_lan_oauth" {
+  type = string
+  description = "value set '10.10.0.26' in terraform.tfvars"
+  # default = "10.10.0.26"
 }
 
 variable "vmid_lan_openid" {
   type = string
-  description = "value set '317' in terraform.tfvars"
-  # default = "317"
+  description = "value set '327' in terraform.tfvars"
+  # default = "327"
+}
+
+variable "ip_lan_openid" {
+  type = string
+  description = "value set '10.10.0.27' in terraform.tfvars"
+  # default = "10.10.0.27"
 }
 
 variable "vmid_lan_sqlserver" {
   type = string
-  description = "value set '318' in terraform.tfvars"
-  # default = "318"
+  description = "value set '328' in terraform.tfvars"
+  # default = "328"
+}
+
+variable "ip_lan_sqlserver" {
+  type = string
+  description = "value set '10.10.0.28' in terraform.tfvars"
+  # default = "10.10.0.28"
+}
+
+variable "vlan_pc" {
+  type = string
+  description = "value set '1' in terraform.tfvars"
+  # default = "1"
 }
 
 variable "mask_pc" {
@@ -295,34 +391,70 @@ variable "netmask_pc" {
   # default = "255.255.255.0"
 }
 
+variable "gateway_pc" {
+  type = string
+  description = "value set '10.10.11.1' in terraform.tfvars"
+  # default = "10.10.11.1"
+}
+
 variable "vmid_pc_win10" {
   type = string
-  description = "value set '411' in terraform.tfvars"
-  # default = "411"
+  description = "value set '421' in terraform.tfvars"
+  # default = "421"
+}
+
+variable "ip_pc_win10" {
+  type = string
+  description = "value set '10.10.11.82' in terraform.tfvars"
+  # default = "10.10.11.82"
 }
 
 variable "vmid_pc_win7" {
   type = string
-  description = "value set '412' in terraform.tfvars"
-  # default = "412"
+  description = "value set '422' in terraform.tfvars"
+  # default = "422"
+}
+
+variable "ip_pc_win7" {
+  type = string
+  description = "value set '10.10.11.83' in terraform.tfvars"
+  # default = "10.10.11.83"
 }
 
 variable "vmid_pc_winxp" {
   type = string
-  description = "value set '413' in terraform.tfvars"
-  # default = "413"
+  description = "value set '423' in terraform.tfvars"
+  # default = "423"
+}
+
+variable "ip_pc_winxp" {
+  type = string
+  description = "value set '10.10.11.84' in terraform.tfvars"
+  # default = "10.10.11.84"
 }
 
 variable "vmid_pc_debian" {
   type = string
-  description = "value set '414' in terraform.tfvars"
-  # default = "414"
+  description = "value set '424' in terraform.tfvars"
+  # default = "424"
+}
+
+variable "ip_pc_debian" {
+  type = string
+  description = "value set '10.10.11.85' in terraform.tfvars"
+  # default = "10.10.11.85"
 }
 
 variable "vmid_pc_macos" {
   type = string
-  description = "value set '415' in terraform.tfvars"
-  # default = "415"
+  description = "value set '425' in terraform.tfvars"
+  # default = "425"
+}
+
+variable "ip_pc_macos" {
+  type = string
+  description = "value set '10.10.11.86' in terraform.tfvars"
+  # default = "10.10.11.86"
 }
 
 variable "vlan_dmz" {
@@ -343,44 +475,260 @@ variable "netmask_dmz" {
   # default = "255.255.255.0"
 }
 
+variable "gateway_dmz" {
+  type = string
+  description = "value set '10.20.0.1' in terraform.tfvars"
+  # default = "10.20.0.1"
+}
+
 variable "vmid_dmz_mongo" {
   type = string
-  description = "value set '511' in terraform.tfvars"
-  # default = "511"
+  description = "value set '521' in terraform.tfvars"
+  # default = "521"
 }
 
 variable "ip_dmz_mongo" {
-  type = string
-  description = "value set '10.20.0.20' in terraform.tfvars"
-  # default = "10.20.0.20"
-}
-
-variable "vmid_dmz_mariadb" {
-  type = string
-  description = "value set '512' in terraform.tfvars"
-  # default = "512"
-}
-
-variable "ip_dmz_mariadb" {
   type = string
   description = "value set '10.20.0.21' in terraform.tfvars"
   # default = "10.20.0.21"
 }
 
-variable "vmid_dmz_vsftpd" {
+variable "vmid_dmz_mariadb" {
   type = string
-  description = "value set '513' in terraform.tfvars"
-  # default = "513"
+  description = "value set '522' in terraform.tfvars"
+  # default = "522"
 }
 
-variable "ip_dmz_vsftpd" {
+variable "ip_dmz_mariadb" {
   type = string
   description = "value set '10.20.0.22' in terraform.tfvars"
   # default = "10.20.0.22"
 }
 
-variable "vmid_mir_ids" {
+variable "vmid_dmz_vsftpd" {
   type = string
-  description = "value set '611' in terraform.tfvars"
-  # default = "611"
+  description = "value set '523' in terraform.tfvars"
+  # default = "523"
+}
+
+variable "ip_dmz_vsftpd" {
+  type = string
+  description = "value set '10.20.0.23' in terraform.tfvars"
+  # default = "10.20.0.23"
+}
+
+variable "vmid_dmz_dojo" {
+  type = string
+  description = "value set '524' in terraform.tfvars"
+  # default = "524"
+}
+
+variable "ip_dmz_dojo" {
+  type = string
+  description = "value set '10.20.0.24' in terraform.tfvars"
+  # default = "10.20.0.24"
+}
+
+variable "vmid_dmz_apache" {
+  type = string
+  description = "value set '525' in terraform.tfvars"
+  # default = "525"
+}
+
+variable "ip_dmz_apache" {
+  type = string
+  description = "value set '10.20.0.25' in terraform.tfvars"
+  # default = "10.20.0.25"
+}
+
+variable "vmid_dmz_nagios" {
+  type = string
+  description = "value set '526' in terraform.tfvars"
+  # default = "526"
+}
+
+variable "ip_dmz_nagios" {
+  type = string
+  description = "value set '10.20.0.26' in terraform.tfvars"
+  # default = "10.20.0.26"
+}
+
+variable "vmid_dmz_muna" {
+  type = string
+  description = "value set '527' in terraform.tfvars"
+  # default = "527"
+}
+
+variable "ip_dmz_muna" {
+  type = string
+  description = "value set '10.20.0.27' in terraform.tfvars"
+  # default = "10.20.0.27"
+}
+
+variable "vmid_dmz_owncloud" {
+  type = string
+  description = "value set '528' in terraform.tfvars"
+  # default = "528"
+}
+
+variable "ip_dmz_owncloud" {
+  type = string
+  description = "value set '10.20.0.28' in terraform.tfvars"
+  # default = "10.20.0.28"
+}
+
+variable "vmid_dmz_joomla" {
+  type = string
+  description = "value set '529' in terraform.tfvars"
+  # default = "529"
+}
+
+variable "ip_dmz_joomla" {
+  type = string
+  description = "value set '10.20.0.29' in terraform.tfvars"
+  # default = "10.20.0.29"
+}
+
+variable "vmid_dmz_prestashop" {
+  type = string
+  description = "value set '530' in terraform.tfvars"
+  # default = "530"
+}
+
+variable "ip_dmz_prestashop" {
+  type = string
+  description = "value set '10.20.0.30' in terraform.tfvars"
+  # default = "10.20.0.30"
+}
+
+variable "vmid_dmz_drupal" {
+  type = string
+  description = "value set '531' in terraform.tfvars"
+  # default = "531"
+}
+
+variable "ip_dmz_drupal" {
+  type = string
+  description = "value set '10.20.0.31' in terraform.tfvars"
+  # default = "10.20.0.31"
+}
+
+variable "vmid_dmz_wordpress" {
+  type = string
+  description = "value set '532' in terraform.tfvars"
+  # default = "532"
+}
+
+variable "ip_dmz_wordpress" {
+  type = string
+  description = "value set '10.20.0.32' in terraform.tfvars"
+  # default = "10.20.0.32"
+}
+
+variable "vmid_dmz_radius" {
+  type = string
+  description = "value set '533' in terraform.tfvars"
+  # default = "533"
+}
+
+variable "ip_dmz_radius" {
+  type = string
+  description = "value set '10.20.0.33' in terraform.tfvars"
+  # default = "10.20.0.33"
+}
+
+variable "vmid_dmz_dns" {
+  type = string
+  description = "value set '534' in terraform.tfvars"
+  # default = "534"
+}
+
+variable "ip_dmz_dns" {
+  type = string
+  description = "value set '10.20.0.34' in terraform.tfvars"
+  # default = "10.20.0.34"
+}
+
+variable "vmid_dmz_honeypot" {
+  type = string
+  description = "value set '535' in terraform.tfvars"
+  # default = "535"
+}
+
+variable "ip_dmz_honeypot" {
+  type = string
+  description = "value set '10.20.0.35' in terraform.tfvars"
+  # default = "10.20.0.35"
+}
+
+variable "vmid_dmz_mail" {
+  type = string
+  description = "value set '536' in terraform.tfvars"
+  # default = "536"
+}
+
+variable "ip_dmz_mail" {
+  type = string
+  description = "value set '10.20.0.36' in terraform.tfvars"
+  # default = "10.20.0.36"
+}
+
+variable "vlan_ids" {
+  type = string
+  description = "value set '30' in terraform.tfvars"
+  # default = "30"
+}
+
+variable "mask_ids" {
+  type = string
+  description = "value set '29' in terraform.tfvars"
+  # default = "29"
+}
+
+variable "netmask_ids" {
+  type = string
+  description = "value set '255.255.255.248' in terraform.tfvars"
+  # default = "255.255.255.248"
+}
+
+variable "gateway_ids" {
+  type = string
+  description = "value set '10.30.0.1' in terraform.tfvars"
+  # default = "10.30.0.1"
+}
+
+variable "vmid_ids_suricata" {
+  type = string
+  description = "value set '621' in terraform.tfvars"
+  # default = "621"
+}
+
+variable "ip_ids_suricata" {
+  type = string
+  description = "value set '10.30.0.2' in terraform.tfvars"
+  # default = "10.30.0.2"
+}
+
+variable "vlan_ext" {
+  type = string
+  description = "value set '1' in terraform.tfvars"
+  # default = "1"
+}
+
+variable "mask_ext" {
+  type = string
+  description = "value set '24' in terraform.tfvars"
+  # default = "24"
+}
+
+variable "netmask_ext" {
+  type = string
+  description = "value set '255.255.255.0' in terraform.tfvars"
+  # default = "255.255.255.0"
+}
+
+variable "gateway_ext" {
+  type = string
+  description = "value set '172.0.0.1' in terraform.tfvars"
+  # default = "172.0.0.1"
 }

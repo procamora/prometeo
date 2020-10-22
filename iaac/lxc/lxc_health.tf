@@ -4,7 +4,7 @@ resource "proxmox_lxc" "health-dmz" {
   #features {
   #  nesting = true
   #}
-  vmid = var.vmid_health_dmz
+  vmid = var.vmid_dmz_health
   hostname = "dmz.health"
   description = "Container with dmz.health"
   ostype = var.pct_alpine
@@ -20,9 +20,9 @@ resource "proxmox_lxc" "health-dmz" {
     bridge = var.pm_bridge
     #ip = "dhcp"
     #ip6 = "dhcp"
-    ip = "10.20.0.200/24"
-    gw = "10.20.0.1"
-    tag = 20
+    ip = var.pct_ip_unicast
+    #gw = "10.20.0.1"
+    tag = var.vlan_dmz
   }
 
   #onboot = true
@@ -39,14 +39,11 @@ resource "proxmox_lxc" "health-dmz" {
 }
 
 resource "proxmox_lxc" "health-lan" {
-  #features {
-  #  nesting = true
-  #}
-  vmid = var.vmid_health_lan
+  vmid = var.vmid_lan_health
   hostname = "lan.health"
   description = "Container with lan.health"
   ostype = var.pct_alpine
-  #start = true
+  start = true
 
   cores = 1
   memory = 128
@@ -55,10 +52,8 @@ resource "proxmox_lxc" "health-lan" {
   network {
     name = var.pct_ethernet
     bridge = var.pm_bridge
-    #ip = "dhcp"
-    #ip6 = "dhcp"
-    ip = "10.10.0.200/24"
-    gw = "10.10.0.1"
+    ip = var.pct_ip_unicast
+    tag = var.vlan_lan
   }
 
   onboot = true
@@ -71,14 +66,11 @@ resource "proxmox_lxc" "health-lan" {
 }
 
 resource "proxmox_lxc" "health-pc" {
-  #features {
-  #  nesting = true
-  #}
-  vmid = var.vmid_health_pc
+  vmid = var.vmid_pc_health
   hostname = "pc.health"
   description = "Container with pc.health"
   ostype = var.pct_alpine
-  #start = true
+  start = true
 
   cores = 1
   memory = 128
@@ -87,10 +79,8 @@ resource "proxmox_lxc" "health-pc" {
   network {
     name = var.pct_ethernet
     bridge = var.pm_bridge
-    #ip = "dhcp"
-    #ip6 = "dhcp"
-    ip = "10.10.11.200/24"
-    gw = "10.10.0.1"
+    ip = var.pct_ip_unicast
+    tag = var.vlan_pc
   }
 
   onboot = true
@@ -102,13 +92,11 @@ resource "proxmox_lxc" "health-pc" {
   unprivileged = true
 }
 
-resource "proxmox_lxc" "health-testing" {
-  #features {
-  #  nesting = true
-  #}
-  vmid = 6666
-  hostname = "testing.health"
-  description = "Container with testing.health"
+
+resource "proxmox_lxc" "health-ids" {
+  vmid = var.vmid_ids_health
+  hostname = "ids.health"
+  description = "Container with ids.health"
   ostype = var.pct_alpine
   start = true
 
@@ -119,14 +107,39 @@ resource "proxmox_lxc" "health-testing" {
   network {
     name = var.pct_ethernet
     bridge = var.pm_bridge
-    #ip = "dhcp"
-    #ip6 = "dhcp"
-    ip = "10.20.0.201/24"
-    gw = "10.20.0.1"
-    tag = 20
+    ip = var.pct_ip_unicast
+    tag = var.vlan_pc
   }
 
-  onboot = false
+  onboot = true
+  password = var.pm_password
+  pool = var.pm_pool
+  storage = var.pm_storage
+  ostemplate = "${var.dump_path}/${var.template_health_name}"
+  target_node = var.pm_node
+  unprivileged = true
+}
+
+
+resource "proxmox_lxc" "health-ext" {
+  vmid = var.vmid_ext_health
+  hostname = "ext.health"
+  description = "Container with ext.health"
+  ostype = var.pct_alpine
+  start = true
+
+  cores = 1
+  memory = 128
+  swap = 128
+
+  network {
+    name = var.pct_ethernet
+    bridge = var.pm_bridge
+    ip = var.pct_ip_unicast
+    tag = var.vlan_pc
+  }
+
+  onboot = true
   password = var.pm_password
   pool = var.pm_pool
   storage = var.pm_storage

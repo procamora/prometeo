@@ -4,6 +4,8 @@
 - [ ] Meter claves ssh en templates
 - [ ] Establecer el tamaño de los disco para los pct
 
+
+
 # Install
 
 ```bash
@@ -64,4 +66,12 @@ variable "pm_ct_password" {\n  default = "PRUEBA"\n}
 
 
 
+```
+
+
+```bash
+curl --header "Content-Type: application/json" \
+   --request POST \
+   --data '{"token":"RG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"}' \
+   http://localhost:8888/health
 ```

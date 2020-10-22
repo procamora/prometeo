@@ -7,6 +7,7 @@ ENTERPRISE="/etc/apt/sources.list.d/pve-enterprise.list"
 test -f $ENTERPRISE && rm -f $ENTERPRISE
 
 apt -y update
+apt list --upgradable
 apt -y install vim ceph-base ceph-mgr ceph-mon ceph-osd
 
 DEBIAN_FRONTEND=noninteractive apt update -qq </dev/null >/dev/null
@@ -24,6 +25,11 @@ mv -f id_rsa /root/.ssh
 mv -f id_rsa.pub /root/.ssh
 grep -q "root@proxmox" /root/.ssh/authorized_keys || cat /root/.ssh/id_rsa.pub >>/root/.ssh/authorized_keys
 chmod 600 /root/.ssh/* # le quitamos los permisos necesarios
+
+echo "root:$PM_PASSWORD" | chpasswd
+
+lsmod | grep -q 8021q || modprobe 8021q
+grep -q "8021q" /etc/modules || echo "8021q" >>/etc/modules
 
 function create_users() {
     # Cluster name
@@ -49,10 +55,9 @@ function create_user_pam() {
     usermod -a -G root prometeo
     grep -E "^prometeo" /etc/sudoers -q || echo "prometeo    ALL=(ALL:ALL) ALL" >>/etc/sudoers
     # same path that root
-    echo 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >> /home/prometeo/.bashrc
+    echo 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >>/home/prometeo/.bashrc
     (echo -e "${GREEN_COLOUR}system reboot in 5 seconds for apply changes...${RESET_COLOUR}" && sleep 5 && reboot) &# becasue finish script
 }
-
 
 # unused becouse terraform need user root
 test -f /root/prometeo/apply_basic_config || create_users
