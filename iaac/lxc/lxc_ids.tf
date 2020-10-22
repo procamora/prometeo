@@ -1,12 +1,12 @@
 # https://github.com/Telmate/terraform-provider-proxmox/blob/master/proxmox/resource_lxc.go
 
-resource "proxmox_lxc" "test-ids" {
+resource "proxmox_lxc" "suricata-ids" {
   features {
     nesting = true
   }
-  vmid = var.vmid_mir_ids
-  hostname = "dmz.health"
-  description = "Container with ids"
+  vmid = var.vmid_ids_suricata
+  hostname = "suricata.ids"
+  description = "Container with suricata.ids"
   ostype = "alpine"
   start = true
 

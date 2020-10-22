@@ -63,8 +63,8 @@ declare -r VMID_PC_HEALTH="223"
 declare -r IP_PC_HEALTH="10.10.11.254"
 declare -r VMID_IDS_HEALTH="224"
 declare -r IP_IDS_HEALTH="10.30.0.3"
-declare -r VMID_EXT_HEALTH="225"
-declare -r IP_EXT_HEALTH="10.200.0.254"
+declare -r VMID_LAB_HEALTH="225"
+declare -r IP_LAB_HEALTH="10.200.0.254"
 
 # VMID LAN SERVER
 declare -r VLAN_LAN="10"
@@ -154,11 +154,11 @@ declare -r GATEWAY_IDS="10.30.0.1"
 declare -r VMID_IDS_SURICATA="621"
 declare -r IP_IDS_SURICATA="10.30.0.2"
 
-# VMID EXT
-declare -r VLAN_EXT="1"
-declare -r MASK_EXT="24"
-declare -r NETMASK_EXT="255.255.255.0"
-declare -r GATEWAY_EXT="172.0.0.1"
+# VMID LABORARTIY
+declare -r VLAN_LAB="1"
+declare -r MASK_LAB="24"
+declare -r NETMASK_LAB="255.255.255.0"
+declare -r GATEWAY_LAB="172.0.0.1"
 
 #############################################################################################
 #############################################################################################

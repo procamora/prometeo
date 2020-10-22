@@ -215,11 +215,12 @@ function qm_create_mikrotik() {
 
     qm create "$VMID_MK" \
         --name mikrotik \
-        --net0 virtio,bridge="$PM_BRIDGE",macaddr="$MAC_WAN_MK" \
-        --net1 virtio,bridge="$PM_BRIDGE" \
-        --net2 virtio,bridge="$PM_BRIDGE" \
-        --net3 virtio,bridge="$PM_BRIDGE" \
-        --net4 virtio,bridge="$PM_BRIDGE" \
+        --net0 "virtio,bridge=$PM_BRIDGE,macaddr=$MAC_WAN_MK" \
+        --net1 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_LAN" \
+        --net2 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_DMZ" \
+        --net3 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_IDS" \
+        --net4 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_PC" \
+        --net5 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_LAB" \
         --bootdisk virtio0 \
         --ostype l26 \
         --memory 256 \
@@ -237,11 +238,11 @@ function qm_create_mikrotik() {
     #python3 mk.py $ip
 }
 
-ct_create_template_alpine
-ct_create_template_centos
-ct_create_template_debian
-ct_create_template_health
-ct_create_ansible
+#ct_create_template_alpine
+#ct_create_template_centos
+#ct_create_template_debian
+#ct_create_template_health
+#ct_create_ansible
 qm_create_mikrotik
 
 # autoclean

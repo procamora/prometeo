@@ -1,9 +1,0 @@
-
-
-
-
-terraform plan -var-file='pro.tfvars' -out='lxc_pre.tfplan' lxc_template/ 
-
-terraform apply 'lxc_pre.tfplan'
-
-terraform output openshift-inventory > ../openshift-inventory

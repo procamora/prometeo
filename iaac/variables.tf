@@ -241,13 +241,13 @@ variable "ip_ids_health" {
   # default = "10.30.0.3"
 }
 
-variable "vmid_ext_health" {
+variable "vmid_lab_health" {
   type = string
   description = "value set '225' in terraform.tfvars"
   # default = "225"
 }
 
-variable "ip_ext_health" {
+variable "ip_lab_health" {
   type = string
   description = "value set '10.200.0.254' in terraform.tfvars"
   # default = "10.200.0.254"
@@ -709,25 +709,25 @@ variable "ip_ids_suricata" {
   # default = "10.30.0.2"
 }
 
-variable "vlan_ext" {
+variable "vlan_lab" {
   type = string
   description = "value set '1' in terraform.tfvars"
   # default = "1"
 }
 
-variable "mask_ext" {
+variable "mask_lab" {
   type = string
   description = "value set '24' in terraform.tfvars"
   # default = "24"
 }
 
-variable "netmask_ext" {
+variable "netmask_lab" {
   type = string
   description = "value set '255.255.255.0' in terraform.tfvars"
   # default = "255.255.255.0"
 }
 
-variable "gateway_ext" {
+variable "gateway_lab" {
   type = string
   description = "value set '172.0.0.1' in terraform.tfvars"
   # default = "172.0.0.1"

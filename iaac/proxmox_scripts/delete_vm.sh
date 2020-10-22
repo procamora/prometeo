@@ -20,3 +20,4 @@ done
 
 # disable autorun because on reboot de machine is offline and is posible remove
 find /etc/pve/lxc/ -type f -exec sed -i "s/onboot: 1/onboot: 0/g" {} \;
+test "$(pct list | wc -l)" == "0" || reboot

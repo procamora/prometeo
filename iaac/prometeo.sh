@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set variables
-source variables.sh
+source ./variables.sh
 
 find . -name "*.sh" -exec chmod u+x {} \;
 
@@ -21,7 +21,7 @@ function check_vmid_duplicates() {
 function waiting_online() {
     sleep 20 # need becasue script run thread "sleep 5 && reboot" and reboot is slow
     echo -e "${ORANGE_COLOUR}waiting for Server ${PM_HOST}${RESET_COLOUR}"
-    while ! timeout 0.2 ping -c 1 -n "$PM_HOST" &>/dev/null; do
+    while ! timeout 0.4 ping -c 1 -n "$PM_HOST" &>/dev/null; do
         printf "%c" "."
     done
     echo -e "\n${GREEN_COLOUR}Server is back online ${PM_HOST}${RESET_COLOUR}"
@@ -41,7 +41,7 @@ function basic_config_proxmox() {
 
 function create_templates() {
     # Download template container alpine
-    $SCP templates/proxmox_downloads_templates.sh root@"$PM_HOST":"$MY_PATH"/
+    $SCP proxmox_scripts/proxmox_downloads_templates.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP templates/alpine.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP templates/ansible.sh root@"$PM_HOST":"$MY_PATH"/
     $SCP templates/centos.sh root@"$PM_HOST":"$MY_PATH"/
@@ -80,6 +80,12 @@ function clear() {
     $SSH root@"$PM_HOST" "bash $MY_PATH/delete_vm.sh"
 }
 
+
+function generate_check_health() {
+    $SCP proxmox_scripts/generate_check_health.sh root@"$PM_HOST":"$MY_PATH"/
+    $SSH root@"$PM_HOST" "cd $MY_PATH && bash generate_check_health.sh"
+}
+
 function main() {
     check_vmid_duplicates
     python3 update_variables.py
@@ -91,7 +97,8 @@ function main() {
     #clear
 
     #create_templates
-    create_containers
+    #create_containers
+    generate_check_health
 
 }
 

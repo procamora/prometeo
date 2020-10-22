@@ -74,4 +74,11 @@ curl --header "Content-Type: application/json" \
    --request POST \
    --data '{"token":"RG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"}' \
    http://localhost:8888/health
+
+ip route add 10.10.0.0/24 via 192.168.1.253
+
+
+ip route add 10.0.0.0/8 via 192.168.1.253
+
+
 ```

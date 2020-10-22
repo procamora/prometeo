@@ -11,7 +11,7 @@ my_eth=$(grep -E "^declare -r PCT_ETHERNET" $FILE_VARIABLES | awk -F "=" '{print
 my_netmasks=$(grep -E "^declare -r NETMASK_" $FILE_VARIABLES | awk -F " " '{print $3}' | tr -d '"')
 my_gateways=$(grep -E "^declare -r GATEWAY_" $FILE_VARIABLES | awk -F " " '{print $3}' | tr -d '"')
 my_masks=$(grep -E "^declare -r MASK_" $FILE_VARIABLES | awk -F " " '{print $3}' | tr -d '"')
-my_ips=($(grep -E "^declare -r IP_" $FILE_VARIABLES | awk -F " " '{print $3}' | tr -d '"'))
+mapfile -t my_ips < <(grep -E "^declare -r IP_" $FILE_VARIABLES | awk -F " " '{print $3}' | tr -d '"') # array ips
 
 function centos() {
     ip=$1
@@ -71,7 +71,9 @@ iface $my_eth.$vlan inet static
 function alpine() {
     # https://wiki.alpinelinux.org/wiki/Vlan
     # config alpine sama as debian
+    # FIXME el reboot parece no funcionar con alpine
     debian "$@"
+    pct stop "$vmid" && pct start "$vmid"
     #debian "$1" "$2" "$3" "$4" "$5"
 }
 
