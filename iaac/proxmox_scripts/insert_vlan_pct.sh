@@ -77,7 +77,6 @@ function alpine() {
     #debian "$1" "$2" "$3" "$4" "$5"
 }
 
-# shellcheck disable=SC2120
 function foreach_vmids() {
     for vmid_aux in "${my_ips[@]}"; do
         ip=$(echo "$vmid_aux" | awk -F "=" '{print $2}')
@@ -92,29 +91,31 @@ function foreach_vmids() {
         debug "[+] $name=>$ip, vmid=$vmid, zone=$zone, vlan=$vlan, mask=$mask, netmask=$netmask"
         test "$vmid" == "" && echo -e "${RED_COLOUR}[-] Error: $name has as vmid: ($vmid).${RESET_COLOUR}" && exit 2
 
-        (pct list | grep "$vmid" && pct start "$vmid" && sleep 10) >/dev/null
+        test "$(pct list | grep "$vmid" | awk '{print $2}')" != "running" && timeout 10 sh -c "(pct start $vmid) 2> /dev/null && sleep 5"
 
         is_run=$(pct list | grep "$vmid" | awk '{print $2}')
-        if [[ "$is_run" == "running" ]]; then
+        # if [[ "$is_run" == "running" ]]; then
+        if [[ "$is_run" == "running" ]] && [[ "$vlan" != "1" ]]; then
             #os_aux=$(echo "cat /etc/os-release | egrep "^NAME=" | tr -d \"" | pct enter "$vmid")
             os_aux=$(echo "cat /etc/os-release " | pct enter "$vmid")
             #debug "$os_aux"
-            os=$(echo "$os_aux" | grep -E "^NAME=" | tr -d \" | awk -F = '{print $NF}' | awk -F " " '{print $1}' | awk '{print tolower($0)}')
+            os=$(echo "$os_aux" | grep -E "^NAME=" | tr -d \" | awk -F = '{print $NF}' | awk -F " " '{print tolower($1)}')
             debug "|||$os|||"
+            debug "|||$gateway|||"
             if [[ "$os" == "$(echo "$PCT_CENTOS" | awk '{print tolower($0)}')" ]]; then
-                debug "centos"
+                debug_ok "centos"
                 centos "$ip" "$vlan" "$mask" "$netmask" "$gateway"
             elif [ "$os" == "$(echo "$PCT_DEBIAN" | awk '{print tolower($0)}')" ]; then
-                debug "debian"
+                debug_ok "debian"
                 debian "$ip" "$vlan" "$mask" "$netmask" "$gateway"
             elif [ "$os" == "$(echo "$PCT_ALPINE" | awk '{print tolower($0)}')" ]; then
-                debug "alpine"
+                debug_ok "alpine"
                 debian "$ip" "$vlan" "$mask" "$netmask" "$gateway"
             else
-                debug "[-] ouch"
+                debug_err "[-] ouch"
             fi
         else
-            debug "[-] skip $vmid" # skip pct not running
+            debug_err "[-] skip $vmid" # skip pct not running
         fi
         echo -e "########################\n\n"
     done

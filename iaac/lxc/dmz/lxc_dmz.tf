@@ -5,7 +5,7 @@ resource "proxmox_lxc" "mariadb-dmz" {
   hostname = "mariadb.dmz"
   description = "Container with mariadb.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -33,7 +33,7 @@ resource "proxmox_lxc" "mongo-dmz" {
   hostname = "mongo.dmz"
   description = "Container with mongo.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -61,7 +61,7 @@ resource "proxmox_lxc" "vsftpd-dmz" {
   hostname = "vsftpd.dmz"
   description = "Container with vsftpd.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -89,7 +89,7 @@ resource "proxmox_lxc" "dojo-dmz" {
   hostname = "dojo.dmz"
   description = "Container with dojo.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -117,7 +117,7 @@ resource "proxmox_lxc" "apache-dmz" {
   hostname = "apache.dmz"
   description = "Container with apache.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -145,7 +145,7 @@ resource "proxmox_lxc" "nagios-dmz" {
   hostname = "nagios.dmz"
   description = "Container with nagios.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -173,7 +173,7 @@ resource "proxmox_lxc" "muna-dmz" {
   hostname = "muna.dmz"
   description = "Container with muna.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -201,7 +201,7 @@ resource "proxmox_lxc" "owncloud-dmz" {
   hostname = "owncloud.dmz"
   description = "Container with owncloud.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -229,7 +229,7 @@ resource "proxmox_lxc" "joomla-dmz" {
   hostname = "joomla.dmz"
   description = "Container with joomla.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -257,7 +257,7 @@ resource "proxmox_lxc" "prestashop-dmz" {
   hostname = "prestashop.dmz"
   description = "Container with prestashop.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -285,7 +285,7 @@ resource "proxmox_lxc" "drupal-dmz" {
   hostname = "drupal.dmz"
   description = "Container with drupal.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -313,7 +313,7 @@ resource "proxmox_lxc" "wordpress-dmz" {
   hostname = "wordpress.dmz"
   description = "Container with wordpress.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -341,7 +341,7 @@ resource "proxmox_lxc" "radius-dmz" {
   hostname = "radius.dmz"
   description = "Container with radius.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -369,7 +369,7 @@ resource "proxmox_lxc" "dns-dmz" {
   hostname = "dns.dmz"
   description = "Container with dns.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -397,7 +397,7 @@ resource "proxmox_lxc" "honeypot-dmz" {
   hostname = "honeypot.dmz"
   description = "Container with honeypot.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -425,7 +425,7 @@ resource "proxmox_lxc" "mail-dmz" {
   hostname = "mail.dmz"
   description = "Container with mail.dmz"
   ostype = var.pct_debian
-  start = true
+  start = false
 
   cores = 1
   memory = 128

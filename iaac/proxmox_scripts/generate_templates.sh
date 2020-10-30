@@ -213,18 +213,20 @@ function qm_create_mikrotik() {
     # if exits ct then remove ct
     remove_qm "$VMID_MK"
 
+    # --net4 -> PC
+    # --net5 -> LAB
     qm create "$VMID_MK" \
         --name mikrotik \
         --net0 "virtio,bridge=$PM_BRIDGE,macaddr=$MAC_WAN_MK" \
         --net1 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_LAN" \
         --net2 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_DMZ" \
         --net3 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_IDS" \
-        --net4 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_PC" \
-        --net5 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_LAB" \
+        --net4 "virtio,bridge=$PM_BRIDGE" \
+        --net5 "virtio,bridge=$PM_BRIDGE" \
         --bootdisk virtio0 \
         --ostype l26 \
         --memory 256 \
-        --onboot no \
+        --onboot 1 \
         --sockets 1 \
         --cores 1
 
@@ -238,12 +240,12 @@ function qm_create_mikrotik() {
     #python3 mk.py $ip
 }
 
-#ct_create_template_alpine
-#ct_create_template_centos
-#ct_create_template_debian
-#ct_create_template_health
-#ct_create_ansible
+ct_create_template_alpine
+ct_create_template_centos
+ct_create_template_debian
+ct_create_template_health
+ct_create_ansible
 qm_create_mikrotik
 
 # autoclean
-rm alpine.sh && rm debian.sh && rm health.sh && rm ansible.sh && rm centos.sh && rm proxmox_downloads_templates.sh
+rm alpine.sh && rm debian.sh && rm health.sh && rm ansible.sh && rm centos.sh && rm generate_templates.sh

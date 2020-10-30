@@ -11,8 +11,10 @@ declare -r DUMP_PATH="/var/lib/vz/template"
 
 declare -r TIME_SLEEP=10 # pause afer run machine in seconds
 
-declare -r TERRAFORM_STATE=".myterraform.tfstate"
-
+declare -r TERRAFORM_STATE_IDS=".myterraform_ids.tfstate"
+declare -r TERRAFORM_STATE_LAN=".myterraform_lan.tfstate"
+declare -r TERRAFORM_STATE_DMZ=".myterraform_dmz.tfstate"
+declare -r TERRAFORM_STATE_HEALTH=".myterraform_health.tfstate"
 #############################################################################################
 
 declare -r PM_HOST="192.168.1.254"
@@ -22,7 +24,6 @@ declare -r PM_NODE="proxmox"
 declare -r PM_POOL="p.prometeo"
 declare -r PM_GROUP="g.prometeo"
 declare -r PM_STORAGE="local-lvm"
-declare -r PM_BRIDGE="vmbr0"
 declare -r PM_USERNAME="root@pam" # system user is "root"
 declare -r PM_PASSWORD="password"
 
@@ -30,6 +31,7 @@ declare -r PCT_ALPINE="alpine"
 declare -r PCT_DEBIAN="debian"
 declare -r PCT_CENTOS="centos"
 
+declare -r PM_BRIDGE="vmbr0"
 declare -r PCT_ETHERNET="eth0"
 declare -r PCT_IP_UNICAST="172.16.0.100/32"
 
@@ -64,7 +66,7 @@ declare -r IP_PC_HEALTH="10.10.11.254"
 declare -r VMID_IDS_HEALTH="224"
 declare -r IP_IDS_HEALTH="10.30.0.3"
 declare -r VMID_LAB_HEALTH="225"
-declare -r IP_LAB_HEALTH="10.200.0.254"
+declare -r IP_LAB_HEALTH="172.0.0.254"
 
 # VMID LAN SERVER
 declare -r VLAN_LAN="10"
@@ -167,6 +169,14 @@ declare -r GATEWAY_LAB="172.0.0.1"
 
 function debug() {
     echo -e "${ORANGE_COLOUR}$1${RESET_COLOUR}"
+}
+
+function debug_ok() {
+    echo -e "${GREEN_COLOUR}$1${RESET_COLOUR}"
+}
+
+function debug_err() {
+    echo -e "${RED_COLOUR}$1${RESET_COLOUR}"
 }
 
 #Colours

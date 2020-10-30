@@ -3,6 +3,9 @@
 *tfstate
 *.backup
 
+iaac/lxc/**/provider.tf
+iaac/lxc/**/variables.tf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

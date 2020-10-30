@@ -31,75 +31,98 @@ function waiting_online() {
 function basic_config_proxmox() {
     # Instalacion de la confiugracion basica en Proxmox
     $SSH root@"$PM_HOST" "mkdir -p $MY_PATH/"
-    $SCP proxmox_scripts/proxmox_configuration.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP variables.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP "$KEY" root@"$PM_HOST":"$MY_PATH"/
-    $SCP "$KEY.pub" root@"$PM_HOST":"$MY_PATH"/
-    $SSH root@"$PM_HOST" "cd $MY_PATH && bash proxmox_configuration.sh"
+    $SCP proxmox_scripts/initial_configuration.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP "$KEY" "root@$PM_HOST:$MY_PATH/"
+    $SCP "$KEY.pub" "root@$PM_HOST:$MY_PATH/"
+    $SSH root@"$PM_HOST" "cd $MY_PATH && bash initial_configuration.sh"
     waiting_online
 }
 
 function create_templates() {
     # Download template container alpine
-    $SCP proxmox_scripts/proxmox_downloads_templates.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP templates/alpine.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP templates/ansible.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP templates/centos.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP templates/debian.sh root@"$PM_HOST":"$MY_PATH"/
-    $SCP templates/health.sh root@"$PM_HOST":"$MY_PATH"/
-    #$SCP mk/mikrotik.qcow2 root@"$PM_HOST":"$MY_PATH"/  # FIXME remove comment
-    $SSH root@"$PM_HOST" "cd $MY_PATH && bash proxmox_downloads_templates.sh"
+    $SCP proxmox_scripts/generate_templates.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP templates/alpine.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP templates/ansible.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP templates/centos.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP templates/debian.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP templates/health.sh "root@$PM_HOST:$MY_PATH/"
+    #$SCP mk/mikrotik.qcow2 "root@$PM_HOST:$MY_PATH/"  # FIXME remove comment
+    $SSH root@"$PM_HOST" "cd $MY_PATH && bash generate_templates.sh"
 }
 
 function create_containers() {
+    directory=$1
+    plan=$2
+    state=$3
+
     test -d .terraform/ || terraform init
 
-    directory="lxc"
-    plan="lxc.tfplan"
-
-    test -L "$directory/variables.tf" || ln -s ../variables.tf "$directory/"
-    test -L "$directory/provider.tf" || ln -s ../provider.tf "$directory/"
+    test -L "$directory/variables.tf" || ln -s "$(pwd)/variables.tf" "$directory/"
+    test -L "$directory/provider.tf" || ln -s "$(pwd)/provider.tf" "$directory/"
     #set -x
     terraform validate "./$directory/" -with-deps || exit 1
 
-    #terraform plan -destroy -state="$TERRAFORM_STATE" --out="$plan" -var-file="terraform.tfvars" "./$directory/" && \
-    #  terraform apply -state="$TERRAFORM_STATE" -auto-approve "$plan"
+    #if terraform plan -destroy -state="$state" --out="$plan" -var-file="terraform.tfvars" "./$directory/"; then
+    #    terraform apply -state="$state" -auto-approve "$plan"
+    #else
+    #    debug_err "error in plan destroy"
+    #    exit 1
+    #fi
 
-    terraform plan -state="$TERRAFORM_STATE" --out="$plan" -var-file="terraform.tfvars" "./$directory/"
+    terraform plan -state="$state" --out="$plan" -var-file="terraform.tfvars" "./$directory/"
 
-    if terraform apply -state="$TERRAFORM_STATE" -auto-approve "$plan"; then
-        $SCP proxmox_scripts/insert_vlan_pct.sh root@"$PM_HOST":"$MY_PATH"/
-        $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
-    fi
+    terraform apply -lock-timeout=1m -parallelism=4 -state="$state" -auto-approve "$plan"
+    #if terraform apply -lock-timeout=1m -parallelism=20 -state="$state" -auto-approve "$plan"; then
+    #    $SCP proxmox_scripts/insert_vlan_pct.sh "root@$PM_HOST:$MY_PATH/"
+    #    $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
+    #fi
 }
 
 function clear() {
     #rm *.tfstate
     #rm *.tfplan
-    $SCP proxmox_scripts/delete_vm.sh root@"$PM_HOST":"$MY_PATH"/
-    $SSH root@"$PM_HOST" "bash $MY_PATH/delete_vm.sh"
+    #$SCP proxmox_scripts/delete_vm.sh "root@$PM_HOST:$MY_PATH/"
+    #$SSH root@"$PM_HOST" "bash $MY_PATH/delete_vm.sh"
+
+    $SCP proxmox_scripts/manage_pct.sh "root@$PM_HOST:$MY_PATH"/
+    $SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh remove_all"
+    #grep "TERRAFORM_STATE_" ./variables.sh | awk -F "=" '{print $NF}' | tr -d '"' | xargs rm -f
+    find . -name "*tfstate*" -exec rm -f {} \;
 }
 
-
 function generate_check_health() {
-    $SCP proxmox_scripts/generate_check_health.sh root@"$PM_HOST":"$MY_PATH"/
+    $SCP proxmox_scripts/generate_check_health.sh "root@$PM_HOST:$MY_PATH/"
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash generate_check_health.sh"
+}
+
+function generate_file_hosts() {
+    $SCP proxmox_scripts/generate_hosts.sh "root@$PM_HOST:$MY_PATH/"
+    $SSH root@"$PM_HOST" "cd $MY_PATH && bash generate_hosts.sh"
 }
 
 function main() {
     check_vmid_duplicates
+    $SCP variables.sh "root@$PM_HOST:$MY_PATH/"
+
     python3 update_variables.py
+    generate_file_hosts
+    generate_check_health
 
     #basic_config_proxmox
 
-    $SCP variables.sh root@"$PM_HOST":"$MY_PATH"/
+    #create_templates
 
     #clear
+    create_containers "lxc/health" "lxc_health.tfplan" "$TERRAFORM_STATE_HEALTH"
+    #create_containers "lxc/ids" "lxc_ids.tfplan" "$TERRAFORM_STATE_IDS"
+    #create_containers "lxc/dmz" "lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
+    #create_containers "lxc/lan" "lxc_lan.tfplan" "$TERRAFORM_STATE_LAN"
 
-    #create_templates
-    #create_containers
-    generate_check_health
+    $SCP proxmox_scripts/manage_pct.sh "root@$PM_HOST:$MY_PATH"/
+    $SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh start_health"
 
+    $SCP proxmox_scripts/insert_vlan_pct.sh "root@$PM_HOST:$MY_PATH/"
+    $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
 }
 
 main "$@"

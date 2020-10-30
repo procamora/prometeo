@@ -12,7 +12,7 @@ apt -y install vim ceph-base ceph-mgr ceph-mon ceph-osd
 
 DEBIAN_FRONTEND=noninteractive apt update -qq </dev/null >/dev/null
 DEBIAN_FRONTEND=noninteractive apt upgrade -y -qq </dev/null >/dev/null
-DEBIAN_FRONTEND=noninteractive apt install -y -qq vim unzip arp-scan atop </dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractive apt install -y -qq vim unzip arp-scan atop jq </dev/null >/dev/null
 
 # Remove suscription message
 sed -i.back "s/data.status !== 'Active'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
@@ -65,4 +65,4 @@ test -f /root/prometeo/apply_basic_config || create_user_pam
 
 touch /root/prometeo/apply_basic_config
 
-rm proxmox_configuration.sh # autoclean
+rm initial_configuration.sh # autoclean

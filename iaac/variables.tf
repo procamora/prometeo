@@ -31,10 +31,28 @@ variable "dump_path" {
   # default = "/var/lib/vz/template"
 }
 
-variable "terraform_state" {
+variable "terraform_state_ids" {
   type = string
-  description = "value set '.myterraform.tfstate' in terraform.tfvars"
-  # default = ".myterraform.tfstate"
+  description = "value set '.myterraform_ids.tfstate' in terraform.tfvars"
+  # default = ".myterraform_ids.tfstate"
+}
+
+variable "terraform_state_lan" {
+  type = string
+  description = "value set '.myterraform_lan.tfstate' in terraform.tfvars"
+  # default = ".myterraform_lan.tfstate"
+}
+
+variable "terraform_state_dmz" {
+  type = string
+  description = "value set '.myterraform_dmz.tfstate' in terraform.tfvars"
+  # default = ".myterraform_dmz.tfstate"
+}
+
+variable "terraform_state_health" {
+  type = string
+  description = "value set '.myterraform_health.tfstate' in terraform.tfvars"
+  # default = ".myterraform_health.tfstate"
 }
 
 variable "pm_host" {
@@ -79,12 +97,6 @@ variable "pm_storage" {
   # default = "local-lvm"
 }
 
-variable "pm_bridge" {
-  type = string
-  description = "value set 'vmbr0' in terraform.tfvars"
-  # default = "vmbr0"
-}
-
 variable "pm_username" {
   type = string
   description = "value set 'root@pam" # system user is "root' in terraform.tfvars"
@@ -113,6 +125,12 @@ variable "pct_centos" {
   type = string
   description = "value set 'centos' in terraform.tfvars"
   # default = "centos"
+}
+
+variable "pm_bridge" {
+  type = string
+  description = "value set 'vmbr0' in terraform.tfvars"
+  # default = "vmbr0"
 }
 
 variable "pct_ethernet" {
@@ -249,8 +267,8 @@ variable "vmid_lab_health" {
 
 variable "ip_lab_health" {
   type = string
-  description = "value set '10.200.0.254' in terraform.tfvars"
-  # default = "10.200.0.254"
+  description = "value set '172.0.0.254' in terraform.tfvars"
+  # default = "172.0.0.254"
 }
 
 variable "vlan_lan" {

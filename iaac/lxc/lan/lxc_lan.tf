@@ -5,7 +5,7 @@ resource "proxmox_lxc" "asterisk-lan" {
   hostname = "asterisk.lan"
   description = "Container with asterisk.lan"
   ostype = var.pct_centos
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -33,7 +33,7 @@ resource "proxmox_lxc" "ldap-lan" {
   hostname = "ldap.lan"
   description = "Container with ldap.lan"
   ostype = var.pct_centos
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -61,7 +61,7 @@ resource "proxmox_lxc" "elk-lan" {
   hostname = "elk.lan"
   description = "Container with elk.lan"
   ostype = var.pct_centos
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -90,7 +90,7 @@ resource "proxmox_lxc" "splunk-lan" {
   hostname = "splunk.lan"
   description = "Container with splunk.lan"
   ostype = var.pct_centos
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -118,7 +118,7 @@ resource "proxmox_lxc" "oauth-lan" {
   hostname = "oauth.lan"
   description = "Container with oauth.lan"
   ostype = var.pct_centos
-  start = true
+  start = false
 
   cores = 1
   memory = 128
@@ -146,7 +146,7 @@ resource "proxmox_lxc" "openid-lan" {
   hostname = "openid.lan"
   description = "Container with openid.lan"
   ostype = var.pct_centos
-  start = true
+  start = false
 
   cores = 1
   memory = 128
