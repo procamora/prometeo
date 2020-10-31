@@ -1,7 +1,6 @@
 # DON'T EDIT, auto-generated file
 
 my_path = "/root/prometeo"
-key = "/home/procamora/documents/prometeo/certificates/openssh/id_rsa"
 ssh = "ssh -i /home/procamora/documents/prometeo/certificates/openssh/id_rsa"
 scp = "scp -i /home/procamora/documents/prometeo/certificates/openssh/id_rsa"
 dump_path = "/var/lib/vz/template"
@@ -22,6 +21,8 @@ pct_alpine = "alpine"
 pct_debian = "debian"
 pct_centos = "centos"
 pm_bridge = "vmbr0"
+pm_bridge_prometeo = "vmbr1"
+pm_bridge_isolation = "vmbr2"
 pct_ethernet = "eth0"
 pct_ip_unicast = "172.16.0.100/32"
 vmid_template_alpine = "4001"

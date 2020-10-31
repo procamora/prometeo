@@ -213,16 +213,19 @@ function qm_create_mikrotik() {
     # if exits ct then remove ct
     remove_qm "$VMID_MK"
 
+    # --net1 -> LAN
+    # --net2 -> DMZ
+    # --net3 -> IDS
     # --net4 -> PC
     # --net5 -> LAB
     qm create "$VMID_MK" \
         --name mikrotik \
         --net0 "virtio,bridge=$PM_BRIDGE,macaddr=$MAC_WAN_MK" \
-        --net1 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_LAN" \
-        --net2 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_DMZ" \
-        --net3 "virtio,bridge=$PM_BRIDGE,tag=$VLAN_IDS" \
-        --net4 "virtio,bridge=$PM_BRIDGE" \
-        --net5 "virtio,bridge=$PM_BRIDGE" \
+        --net1 "virtio,bridge=$PM_BRIDGE_PROMETEO" \
+        --net2 "virtio,bridge=$PM_BRIDGE_PROMETEO" \
+        --net3 "virtio,bridge=$PM_BRIDGE_PROMETEO" \
+        --net4 "virtio,bridge=$PM_BRIDGE_PROMETEO" \
+        --net5 "virtio,bridge=$PM_BRIDGE_ISOLATION" \
         --bootdisk virtio0 \
         --ostype l26 \
         --memory 256 \

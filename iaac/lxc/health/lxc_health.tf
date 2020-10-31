@@ -16,9 +16,8 @@ resource "proxmox_lxc" "health-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
+    bridge = var.pm_bridge_prometeo
     ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
   }
 
   force = true
@@ -47,9 +46,8 @@ resource "proxmox_lxc" "health-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
+    bridge = var.pm_bridge_prometeo
     ip = var.pct_ip_unicast
-    tag = var.vlan_lan
   }
 
   force = true
@@ -78,10 +76,9 @@ resource "proxmox_lxc" "health-pc" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
+    bridge = var.pm_bridge_prometeo
     ip = "${var.ip_pc_health}/${var.mask_pc}"
     gw = var.gateway_pc
-    #  tag = var.vlan_pc
   }
 
   force = true
@@ -110,9 +107,8 @@ resource "proxmox_lxc" "health-ids" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
+    bridge = var.pm_bridge_prometeo
     ip = var.pct_ip_unicast
-    tag = var.vlan_ids
   }
 
   force = true
@@ -141,10 +137,9 @@ resource "proxmox_lxc" "health-lab" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
+    bridge = var.pm_bridge_isolation
     ip = "${var.ip_lab_health}/${var.mask_lab}"
     gw = var.gateway_lab
-    #tag = var.vlan_lab
   }
 
   force = true

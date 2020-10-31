@@ -40,7 +40,7 @@ function foreach_ips() {
     write_file "echo -e \"\${BLUE_COLOUR}[*] run checks:\${RESET_COLOUR}\" \n"
 
     for ip in "${my_ips[@]}"; do
-        name=$(echo "$ip" | awk -F "=" '{print $1}' | awk -F "_" '{print $3}')
+        #name=$(echo "$ip" | awk -F "=" '{print $1}' | awk -F "_" '{print $3}')
         zone=$(echo "$ip" | awk -F "=" '{print $1}' | awk -F "_" '{print $2}')
         addr=$(echo "$ip" | awk -F "=" '{print $2}')
 
@@ -50,3 +50,5 @@ function foreach_ips() {
 }
 
 foreach_ips
+
+rm -f generate_check_health.sh # autoclean

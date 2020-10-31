@@ -15,7 +15,9 @@ function foreach_ips() {
         hosts+="$ip\t$host.$DOMAIN\n"
     done
 
-    echo -e "$hosts"
+    echo -e "$hosts" > hosts
 }
 
 foreach_ips
+
+rm -f generate_hosts.sh #autoclean

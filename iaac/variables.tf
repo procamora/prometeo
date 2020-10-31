@@ -7,12 +7,6 @@ variable "my_path" {
   # default = "/root/prometeo"
 }
 
-variable "key" {
-  type = string
-  description = "value set '/home/procamora/documents/prometeo/certificates/openssh/id_rsa' in terraform.tfvars"
-  # default = "/home/procamora/documents/prometeo/certificates/openssh/id_rsa"
-}
-
 variable "ssh" {
   type = string
   description = "value set 'ssh -i /home/procamora/documents/prometeo/certificates/openssh/id_rsa' in terraform.tfvars"
@@ -131,6 +125,18 @@ variable "pm_bridge" {
   type = string
   description = "value set 'vmbr0' in terraform.tfvars"
   # default = "vmbr0"
+}
+
+variable "pm_bridge_prometeo" {
+  type = string
+  description = "value set 'vmbr1' in terraform.tfvars"
+  # default = "vmbr1"
+}
+
+variable "pm_bridge_isolation" {
+  type = string
+  description = "value set 'vmbr2' in terraform.tfvars"
+  # default = "vmbr2"
 }
 
 variable "pct_ethernet" {

@@ -79,8 +79,8 @@ function create_containers() {
 }
 
 function clear() {
-    #rm *.tfstate
-    #rm *.tfplan
+    #rm -f "*.tfstate"
+    #rm -f "*.tfplan"
     #$SCP proxmox_scripts/delete_vm.sh "root@$PM_HOST:$MY_PATH/"
     #$SSH root@"$PM_HOST" "bash $MY_PATH/delete_vm.sh"
 
@@ -88,6 +88,7 @@ function clear() {
     $SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh remove_all"
     #grep "TERRAFORM_STATE_" ./variables.sh | awk -F "=" '{print $NF}' | tr -d '"' | xargs rm -f
     find . -name "*tfstate*" -exec rm -f {} \;
+    find . -name "*.tfplan" -exec rm -f {} \;
 }
 
 function generate_check_health() {
@@ -110,16 +111,14 @@ function main() {
 
     #basic_config_proxmox
 
-    #create_templates
-
     #clear
+
+    create_templates
+
     create_containers "lxc/health" "lxc_health.tfplan" "$TERRAFORM_STATE_HEALTH"
     #create_containers "lxc/ids" "lxc_ids.tfplan" "$TERRAFORM_STATE_IDS"
     #create_containers "lxc/dmz" "lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
     #create_containers "lxc/lan" "lxc_lan.tfplan" "$TERRAFORM_STATE_LAN"
-
-    $SCP proxmox_scripts/manage_pct.sh "root@$PM_HOST:$MY_PATH"/
-    $SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh start_health"
 
     $SCP proxmox_scripts/insert_vlan_pct.sh "root@$PM_HOST:$MY_PATH/"
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"

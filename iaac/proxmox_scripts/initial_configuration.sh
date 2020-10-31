@@ -6,13 +6,13 @@ source ./variables.sh
 ENTERPRISE="/etc/apt/sources.list.d/pve-enterprise.list"
 test -f $ENTERPRISE && rm -f $ENTERPRISE
 
-apt -y update
-apt list --upgradable
-apt -y install vim ceph-base ceph-mgr ceph-mon ceph-osd
+echo "deb http://download.proxmox.com/debian stretch pve-no-subscription" >/etc/apt/sources.list.d/pve-no-subscription.list
+wget -O- "http://download.proxmox.com/debian/key.asc" | apt-key add -
 
 DEBIAN_FRONTEND=noninteractive apt update -qq </dev/null >/dev/null
-DEBIAN_FRONTEND=noninteractive apt upgrade -y -qq </dev/null >/dev/null
-DEBIAN_FRONTEND=noninteractive apt install -y -qq vim unzip arp-scan atop jq </dev/null >/dev/null
+apt list --upgradable
+DEBIAN_FRONTEND=noninteractive apt dist-upgrade -y -qq </dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractive apt install -y -qq vim unzip arp-scan atop jq axel ceph-base ceph-mgr ceph-mon ceph-osd </dev/null >/dev/null
 
 # Remove suscription message
 sed -i.back "s/data.status !== 'Active'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
@@ -59,10 +59,15 @@ function create_user_pam() {
     (echo -e "${GREEN_COLOUR}system reboot in 5 seconds for apply changes...${RESET_COLOUR}" && sleep 5 && reboot) &# becasue finish script
 }
 
-# unused becouse terraform need user root
-test -f /root/prometeo/apply_basic_config || create_users
-test -f /root/prometeo/apply_basic_config || create_user_pam
+pvesh create /nodes/proxmox/network/ --iface "$PM_BRIDGE_PROMETEO" --type bridge --autostart 1 \
+    --comments "Interface Prometeo" --cidr "10.0.0.0/8" --bridge_vlan_aware 1
+pvesh create /nodes/proxmox/network/ --iface "$PM_BRIDGE_ISOLATION" --type bridge --autostart 1 \
+    --comments "Interface Isolation Labs" --cidr "172.0.0.0/24" --bridge_vlan_aware 1
 
-touch /root/prometeo/apply_basic_config
+# unused becouse terraform need user root
+test -f /root/prometeo/.apply_basic_config || create_users
+test -f /root/prometeo/.apply_basic_config || create_user_pam
+
+touch /root/prometeo/.apply_basic_config
 
 rm initial_configuration.sh # autoclean

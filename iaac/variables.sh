@@ -4,7 +4,8 @@
 
 declare -r MY_PATH="/root/prometeo"
 
-declare -r KEY="$(pwd)/../certificates/openssh/id_rsa"
+KEY="$(pwd)/../certificates/openssh/id_rsa"
+declare -r KEY
 declare -r SSH="ssh -i $KEY"
 declare -r SCP="scp -i $KEY"
 declare -r DUMP_PATH="/var/lib/vz/template"
@@ -32,6 +33,8 @@ declare -r PCT_DEBIAN="debian"
 declare -r PCT_CENTOS="centos"
 
 declare -r PM_BRIDGE="vmbr0"
+declare -r PM_BRIDGE_PROMETEO="vmbr1"
+declare -r PM_BRIDGE_ISOLATION="vmbr2"
 declare -r PCT_ETHERNET="eth0"
 declare -r PCT_IP_UNICAST="172.16.0.100/32"
 
