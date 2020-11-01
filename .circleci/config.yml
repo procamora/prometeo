@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine:stable
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.sh' | wc -l
+            cd iaac/ && find . -type f -name '*.sh' | xargs shellcheck --external-sources && cd -
+  #build-job:
+  #  ...
+
+workflows:
+  version: 2
+  check-build:
+    jobs:
+      - shellcheck
+      - build-job:
+          requires:
+            - shellcheck # only run build-job once shellcheck has run
+          filters:
+            branches:
+              only: master # only run build-job on master branch
+

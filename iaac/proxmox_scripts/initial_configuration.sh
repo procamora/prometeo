@@ -51,7 +51,8 @@ function create_users() {
 
 function create_user_pam() {
     adduser --disabled-password --gecos "" prometeo
-    chsh -s "$(which bash)" prometeo
+    #chsh -s "$(which bash)" prometeo  # SC2230
+    chsh -s "$(command -v bash)" prometeo
     echo "prometeo:$PM_PASSWORD" | chpasswd
     usermod -a -G root prometeo
     grep -E "^prometeo" /etc/sudoers -q || echo "prometeo    ALL=(ALL:ALL) ALL" >>/etc/sudoers
