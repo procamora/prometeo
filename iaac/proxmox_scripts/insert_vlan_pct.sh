@@ -125,4 +125,5 @@ function foreach_vmids() {
 
 foreach_vmids
 
-rm insert_vlan_pct.sh # autoclean
+rm -f insert_vlan_pct.sh # autoclean
+rm -f configure_vlan.sh

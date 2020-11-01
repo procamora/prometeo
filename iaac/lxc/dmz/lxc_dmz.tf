@@ -13,8 +13,9 @@ resource "proxmox_lxc" "mariadb-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_mariadb}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -41,8 +42,9 @@ resource "proxmox_lxc" "mongo-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_mongo}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -69,8 +71,9 @@ resource "proxmox_lxc" "vsftpd-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_vsftpd}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -97,8 +100,9 @@ resource "proxmox_lxc" "dojo-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_dojo}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -125,8 +129,9 @@ resource "proxmox_lxc" "apache-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_apache}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -153,8 +158,9 @@ resource "proxmox_lxc" "nagios-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_nagios}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -181,8 +187,9 @@ resource "proxmox_lxc" "muna-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_muna}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -209,8 +216,9 @@ resource "proxmox_lxc" "owncloud-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_owncloud}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -237,8 +245,9 @@ resource "proxmox_lxc" "joomla-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_joomla}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -265,8 +274,9 @@ resource "proxmox_lxc" "prestashop-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_prestashop}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -293,8 +303,9 @@ resource "proxmox_lxc" "drupal-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_drupal}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -321,8 +332,9 @@ resource "proxmox_lxc" "wordpress-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_wordpress}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -349,8 +361,9 @@ resource "proxmox_lxc" "radius-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_radius}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -377,8 +390,9 @@ resource "proxmox_lxc" "dns-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_dns}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -405,8 +419,9 @@ resource "proxmox_lxc" "honeypot-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_honeypot}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 
@@ -433,8 +448,9 @@ resource "proxmox_lxc" "mail-dmz" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_dmz_mail}/${var.mask_dmz}"
+    gw = var.gateway_dmz
     tag = var.vlan_dmz
   }
 

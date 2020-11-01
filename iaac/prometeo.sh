@@ -32,6 +32,7 @@ function basic_config_proxmox() {
     # Instalacion de la confiugracion basica en Proxmox
     $SSH root@"$PM_HOST" "mkdir -p $MY_PATH/"
     $SCP proxmox_scripts/initial_configuration.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP proxmox_scripts/manage_pct.sh "root@$PM_HOST:$MY_PATH"/
     $SCP "$KEY" "root@$PM_HOST:$MY_PATH/"
     $SCP "$KEY.pub" "root@$PM_HOST:$MY_PATH/"
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash initial_configuration.sh"
@@ -113,15 +114,17 @@ function main() {
 
     #clear
 
-    create_templates
+    #create_templates
 
-    create_containers "lxc/health" "lxc_health.tfplan" "$TERRAFORM_STATE_HEALTH"
+    #create_containers "lxc/health" "lxc_health.tfplan" "$TERRAFORM_STATE_HEALTH"
+    #$SCP proxmox_scripts/insert_vlan_pct.sh "root@$PM_HOST:$MY_PATH/"
+    #$SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
+
     #create_containers "lxc/ids" "lxc_ids.tfplan" "$TERRAFORM_STATE_IDS"
-    #create_containers "lxc/dmz" "lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
     #create_containers "lxc/lan" "lxc_lan.tfplan" "$TERRAFORM_STATE_LAN"
+    #create_containers "lxc/dmz" "lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
 
-    $SCP proxmox_scripts/insert_vlan_pct.sh "root@$PM_HOST:$MY_PATH/"
-    $SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
+    $SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh start_all"
 }
 
 main "$@"

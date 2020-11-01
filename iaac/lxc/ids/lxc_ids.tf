@@ -16,8 +16,9 @@ resource "proxmox_lxc" "suricata-ids" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_ids_suricata}/${var.mask_ids}"
+    gw = var.gateway_ids
     tag = var.vlan_ids
   }
 

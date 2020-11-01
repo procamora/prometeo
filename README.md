@@ -37,7 +37,7 @@ vsftp tener varios usuarios y cada uno con ciertos datos
 ## Exportar imagen de mikrotik previamente configurada
 
 ```bash
-qemu-img convert -O qcow2 /dev/pve/vm-601-disk-0 /root/test.qcow2
+qemu-img convert -O qcow2 /dev/pve/vm-111-disk-0 /root/prometeo/mikrotik.qcow2
 ```
 
 
@@ -65,6 +65,11 @@ variable "pm_ct_password" {\n  default = "password"\n}
 variable "pm_ct_password" {\n  default = "PRUEBA"\n}
 
 
+
+
+axel -n 10 -o /backup/template/iso/ http://reervidor_64bits_16_latest.iso
+pvesh get /nodes/proxmox/lxc
+pvesh get /nodes/proxmox/qemu
 
 ```
 

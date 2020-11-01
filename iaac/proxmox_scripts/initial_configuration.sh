@@ -3,6 +3,7 @@
 source ./variables.sh
 
 #set -x
+
 ENTERPRISE="/etc/apt/sources.list.d/pve-enterprise.list"
 test -f $ENTERPRISE && rm -f $ENTERPRISE
 

@@ -13,9 +13,10 @@ resource "proxmox_lxc" "asterisk-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_asterisk}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
   }
 
   onboot = false
@@ -41,9 +42,10 @@ resource "proxmox_lxc" "ldap-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_ldap}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
   }
 
   onboot = false
@@ -69,9 +71,10 @@ resource "proxmox_lxc" "elk-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_elk}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
   }
 
   onboot = false
@@ -98,9 +101,10 @@ resource "proxmox_lxc" "splunk-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_splunk}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
   }
 
   onboot = false
@@ -126,9 +130,10 @@ resource "proxmox_lxc" "oauth-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_oauth}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
   }
 
   onboot = false
@@ -154,9 +159,10 @@ resource "proxmox_lxc" "openid-lan" {
 
   network {
     name = var.pct_ethernet
-    bridge = var.pm_bridge
-    ip = var.pct_ip_unicast
-    tag = var.vlan_dmz
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_openid}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
   }
 
   onboot = false
