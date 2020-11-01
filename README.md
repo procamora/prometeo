@@ -1,4 +1,13 @@
-# prometeo
+
+[![CircleCI](https://circleci.com/gh/procamora/prometeo/tree/master.svg?style=shield)](https://circleci.com/gh/procamora/prometeo/tree/master)
+![Lint Code Base](https://github.com/procamora/prometeo/workflows/Lint%20Code%20Base/badge.svg)
+[![license](https://img.shields.io/github/license/procamora/prometeo.svg?style=flat-square)](https://github.com/procamora/prometeo/blob/master/license.md)
+![Maintenance](https://img.shields.io/maintenance/yes/2020.svg?style=flat-square)
+[![GitHub last commit](https://img.shields.io/github/last-commit/procamora/prometeo.svg?style=flat-square)](https://github.com/procamora/prometeo/commit/master)
+
+
+
+# prometeo (WIP)
 
 - [ ] REVISAR LAS CLAVES SSH USADAS y la ubicacion de las mismas
 - [ ] Meter claves ssh en templates
@@ -84,6 +93,31 @@ ip route add 10.10.0.0/24 via 192.168.1.253
 
 
 ip route add 10.0.0.0/8 via 192.168.1.253
+ip route add 172.0.0.0/24 via 192.168.1.253
 
 
+iptables -A INPUT -i vmbr1 -o vmbr0 -j DROP
 ```
+
+
+
+post-up ip route add 10.0.0.0/8 via 192.168.1.253
+post-up ip route add 172.0.0.0/24 via 192.168.1.253
+
+
+
+auto vmbr1
+iface vmbr1 inet static
+        address 10.0.0.0/8
+        bridge-ports vmbr0
+        bridge-stp off
+        bridge-fd 0
+#Interface Prometeo
+
+auto vmbr2
+iface vmbr2 inet static
+        address 172.0.0.0/24
+        bridge-ports vmbr1
+        bridge-stp off
+        bridge-fd 0
+#Interface Isolation Labs

@@ -1,7 +1,10 @@
 .idea/
-*.tfplan
 *tfstate
 *.backup
+*.tfplan
+*.tfstate
+
+iaac/.terraform/
 
 iaac/lxc/**/provider.tf
 iaac/lxc/**/variables.tf
@@ -136,10 +139,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-*.tfstate
-
-terraform/lxc\.back/\.terraform/plugins/linux_amd64/lock\.json
-
-terraform/terraform\.tfstate\.backup
-
-terraform/\.terraform/plugins/linux_amd64/
