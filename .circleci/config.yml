@@ -1,4 +1,4 @@
-version: 2
+version: 2  # https://circleci.com/docs/2.0/adv-config/
 jobs:
   shellcheck:
     docker:
@@ -10,7 +10,6 @@ jobs:
           command: |
             find . -type f -name '*.sh' | wc -l
             cd iaac/ && find . -type f -name '*.sh' -exec shellcheck --external-sources {} \; && cd -
-            # cd iaac/ && find . -type f -name '*.sh' | xargs shellcheck --external-sources && cd -
 
 
 workflows:
