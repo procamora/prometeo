@@ -15,7 +15,8 @@ jobs:
 
 workflows:
   version: 2
-  check-build:
+  #check-build:
+  build_and_test
     jobs:
       - shellcheck
       - build-job:
