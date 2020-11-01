@@ -9,20 +9,18 @@ jobs:
           name: Check Scripts
           command: |
             find . -type f -name '*.sh' | wc -l
-            cd iaac/ && find . -type f -name '*.sh' | xargs shellcheck --external-sources && cd -
-  #build-job:
-  #  ...
+            cd iaac/ && find . -type f -name '*.sh' -exec shellcheck --external-sources {} \; && cd -
+            # cd iaac/ && find . -type f -name '*.sh' | xargs shellcheck --external-sources && cd -
+
 
 workflows:
   version: 2
-  #check-build:
-  build_and_test
+  check-build:
     jobs:
-      - shellcheck
-      - build-job:
-          requires:
-            - shellcheck # only run build-job once shellcheck has run
+      - shellcheck:
           filters:
-            branches:
-              only: master # only run build-job on master branch
-
+            branches: # only run shellcheck on branchs
+              only:
+                - main
+                - master
+                - dev
