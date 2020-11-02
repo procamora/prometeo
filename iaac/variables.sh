@@ -6,7 +6,7 @@
 set -o nounset
 
 # Exit script if a statement returns a non-true return value.
-set -o errexit
+#set -o errexit
 
 # Use the error status of the first failure, rather than that of the last item in a pipeline.
 set -o pipefail
@@ -21,10 +21,10 @@ declare -r DUMP_PATH="/var/lib/vz/template"
 
 declare -r TIME_SLEEP=10 # pause afer run machine in seconds
 
-declare -r TERRAFORM_STATE_IDS=".myterraform_ids.tfstate"
-declare -r TERRAFORM_STATE_LAN=".myterraform_lan.tfstate"
-declare -r TERRAFORM_STATE_DMZ=".myterraform_dmz.tfstate"
-declare -r TERRAFORM_STATE_HEALTH=".myterraform_health.tfstate"
+declare -r TERRAFORM_STATE_IDS="tf/.myterraform_ids.tfstate"
+declare -r TERRAFORM_STATE_LAN="tf/.myterraform_lan.tfstate"
+declare -r TERRAFORM_STATE_DMZ="tf/.myterraform_dmz.tfstate"
+declare -r TERRAFORM_STATE_HEALTH="tf/.myterraform_health.tfstate"
 #############################################################################################
 
 declare -r PM_HOST="192.168.1.254"
@@ -64,7 +64,6 @@ declare -r VMID_TEMPLATE_HEALTH="4004"
 declare -r TEMPLATE_HEALTH_NAME="health.tar.gz"
 
 # VMID EXPECIAL SERVER
-declare -r VMID_ANSIBLE="110"
 declare -r VMID_MK="111"
 declare -r MAC_WAN_MK="4C:5E:0C:BB:8A:01"
 
@@ -102,6 +101,9 @@ declare -r VMID_LAN_OPENID="327"
 declare -r IP_LAN_OPENID="10.10.0.27"
 declare -r VMID_LAN_SQLSERVER="328"
 declare -r IP_LAN_SQLSERVER="10.10.0.28"
+declare -r VMID_LAN_ANSIBLE="329"
+declare -r IP_LAN_ANSIBLE="10.10.0.29"
+
 
 # VMID LAN PCS
 declare -r VLAN_PC="1"

@@ -1,13 +1,17 @@
 #!/bin/bash
 
-dnf upgrade -yq && dnf install -y vim gcc make git sudo
+dnf upgrade -yq && dnf install -y vim gcc make git sudo python3 python3-pip python3-argcomplete bash-completion tar openssh-server
 
 #modprobe 8021q
 #grep "8021q" /etc/modules || echo "8021q" >> /etc/modules
 
 echo '# disable ipv6
 net.ipv6.conf.all.disable_ipv6 = 1
-net.ipv6.conf.default.disable_ipv6 = 1' >> /etc/sysctl.conf
+net.ipv6.conf.default.disable_ipv6 = 1' >>/etc/sysctl.conf
+
+sudo activate-global-python-argcomplete3
+
+ssh-keygen -A
 
 #systemctl stop NetworkManager
 #systemctl disable NetworkManager

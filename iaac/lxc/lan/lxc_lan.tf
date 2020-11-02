@@ -87,7 +87,6 @@ resource "proxmox_lxc" "elk-lan" {
 }
 
 
-
 resource "proxmox_lxc" "splunk-lan" {
   vmid = var.vmid_lan_splunk
   hostname = "splunk.lan"
@@ -161,6 +160,35 @@ resource "proxmox_lxc" "openid-lan" {
     name = var.pct_ethernet
     bridge = var.pm_bridge_prometeo
     ip = "${var.ip_lan_openid}/${var.mask_lan}"
+    gw = var.gateway_lan
+    tag = var.vlan_lan
+  }
+
+  onboot = false
+  password = var.pm_password
+  pool = var.pm_pool
+  storage = var.pm_storage
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
+  target_node = var.pm_node
+  unprivileged = true
+}
+
+
+resource "proxmox_lxc" "ansible-lan" {
+  vmid = var.vmid_lan_ansible
+  hostname = "ansible.lan"
+  description = "Container with ansible.lan"
+  ostype = var.pct_centos
+  start = false
+
+  cores = 1
+  memory = 128
+  swap = 128
+
+  network {
+    name = var.pct_ethernet
+    bridge = var.pm_bridge_prometeo
+    ip = "${var.ip_lan_ansible}/${var.mask_lan}"
     gw = var.gateway_lan
     tag = var.vlan_lan
   }

@@ -27,26 +27,26 @@ variable "dump_path" {
 
 variable "terraform_state_ids" {
   type = string
-  description = "value set '.myterraform_ids.tfstate' in terraform.tfvars"
-  # default = ".myterraform_ids.tfstate"
+  description = "value set 'tf/.myterraform_ids.tfstate' in terraform.tfvars"
+  # default = "tf/.myterraform_ids.tfstate"
 }
 
 variable "terraform_state_lan" {
   type = string
-  description = "value set '.myterraform_lan.tfstate' in terraform.tfvars"
-  # default = ".myterraform_lan.tfstate"
+  description = "value set 'tf/.myterraform_lan.tfstate' in terraform.tfvars"
+  # default = "tf/.myterraform_lan.tfstate"
 }
 
 variable "terraform_state_dmz" {
   type = string
-  description = "value set '.myterraform_dmz.tfstate' in terraform.tfvars"
-  # default = ".myterraform_dmz.tfstate"
+  description = "value set 'tf/.myterraform_dmz.tfstate' in terraform.tfvars"
+  # default = "tf/.myterraform_dmz.tfstate"
 }
 
 variable "terraform_state_health" {
   type = string
-  description = "value set '.myterraform_health.tfstate' in terraform.tfvars"
-  # default = ".myterraform_health.tfstate"
+  description = "value set 'tf/.myterraform_health.tfstate' in terraform.tfvars"
+  # default = "tf/.myterraform_health.tfstate"
 }
 
 variable "pm_host" {
@@ -197,12 +197,6 @@ variable "template_health_name" {
   type = string
   description = "value set 'health.tar.gz' in terraform.tfvars"
   # default = "health.tar.gz"
-}
-
-variable "vmid_ansible" {
-  type = string
-  description = "value set '110' in terraform.tfvars"
-  # default = "110"
 }
 
 variable "vmid_mk" {
@@ -395,6 +389,18 @@ variable "ip_lan_sqlserver" {
   type = string
   description = "value set '10.10.0.28' in terraform.tfvars"
   # default = "10.10.0.28"
+}
+
+variable "vmid_lan_ansible" {
+  type = string
+  description = "value set '329' in terraform.tfvars"
+  # default = "329"
+}
+
+variable "ip_lan_ansible" {
+  type = string
+  description = "value set '10.10.0.29' in terraform.tfvars"
+  # default = "10.10.0.29"
 }
 
 variable "vlan_pc" {

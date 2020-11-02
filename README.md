@@ -12,6 +12,7 @@
 - [ ] REVISAR LAS CLAVES SSH USADAS y la ubicacion de las mismas
 - [ ] Meter claves ssh en templates
 - [ ] Establecer el tamaño de los disco para los pct
+- [ ] ansible  poner roles en los playboo
 
 
 
@@ -121,3 +122,28 @@ iface vmbr2 inet static
         bridge-stp off
         bridge-fd 0
 #Interface Isolation Labs
+
+
+
+
+
+
+# ansible
+
+
+```bash
+# copiar fichero
+ansible host* -m copy -a "src=archivo dest=/tmp"
+
+# cambiar permisos
+ansible host* -m file -a "path=/etc/conf/archivo.conf mode=644"
+ansible host* -m file -a "path=/etc/conf/archivo.conf owner=atareao group=atareao"
+
+# crear directorio
+ansible host* -m file -a "path=/ruta/a/directorio state=directory mode=755 owner=atareao"
+
+ansible -i inventory.yml dmz --become -m apt -a "update_cache=yes force_apt_get=yes cache_valid_time=3600"
+
+
+
+```

@@ -102,6 +102,16 @@ function generate_file_hosts() {
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash generate_hosts.sh"
 }
 
+function setup_ansible() {
+    tar cvf ansible.tar ../ansible/
+    $SCP ansible.tar "root@$PM_HOST:$MY_PATH/"
+    rm -f ansible.tar
+
+    $SCP proxmox_scripts/manage_ansible.sh "root@$PM_HOST:$MY_PATH/"
+    $SCP templates/ansible.sh "root@$PM_HOST:$MY_PATH/"
+    $SSH root@"$PM_HOST" "cd $MY_PATH && bash manage_ansible.sh all"
+}
+
 function main() {
     check_vmid_duplicates
     $SCP variables.sh "root@$PM_HOST:$MY_PATH/"
@@ -116,15 +126,16 @@ function main() {
 
     #create_templates
 
-    #create_containers "lxc/health" "lxc_health.tfplan" "$TERRAFORM_STATE_HEALTH"
+    #create_containers "lxc/health" "tf/lxc_health.tfplan" "$TERRAFORM_STATE_HEALTH"
     #$SCP proxmox_scripts/insert_vlan_pct.sh "root@$PM_HOST:$MY_PATH/"
     #$SSH root@"$PM_HOST" "cd $MY_PATH && bash insert_vlan_pct.sh"
 
-    #create_containers "lxc/ids" "lxc_ids.tfplan" "$TERRAFORM_STATE_IDS"
-    #create_containers "lxc/lan" "lxc_lan.tfplan" "$TERRAFORM_STATE_LAN"
-    #create_containers "lxc/dmz" "lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
+    #create_containers "lxc/ids" "tf/lxc_ids.tfplan" "$TERRAFORM_STATE_IDS"
+    #create_containers "lxc/lan" "tf/lxc_lan.tfplan" "$TERRAFORM_STATE_LAN"
+    #create_containers "lxc/dmz" "tf/lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
 
-    $SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh start_all"
+    #$SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh start_all"
+    setup_ansible
 }
 
 main "$@"

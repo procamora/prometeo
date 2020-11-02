@@ -1,0 +1,28 @@
+---
+- name: update web servers
+  hosts: apache.prometeo.com
+  remote_user: root
+
+  tasks:
+    - name: hacer un ping
+        ping:
+
+    # install packages
+    - name: General | Install required packages.
+      action: apt pkg={{ item }} state=installed
+      with_items:
+        - apache2
+        - php
+        - default-mysql-client
+        - php-mysql
+        - php-xmlrpc
+        - php-soap
+        - php-gd
+        - unzip
+        - python-mysqldb
+
+    - name: Apache2 | enable modules
+      action: command a2enmod rewrite vhosts_alias
+
+    - name: Restart Apache
+      action: service name=apache2 state=restarted

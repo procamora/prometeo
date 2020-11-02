@@ -78,7 +78,8 @@ function ct_create_template_alpine() {
     pct start "$VMID_TEMPLATE_ALPINE"
     sleep "$TIME_SLEEP"
 
-    pct push "$VMID_TEMPLATE_ALPINE" /root/.ssh/id_rsa /root/id_rsa
+    pct push "$VMID_TEMPLATE_ALPINE" "$MY_PATH/hosts" /etc/hosts
+    #pct push "$VMID_TEMPLATE_ALPINE" /root/.ssh/id_rsa /root/id_rsa
     pct push "$VMID_TEMPLATE_ALPINE" /root/.ssh/id_rsa.pub /root/id_rsa.pub
     pct push "$VMID_TEMPLATE_ALPINE" "$MY_PATH/alpine.sh" /root/alpine.sh
     echo 'sh /root/alpine.sh' | pct enter "$VMID_TEMPLATE_ALPINE"
@@ -113,7 +114,8 @@ function ct_create_template_centos() {
     pct start "$VMID_TEMPLATE_CENTOS"
     sleep "$TIME_SLEEP"
 
-    pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa /root/id_rsa
+    pct push "$VMID_TEMPLATE_CENTOS" "$MY_PATH/hosts" /etc/hosts
+    #pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa /root/id_rsa
     pct push "$VMID_TEMPLATE_CENTOS" /root/.ssh/id_rsa.pub /root/id_rsa.pub
     pct push "$VMID_TEMPLATE_CENTOS" "$MY_PATH/centos.sh" /root/centos.sh
     echo 'sh /root/centos.sh' | pct enter "$VMID_TEMPLATE_CENTOS"
@@ -151,7 +153,8 @@ function ct_create_template_debian() {
     pct start "$VMID_TEMPLATE_DEBIAN" || echo -e "${RED_COLOUR}fail start $VMID_TEMPLATE_DEBIAN${RESET_COLOUR}"
     sleep "$TIME_SLEEP"
 
-    pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa /root/id_rsa
+    pct push "$VMID_TEMPLATE_DEBIAN" "$MY_PATH/hosts" /etc/hosts
+    #pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa /root/id_rsa
     pct push "$VMID_TEMPLATE_DEBIAN" /root/.ssh/id_rsa.pub /root/id_rsa.pub
     pct push "$VMID_TEMPLATE_DEBIAN" "$MY_PATH/debian.sh" /root/debian.sh
     echo 'sh /root/debian.sh' | pct enter "$VMID_TEMPLATE_DEBIAN"
@@ -186,24 +189,24 @@ function ct_create_template_health() {
     dump_and_rename "$VMID_TEMPLATE_HEALTH" "$TEMPLATE_HEALTH_NAME"
 }
 
-function ct_create_ansible() {
-    echo -e "${BLUE_COLOUR}ct_create_ansible${RESET_COLOUR}"
+#function ct_create_ansible() {
+#    echo -e "${BLUE_COLOUR}ct_create_ansible${RESET_COLOUR}"
 
-    # if exits ct then remove ct
-    remove_pct "$VMID_ANSIBLE"
+# if exits ct then remove ct
+#    remove_pct "$VMID_ANSIBLE"
 
-    pct clone "$VMID_TEMPLATE_DEBIAN" "$VMID_ANSIBLE" \
-        --description "Ansible Container Template" \
-        --hostname "ansible" \
-        --pool "$PM_POOL"
-    # --storage $PM_STORAGE \
+#   pct clone "$VMID_TEMPLATE_DEBIAN" "$VMID_ANSIBLE" \
+#      --description "Ansible Container Template" \
+#      --hostname "ansible" \
+#      --pool "$PM_POOL"
+#     --storage $PM_STORAGE \
 
-    pct start "$VMID_ANSIBLE"
-    sleep "$TIME_SLEEP"
+#  pct start "$VMID_ANSIBLE"
+#  sleep "$TIME_SLEEP"
 
-    pct push "$VMID_ANSIBLE" "$MY_PATH/ansible.sh" /root/ansible.sh
-    echo 'sh /root/ansible.sh' | pct enter "$VMID_ANSIBLE"
-}
+# pct push "$VMID_ANSIBLE" "$MY_PATH/ansible.sh" /root/ansible.sh
+# echo 'sh /root/ansible.sh' | pct enter "$VMID_ANSIBLE"
+#}
 
 function qm_create_mikrotik() {
     # https://mikrotik.com/download
@@ -247,7 +250,7 @@ ct_create_template_alpine
 ct_create_template_centos
 ct_create_template_debian
 ct_create_template_health
-ct_create_ansible
+#ct_create_ansible
 qm_create_mikrotik
 
 # autoclean
