@@ -22,7 +22,7 @@ jobs:
           name: Run YamlLint
           command: |
             export PATH=/home/circleci/.local/bin:$PATH
-            wget https://gist.githubusercontent.com/procamora/a8e68a2067003994581562e35e364ade/raw/c4f53ef856682240970ade4193d9c88654ff8007/my_relased.yml
+            wget https://gist.githubusercontent.com/procamora/a8e68a2067003994581562e35e364ade/raw/616e78cc0a242e2f551414c8b80af161cf608e51/my_relased.yml
             yamllint -c my_relased.yml . > output
             cat output
             grep -q "error" output &&  echo "detect error" && exit 1
