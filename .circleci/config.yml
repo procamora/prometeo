@@ -10,13 +10,29 @@ jobs:
           command: |
             find . -type f -name '*.sh' | wc -l
             cd iaac/ && find . -type f -name '*.sh' -exec shellcheck --external-sources {} \; && cd -
-
+  yamllint:
+    docker:
+      - image: sdesbure/yamllint:stable
+    steps:
+      - checkout
+      - run:
+          name: Check Scripts
+          command: |
+            find . -type f -name '*.yml' | wc -l
+            find . -type f -name '*.yml' -exec yamllint {} \;
 
 workflows:
   version: 2
   check-build:
     jobs:
       - shellcheck:
+          filters:
+            branches: # only run shellcheck on branchs
+              only:
+                - main
+                - master
+                - dev
+      - yamllint:
           filters:
             branches: # only run shellcheck on branchs
               only:

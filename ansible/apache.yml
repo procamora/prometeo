@@ -5,7 +5,7 @@
 
   tasks:
     - name: hacer un ping
-        ping:
+        ping
 
     # install packages
     - name: General | Install required packages.
