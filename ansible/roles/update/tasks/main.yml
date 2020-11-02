@@ -1,0 +1,14 @@
+---
+# Playbook dnf update
+
+- name: Update system with dnf
+  dnf:
+    update_cache: yes
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Update cache with apt
+  apt:
+    update_cache: yes
+  when:
+    - ansible_facts.os_family == "Debian"
+
