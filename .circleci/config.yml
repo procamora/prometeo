@@ -26,7 +26,7 @@ jobs:
             /raw/616e78cc0a242e2f551414c8b80af161cf608e51/my_relased.yml
             yamllint -c my_relased.yml . > output
             cat output
-            grep -q "error" output &&  echo "detect error" && exit 1
+            grep -q "error" output && (echo "detect error" && exit 1) || exit 0
 workflows:
   version: 2
   check-build:
