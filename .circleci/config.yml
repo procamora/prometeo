@@ -22,7 +22,8 @@ jobs:
           name: Run YamlLint
           command: |
             export PATH=/home/circleci/.local/bin:$PATH
-            yamllint -d relaxed . > output
+            wget https://gist.githubusercontent.com/procamora/a8e68a2067003994581562e35e364ade/raw/c4f53ef856682240970ade4193d9c88654ff8007/my_relased.yml
+            yamllint -c my_relased.yml . > output
             cat output
             grep -q "error" output &&  echo "detect error" && exit 1
 workflows:
