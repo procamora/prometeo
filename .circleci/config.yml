@@ -23,9 +23,9 @@ jobs:
           command: |
             export PATH=/home/circleci/.local/bin:$PATH
             yamllint -d relaxed . > out
-            grep -q "error" out && exit 1
-            find . -type f -name '*.yml' | wc -l
-            find . -type f -name '*.yml' -exec yamllint {} \;
+            grep -q "error" out &&  echo "detect error" && exit 1
+            #find . -type f -name '*.yml' | wc -l
+            #find . -type f -name '*.yml' -exec yamllint {} \;
 workflows:
   version: 2
   check-build:
