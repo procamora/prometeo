@@ -12,7 +12,7 @@ jobs:
             cd iaac/ && find . -type f -name '*.sh' -exec shellcheck --external-sources {} \; && cd -
   yamllint:
     docker:
-      - image: sdesbure/yamllint:stable
+      - image: cytopia/yamllint:stable
     steps:
       - checkout
       - run:
