@@ -12,15 +12,19 @@ jobs:
             cd iaac/ && find . -type f -name '*.sh' -exec shellcheck --external-sources {} \; && cd -
   yamllint:
     docker:
-      - image: cytopia/yamllint:stable
+      - image: circleci/python:3.8
     steps:
       - checkout
       - run:
-          name: Check Scripts
+          name: Install YamlLint
+          command: pip install --user yamllint
+      - run:
+          name: Run YamlLint
           command: |
+            export PATH=/home/circleci/.local/bin:$PATH
+            # yamllint -d relaxed .
             find . -type f -name '*.yml' | wc -l
             find . -type f -name '*.yml' -exec yamllint {} \;
-
 workflows:
   version: 2
   check-build:
