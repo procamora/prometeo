@@ -22,10 +22,9 @@ jobs:
           name: Run YamlLint
           command: |
             export PATH=/home/circleci/.local/bin:$PATH
-            yamllint -d relaxed . > out
-            grep -q "error" out &&  echo "detect error" && exit 1
-            #find . -type f -name '*.yml' | wc -l
-            #find . -type f -name '*.yml' -exec yamllint {} \;
+            yamllint -d relaxed . > output
+            cat output
+            grep -q "error" output &&  echo "detect error" && exit 1
 workflows:
   version: 2
   check-build:
