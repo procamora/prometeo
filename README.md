@@ -6,6 +6,8 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/procamora/prometeo.svg?style=flat-square)](https://github.com/procamora/prometeo/commit/master)
 
 
+Articulo donde se va a explicar el proceso: https://www.procamora.com/2020/09/escenario_para_pentesting_i_introduccion/
+
 
 # prometeo (WIP)
 
@@ -13,6 +15,7 @@
 - [ ] Meter claves ssh en templates
 - [ ] Establecer el tamaño de los disco para los pct
 - [ ] ansible  poner roles en los playboo
+
 
 
 
