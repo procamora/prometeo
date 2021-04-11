@@ -51,14 +51,14 @@ variable "terraform_state_health" {
 
 variable "pm_host" {
   type = string
-  description = "value set '192.168.1.254' in terraform.tfvars"
-  # default = "192.168.1.254"
+  description = "value set '192.168.1.200' in terraform.tfvars"
+  # default = "192.168.1.200"
 }
 
 variable "pm_api_url" {
   type = string
-  description = "value set 'https://192.168.1.254:8006/api2/json' in terraform.tfvars"
-  # default = "https://192.168.1.254:8006/api2/json"
+  description = "value set 'https://192.168.1.200:8006/api2/json' in terraform.tfvars"
+  # default = "https://192.168.1.200:8006/api2/json"
 }
 
 variable "pm_cname" {
@@ -69,8 +69,8 @@ variable "pm_cname" {
 
 variable "pm_node" {
   type = string
-  description = "value set 'proxmox' in terraform.tfvars"
-  # default = "proxmox"
+  description = "value set 'xx1' in terraform.tfvars"
+  # default = "xx1"
 }
 
 variable "pm_pool" {
@@ -91,13 +91,19 @@ variable "pm_storage" {
   # default = "local-lvm"
 }
 
-variable "pm_username" {
+variable "pve_username" {
   type = string
-  description = "value set 'root@pam" # system user is "root' in terraform.tfvars"
-  # default = "root@pam" # system user is "root"
+  description = "value set 'prometeo@pve' in terraform.tfvars"
+  # default = "prometeo@pve"
 }
 
 variable "pm_password" {
+  type = string
+  description = "value set 'password' in terraform.tfvars"
+  # default = "password"
+}
+
+variable "pct_password" {
   type = string
   description = "value set 'password' in terraform.tfvars"
   # default = "password"

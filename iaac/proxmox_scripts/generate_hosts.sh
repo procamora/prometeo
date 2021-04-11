@@ -9,8 +9,8 @@ mapfile -t my_ips < <(grep -E "^declare -r IP_" ./variables.sh | awk -F " " '{pr
 mapfile -t my_gw < <(grep -E "^declare -r GATEWAY_" ./variables.sh | awk -F " " '{print $3}' | tr -d '"') # array ips
 
 function generate_inventary() {
-    inventory="# DON'T EDIT, auto-generated file\n"
-    inventory_yml="# DON'T EDIT, auto-generated file\n"
+    inventory="# DON'T EDIT, auto-generated file\n# $(date)\n"
+    inventory_yml="# DON'T EDIT, auto-generated file\n# $(date)\n"
 
     array_groups=("dmz" "lan" "pc")
     for ((i = 0; i < ${#array_groups[@]}; ++i)); do
@@ -68,7 +68,7 @@ function generate_inventary() {
 }
 
 function foreach_ips() {
-    hosts="# DON'T EDIT, auto-generated file\n127.0.0.1\tlocalhost localhost.localdomain localhost4 localhost4.localdomain4\n"
+    hosts="# DON'T EDIT, auto-generated file\n# $(date)\n127.0.0.1\tlocalhost localhost.localdomain localhost4 localhost4.localdomain4\n"
     hosts+="::1\t\tlocalhost localhost.localdomain localhost6 localhost6.localdomain6\n\n"
 
     # mikrotik

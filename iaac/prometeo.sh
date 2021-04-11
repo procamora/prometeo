@@ -1,9 +1,21 @@
 #!/bin/bash
 
+#export TF_VAR_username=root@pam
+#export TF_VAR_password=TOPSECRET
+msg="Environment variables need to be defined with proxmox credentials for terraform:\n
+ export TF_VAR_username=root@pam\n export TF_VAR_password=TOPSECRET\n"
+if [ "$(env | grep -c "TF_VAR")" == "2" ]; then
+  echo "Environment variables OK"
+else
+  echo -e "$msg" && exit 2
+fi
+
 # set variables
+test -f ./variables.sh || (echo "no file variables.sh" && exit 2)
 source ./variables.sh
 
 find . -name "*.sh" -exec chmod u+x {} \;
+chmod 600 "$KEY"
 
 # check vmid duplicates in file variables.sh
 function check_vmid_duplicates() {
@@ -47,7 +59,7 @@ function create_templates() {
     $SCP templates/centos.sh "root@$PM_HOST:$MY_PATH/"
     $SCP templates/debian.sh "root@$PM_HOST:$MY_PATH/"
     $SCP templates/health.sh "root@$PM_HOST:$MY_PATH/"
-    #$SCP mk/mikrotik.qcow2 "root@$PM_HOST:$MY_PATH/"  # FIXME remove comment
+    $SCP mk/mikrotik.qcow2 "root@$PM_HOST:$MY_PATH/"  # FIXME remove comment
     $SSH root@"$PM_HOST" "cd $MY_PATH && bash generate_templates.sh"
 }
 
@@ -114,13 +126,13 @@ function setup_ansible() {
 
 function main() {
     check_vmid_duplicates
-    $SCP variables.sh "root@$PM_HOST:$MY_PATH/"
-
     python3 update_variables.py
+
+    $SCP variables.sh "root@$PM_HOST:$MY_PATH/"
+    #basic_config_proxmox
+
     generate_file_hosts
     generate_check_health
-
-    #basic_config_proxmox
 
     #clear
 
@@ -135,7 +147,7 @@ function main() {
     #create_containers "lxc/dmz" "tf/lxc_dmz.tfplan" "$TERRAFORM_STATE_DMZ"
 
     #$SSH "root@$PM_HOST" "cd $MY_PATH && bash manage_pct.sh start_all"
-    setup_ansible
+    #setup_ansible
 }
 
 main "$@"

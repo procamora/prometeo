@@ -20,7 +20,7 @@ resource "proxmox_lxc" "asterisk-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
@@ -49,7 +49,7 @@ resource "proxmox_lxc" "ldap-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
@@ -78,7 +78,7 @@ resource "proxmox_lxc" "elk-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
@@ -107,7 +107,7 @@ resource "proxmox_lxc" "splunk-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
@@ -136,7 +136,7 @@ resource "proxmox_lxc" "oauth-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
@@ -165,7 +165,7 @@ resource "proxmox_lxc" "openid-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
@@ -194,7 +194,7 @@ resource "proxmox_lxc" "ansible-lan" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"

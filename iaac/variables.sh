@@ -27,15 +27,16 @@ declare -r TERRAFORM_STATE_DMZ="tf/.myterraform_dmz.tfstate"
 declare -r TERRAFORM_STATE_HEALTH="tf/.myterraform_health.tfstate"
 #############################################################################################
 
-declare -r PM_HOST="192.168.1.254"
-declare -r PM_API_URL="https://192.168.1.254:8006/api2/json"
+declare -r PM_HOST="192.168.1.200"
+declare -r PM_API_URL="https://192.168.1.200:8006/api2/json"
 declare -r PM_CNAME="c.prometeo.01"
-declare -r PM_NODE="proxmox"
+declare -r PM_NODE="xx1"  # TODO: Si se le pone otro nombre hay que cambiarlo para terraform
 declare -r PM_POOL="p.prometeo"
 declare -r PM_GROUP="g.prometeo"
 declare -r PM_STORAGE="local-lvm"
-declare -r PM_USERNAME="root@pam" # system user is "root"
+declare -r PVE_USERNAME="prometeo@pve" # admin
 declare -r PM_PASSWORD="password"
+declare -r PCT_PASSWORD="password"
 
 declare -r PCT_ALPINE="alpine"
 declare -r PCT_DEBIAN="debian"

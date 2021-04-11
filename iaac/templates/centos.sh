@@ -1,6 +1,10 @@
 #!/bin/bash
 
-dnf upgrade -yq && dnf install -y vim gcc make git sudo python3 python3-pip python3-argcomplete bash-completion tar openssh-server
+dnf upgrade -yq
+dnf install -y epel-release
+dnf install -y vim gcc make git sudo python3 python3-pip python3-argcomplete bash-completion tar openssh-server wget curl unzip
+
+command -v pip >/dev/null || ln -s $(command -v pip3) /usr/bin/pip
 
 #modprobe 8021q
 #grep "8021q" /etc/modules || echo "8021q" >> /etc/modules

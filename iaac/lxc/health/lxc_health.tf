@@ -22,7 +22,7 @@ resource "proxmox_lxc" "health-dmz" {
 
   force = true
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_health_name}"
@@ -52,7 +52,7 @@ resource "proxmox_lxc" "health-lan" {
 
   force = true
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_health_name}"
@@ -83,7 +83,7 @@ resource "proxmox_lxc" "health-pc" {
 
   force = true
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_health_name}"
@@ -113,7 +113,7 @@ resource "proxmox_lxc" "health-ids" {
 
   force = true
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_health_name}"
@@ -144,7 +144,7 @@ resource "proxmox_lxc" "health-lab" {
 
   force = true
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_health_name}"

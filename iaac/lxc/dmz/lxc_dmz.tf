@@ -20,7 +20,7 @@ resource "proxmox_lxc" "mariadb-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -49,7 +49,7 @@ resource "proxmox_lxc" "mongo-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -78,7 +78,7 @@ resource "proxmox_lxc" "vsftpd-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -107,7 +107,7 @@ resource "proxmox_lxc" "dojo-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -136,7 +136,7 @@ resource "proxmox_lxc" "apache-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -165,7 +165,7 @@ resource "proxmox_lxc" "nagios-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -194,7 +194,7 @@ resource "proxmox_lxc" "muna-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -223,7 +223,7 @@ resource "proxmox_lxc" "owncloud-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -252,7 +252,7 @@ resource "proxmox_lxc" "joomla-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -281,7 +281,7 @@ resource "proxmox_lxc" "prestashop-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -310,7 +310,7 @@ resource "proxmox_lxc" "drupal-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -339,7 +339,7 @@ resource "proxmox_lxc" "wordpress-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -368,7 +368,7 @@ resource "proxmox_lxc" "radius-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -397,7 +397,7 @@ resource "proxmox_lxc" "dns-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -426,7 +426,7 @@ resource "proxmox_lxc" "honeypot-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"
@@ -455,7 +455,7 @@ resource "proxmox_lxc" "mail-dmz" {
   }
 
   onboot = false
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_debian_name}"

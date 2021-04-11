@@ -68,7 +68,7 @@ function ct_create_template_alpine() {
         --hostname "alpine-template" \
         --memory 1024 \
         --ostype "$PCT_ALPINE" \
-        --password "$PM_PASSWORD" \
+        --password "$PCT_PASSWORD" \
         --storage "$PM_STORAGE" \
         --pool "$PM_POOL"
 
@@ -103,7 +103,7 @@ function ct_create_template_centos() {
         --hostname "centos-template" \
         --memory 1024 \
         --ostype "$PCT_CENTOS" \
-        --password "$PM_PASSWORD" \
+        --password "$PCT_PASSWORD" \
         --storage "$PM_STORAGE" \
         --unprivileged 0 \
         --pool "$PM_POOL"
@@ -140,7 +140,7 @@ function ct_create_template_debian() {
         --hostname "debian-template" \
         --memory 1024 \
         --ostype "$PCT_DEBIAN" \
-        --password "$PM_PASSWORD" \
+        --password "$PCT_PASSWORD" \
         --storage "$PM_STORAGE" \
         --unprivileged 0 \
         --pool "$PM_POOL"

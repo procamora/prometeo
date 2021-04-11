@@ -26,7 +26,7 @@ resource "proxmox_lxc" "mariadb-dmz" {
   }
 
   #onboot = true
-  password = var.pm_password
+  password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
   ostemplate = "${var.dump_path}/${var.template_centos_name}"
