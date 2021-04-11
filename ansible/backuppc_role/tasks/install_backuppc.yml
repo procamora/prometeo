@@ -1,0 +1,51 @@
+---
+
+- name: Download BackupPC with check (md5)
+  get_url:
+    url: "{{ backuppc_url }}"
+    dest: "{{ backuppc_tar }}"
+    checksum: "{{ backuppc_md5 }}"
+  register: compile_backuppc
+
+- name: Extract BackupPC into /var/lib/foo
+  unarchive:
+    src: "{{ backuppc_tar }}"
+    dest: /opt
+    remote_src: yes
+  register: compile_backuppc
+
+- block:
+    - name: Download repo backuppc-xs
+      git:
+        repo: https://github.com/backuppc/backuppc-xs.git
+        dest: "{{ backuppc_xs }}"
+      register: compile_backuppc_xs
+
+    - name: Build and Install BackupPC XS
+      shell: perl Makefile.PL && make && make test && make install
+      args:
+        chdir: "{{ backuppc_xs }}"
+      when: compile_backuppc_xs.changed
+
+- block:
+    - name: Download repo rsync-bpc
+      git:
+        repo: https://github.com/backuppc/rsync-bpc.git
+        dest: "{{ rsync_bpc }}"
+        force: yes
+      register: compile_rsync_bpc
+
+    - name: Build and Install rsync-bpc
+      shell: ./configure && make && make install
+      args:
+        chdir: "{{ rsync_bpc }}"
+      when: compile_rsync_bpc.changed
+
+- name: Build and Install BackupPC
+  shell: |
+    perl configure.pl --batch --cgi-dir /var/www/cgi-bin/BackupPC --data-dir /media/HDD/BackupPC --hostname backuppc_server \
+    --html-dir /var/www/html/BackupPC --html-dir-url /BackupPC --install-dir /usr/local/BackupPC
+  args:
+    chdir: "/opt/{{ backuppc_version }}"
+  when: compile_backuppc.changed
+

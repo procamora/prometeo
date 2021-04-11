@@ -1,0 +1,70 @@
+---
+
+- name: Cowrie | Add the user "{{ cowrie_user }}"
+  user:
+    name: "{{ cowrie_user }}"
+    comment: User "{{ cowrie_user }}"
+
+
+- name: Cowrie | Download repo Cowrie
+  git:
+    repo: http://github.com/cowrie/cowrie
+    dest: "{{ cowrie_path }}"
+  become: yes
+  become_method: su
+  become_user: "{{ cowrie_user }}"
+  #register: compile_backuppc_xs
+
+- name: Cowrie | Copy config Cowrie
+  copy:
+    src: files/cowrie.cfg
+    dest: "{{ cowrie_path }}/etc/"
+  become: yes
+  become_method: su
+  become_user: "{{ cowrie_user }}"
+  #register: compile_backuppc_xs
+
+#  virtualenv --python=python3 cowrie-env
+- name: Cowrie | Install requirements in virtualenv
+  pip:
+    requirements: "{{ cowrie_path }}/requirements.txt"
+    virtualenv: "{{ cowrie_venv }}"
+    virtualenv_python: python3
+
+- name: Cowrie | Copy cowrie.service
+  template:
+    src: templates/cowrie.j2.service
+    dest: /etc/systemd/system/cowrie.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Cowrie | Copy cowrie.socket
+  copy:
+    src: "{{ cowrie_path }}/docs/systemd/etc/systemd/system/cowrie.socket"
+    dest: /etc/systemd/system/
+    remote_src: yes
+
+#- name: Supports a validate command
+#  replace:
+#    path: "/etc/systemd/system/cowrie.service"
+#    regexp: '/opt/cowrie'
+#    replace: "{{ cowrie_path }}"
+
+
+
+
+#- name: Cowrie | Restart service cowrie and enable
+#  systemd:
+#    name: cowrie
+#    state: restarted
+#    daemon_reexec: yes
+#    enabled: yes
+
+
+
+#- name: Cowrie | Execute Cowrie
+#  shell: "{{ cowrie_path }}/bin/cowrie start"
+#  become: yes
+#  become_method: su
+#  become_user: "{{ cowrie_user }}"

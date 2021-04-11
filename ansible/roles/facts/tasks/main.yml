@@ -1,8 +1,0 @@
----
-# Playbook show facts ansible
-
-- name: Show facts available on the system
-  ansible.builtin.debug:
-    var: ansible_facts
-
-

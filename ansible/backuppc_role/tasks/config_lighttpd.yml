@@ -1,0 +1,41 @@
+---
+
+- name: Create a directory /var/log/lighttpd/
+  file:
+    path: /var/log/lighttpd/
+    state: directory
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0644'
+
+- name: Create a directory /var/log/lighttpd/
+  file:
+    path: /var/log/lighttpd/certs/
+    state: directory
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0644'
+
+- name: Create a directory /var/log/lighttpd/error.log
+  file:
+    path: /var/log/lighttpd/error.log
+    state: touch
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0644'
+
+- name: Copy config lighttpd
+  copy:
+    src: files/lighttpd.conf
+    dest: /etc/lighttpd/lighttpd.conf
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0644'
+  notify:
+    - enable lighttp
+    - restart lighttp
+
+# Verificar config
+# lighttpd -t -f /etc/lighttpd/lighttpd.conf
+
+

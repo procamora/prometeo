@@ -1,0 +1,14 @@
+---
+
+- name: Logstash | Copy config splunk
+  template:
+    src: templates/logstash-cowrie.j2.conf
+    dest: /etc/logstash/conf.d/logstash-cowrie.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+#- name: Logstash | Enable service logstash
+#  systemd:
+#    name: logstash
+#    enabled: yes

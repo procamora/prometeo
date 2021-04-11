@@ -1,0 +1,125 @@
+---
+
+- name: Update repository with apt
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+
+
+- name: Upgrade all packages with dnf
+  dnf:
+    name: "*"
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Pre-Tasks | Install required packages with apt
+  apt:
+    pkg:
+      - vim
+      - perl
+      - rsync
+      - ssh
+      #- apache2
+      - apache2-utils
+      - libapache2-mod-perl2
+      - par2
+      - perl
+      - smbclient
+      - rsync
+      - tar
+      - gcc
+      - zlib1g
+      - zlib1g-dev
+      - rrdtool
+      - git
+      - make
+      - perl-doc
+      - libnss-winbind
+      - winbind
+      - libarchive-zip-perl
+      - libfile-listing-perl
+      - libfile-rsyncp-perl
+      - libxml-rss-perl
+      - libcgi-session-perl
+      - libacl1-dev
+      - curl
+      - python3-passlib
+      - ca-certificates
+      - msmtp
+      - lighttpd
+      - gzip
+      - tzdata
+    state: present
+  when: ansible_os_family == 'Debian'
+
+
+- name: Pre-Tasks | Install required packages with dnf
+  dnf:
+    pkg:
+      - vim
+      - perl
+      - perl-CGI
+      - perl-CPAN
+      - perl(Compress::Zlib)
+      - perl(Archive::Zip)
+      - perl(Digest::MD5)
+      - perl(version)
+      - perl(File::Listing)
+      - perl(ModPerl::Registry)
+      - perl(CGI)
+      - samba*
+      - bzip2
+      - gcc
+      - rrdtool
+      - par2cmdline
+      - rsync
+      - mlocate
+      #- httpd
+      #- httpd-tools
+      - lighttpd
+      #- libapache2-mod-perl2
+      #- par2
+      - perl
+      - mod_perl
+      - libsmbclient
+      - rsync
+      - tar
+      - gcc
+      #- zlib1g
+      - zlib
+      #- zlib1g-dev
+      - rrdtool
+      - git
+      - make
+      - perl-doc
+      - libwbclient
+      - libwbclient-devel
+      - perl-Archive-Extract
+      - perl-File-Listing.noarch
+      - perl-File-RsyncP
+      - perl-libxml-perl
+      - libcgi
+      - libcgi-devel
+      - libacl
+      - libacl-devel
+      - curl
+      - python3-passlib
+      - ca-certificates
+      - msmtp
+      - gzip
+      - tzdata
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Create user BackupPC
+  user:
+    name: backuppc
+    comment: BackupPC user
+    shell: /bin/bash
+    ssh_key_file: .ssh/services
+    create_home: yes
+    home: "{{ home_backuppc }}"
+

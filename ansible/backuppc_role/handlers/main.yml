@@ -1,0 +1,76 @@
+---
+# handlers file for backuppc_role
+
+- name: reload backuppc
+  systemd:
+    name: backuppc
+    state: reloaded
+
+
+- name: restart backuppc
+  systemd:
+    name: backuppc
+    state: restarted
+
+
+- name: enable backuppc
+  service:
+    name: backuppc
+    enabled: yes
+    daemon_reload: yes
+
+
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+
+
+- name: reload apache2
+  systemd:
+    name: apache2
+    state: reloaded
+
+
+- name: enable apache2
+  systemd:
+    name: apache2
+    enabled: yes
+    daemon_reload: yes
+
+- name: restart httpd
+  service:
+    name: httpd
+    state: restarted
+
+
+- name: reload httpd
+  systemd:
+    name: httpd
+    state: reloaded
+
+
+- name: enable httpd
+  systemd:
+    name: httpd
+    enabled: yes
+    daemon_reload: yes
+
+
+- name: reload lighttp
+  systemd:
+    name: lighttpd
+    state: reloaded
+
+
+- name: restart lighttp
+  systemd:
+    name: lighttpd
+    state: restarted
+
+
+- name: enable lighttp
+  service:
+    name: lighttpd
+    enabled: yes
+    daemon_reload: yes

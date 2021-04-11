@@ -1,0 +1,11 @@
+---
+# tasks file for splunk
+
+- name: Pre Tasks
+  include: pre_tasks.yml
+
+#- name: Install and configure Splunk
+#  include: splunk.yml
+
+- name: Install and configure logstash
+  include: logstash.yml

@@ -1,0 +1,131 @@
+---
+
+- name: Copy BackupPC.conf in sites-available
+  copy:
+    src: /opt/{{ backuppc_version }}/httpd/BackupPC.conf
+    dest: /etc/apache2/sites-available/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == 'Debian'
+
+
+- name: Copy BackupPC.conf in sites-available
+  copy:
+    src: /opt/{{ backuppc_version }}/httpd/BackupPC.conf
+    dest: /etc/httpd/conf/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == 'RedHat'
+
+
+- name: a2ensite BackupPC.conf
+  shell: a2ensite BackupPC.conf
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'Debian'
+
+
+# fixme hacer include en httpd.conf
+
+
+- name: Change permisions
+  replace:
+    path: /etc/apache2/sites-available/BackupPC.conf
+    regexp: '(\s+)Require local$'
+    replace: '\1Require all granted'
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'Debian'
+
+
+- name: Change permisions
+  replace:
+    path: /etc/httpd/conf/BackupPC.conf
+    regexp: '(\s+)Require local$'
+    replace: '\1Require all granted'
+  notify:
+    - restart httpd
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Change user Apache2 to backupc
+  replace:
+    path: /etc/apache2/envvars
+    regexp: 'www-data'
+    replace: 'backuppc'
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'Debian'
+
+
+- name: Change user Apache2 to backupc
+  replace:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: 'User apache'
+    replace: 'User backuppc'
+  notify:
+    - restart httpd
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Change group Apache2 to backupc
+  replace:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: 'Group apache'
+    replace: 'Group backuppc'
+  notify:
+    - restart httpd
+  when: ansible_os_family == 'RedHat'
+
+
+# TODO Buscar una solucion mejor
+- name: Fix error AH00558 Apache2
+  shell: grep -qE "^ServerName" /etc/apache2/apache2.conf || (echo "ServerName 127.0.0.1" | tee -a /etc/apache2/apache2.conf)
+  notify:
+    - restart apache2
+  when: ansible_os_family == 'Debian'
+
+
+# TODO Buscar una solucion mejor
+- name: Fix error AH00558 Apache2
+  shell: grep -qE "^ServerName" /etc/httpd/conf/httpd.conf || (echo "ServerName 127.0.0.1" | tee -a /etc/httpd/conf/httpd.conf)
+  notify:
+    - restart httpd
+  when: ansible_os_family == 'RedHat'
+
+
+
+- name: Modify AuthName
+  lineinfile:
+    path: /etc/apache2/sites-available/BackupPC.conf
+    regexp: '^AuthName'
+    line: AuthName "BackupPC procamora Administrative Interface"
+  when: ansible_os_family == 'Debian'
+
+
+- name: Modify AuthName
+  lineinfile:
+    path: /etc/httpd/conf/BackupPC.conf
+    regexp: '^AuthName'
+    line: AuthName "BackupPC procamora Administrative Interface"
+  when: ansible_os_family == 'RedHat'
+
+
+
+
+
+#- name: a2enmod cgid
+#  shell: a2enmod cgid
+#  notify:
+#    - restart apache2
+#  when: fail is defined
+
+
+
+
+- name: Check config apache
+  shell: apachectl configtest

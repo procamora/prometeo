@@ -1,0 +1,8 @@
+---
+# defaults file for cowrie_role
+
+cowrie_user: cowrie
+cowrie_path: "/home/{{ cowrie_user }}/{{ cowrie_user }}"
+cowrie_venv: "/home/{{ cowrie_user }}/cowrie-env"
+
+logstash_ip: 192.168.1.14

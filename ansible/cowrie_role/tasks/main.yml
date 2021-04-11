@@ -1,0 +1,11 @@
+---
+# tasks file for cowrie_role
+
+- name: Pre Tasks
+  include: pre_tasks.yml
+
+- name: Install and configure Cowrie
+  include: cowrie.yml
+
+- name: Configure Filebeat
+  include: filebeat.yml

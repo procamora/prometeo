@@ -1,0 +1,98 @@
+---
+
+- name: Create a directory .ssh
+  file:
+    path: "{{ home_backuppc }}/.ssh"
+    state: directory
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0700'
+
+
+- name: Copy Public Key
+  copy:
+    src: ~/.ssh/services.pub
+    dest: "{{ home_backuppc }}/.ssh"
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0600'
+
+
+- name: Copy Private Key
+  copy:
+    src: ~/.ssh/services
+    dest: "{{ home_backuppc }}/.ssh"
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: '0600'
+
+
+# TODO
+# chmod u-s /var/www/cgi-bin/BackupPC/BackupPC_Admin
+
+- name: Add a user to a password file and ensure permissions are set
+  community.general.htpasswd:
+    path: /etc/BackupPC/BackupPC.users
+    name: backuppc
+    password: backuppc
+    owner: "{{ user_backuppc }}"
+    group: "{{ group_backuppc }}"
+    mode: 0640
+    crypt_scheme: md5_crypt
+
+
+
+- name: Add CgiAdminUserGroup
+  lineinfile:
+    path: /etc/BackupPC/config.pl
+    regexp: '^\$Conf{CgiAdminUserGroup}'
+    line: "$Conf{CgiAdminUserGroup} = 'backuppc';"
+
+
+- name: Add CgiAdminUsers
+  lineinfile:
+    path: /etc/BackupPC/config.pl
+    regexp: '^\$Conf{CgiAdminUsers}'
+    line: "$Conf{CgiAdminUsers} = 'backuppc';"
+
+
+- name: Set ServerHost in /etc/BackupPC/config.pl
+  lineinfile:
+    path: /etc/BackupPC/config.pl
+    regexp: '^\$Conf{ServerHost}'
+    line: "$Conf{ServerHost} = 'BackupPC_Server';"
+
+
+#- name: Set TopDir in /etc/BackupPC/config.pl
+#  lineinfile:
+#    path: /etc/BackupPC/config.pl
+#    regexp: '^\$Conf{TopDir}'
+#    line: "$Conf{TopDir} = '/var/lib/backuppc';"
+
+
+- name: Set XferMethod in /etc/BackupPC/config.pl
+  lineinfile:
+    path: /etc/BackupPC/config.pl
+    regexp: '^\$Conf{XferMethod}'
+    line: "$Conf{XferMethod} = 'rsync';"
+
+
+- name: Copy BackupPC in systemd
+  copy:
+    src: /opt/{{ backuppc_version }}/systemd/backuppc.service
+    dest: /lib/systemd/system/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Set group BackupPC service
+  replace:
+    path: /lib/systemd/system/backuppc.service
+    regexp: '^#Group'
+    replace: 'Group'
+  notify:
+    - enable backuppc
+    - restart backuppc
+

@@ -1,0 +1,4 @@
+---
+# defaults file for splunk
+
+splunk_token: "d785742f-c9a1-490a-b508-357c21306c3d"

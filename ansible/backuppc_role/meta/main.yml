@@ -1,0 +1,22 @@
+galaxy_info:
+  author: procamora
+  description: Install and configure the BackupPC service
+  company: None
+  license: GPL-3.0
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+
+  galaxy_tags:
+    - rsync
+    - backup
+    - backuppc
+
+dependencies: [ ]
+

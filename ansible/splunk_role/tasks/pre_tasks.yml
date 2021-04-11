@@ -1,0 +1,29 @@
+---
+
+- name: Pre-Tasks | Upgrade all packages with yum
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Pre-Tasks | Copy repo elastic
+  copy:
+    src: files/elastic.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Pre-Tasks | Import a key from elastic
+  rpm_key:
+    state: present
+    key: https://packages.elastic.co/GPG-KEY-elasticsearch
+
+
+- name: Pre-Tasks | Install logstash
+  yum:
+    name: "logstash"
+    state: latest
+  when: ansible_os_family == 'RedHat'

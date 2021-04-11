@@ -1,0 +1,22 @@
+---
+
+- name: Filebeat | Template a file to /etc/filebeat/filebeat.yml
+  template:
+    src: templates/filebeat.j2.yml
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: '0644'
+    #validate: filebeat test config -c /etc/filebeat/filebeat.yml
+
+- name: Filebeat | Check is correct config filebeat.yml
+  shell: filebeat test config -c /etc/filebeat/filebeat.yml
+  register: filebeat
+
+#- debug:
+#    msg: "filebeat test config -c /etc/filebeat/filebeat.yml => {{ filebeat.stdout_lines }}"
+
+- name: Filebeat | Enable service filebeat
+  systemd:
+    name: filebeat
+    enabled: yes

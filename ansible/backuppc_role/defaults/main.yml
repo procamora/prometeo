@@ -1,0 +1,13 @@
+---
+# defaults file for backuppc_role
+
+backuppc_version: BackupPC-4.4.0
+backuppc_md5: md5:96cd69da26b71a609e18cb5e98a813bb
+backuppc_url: https://github.com/backuppc/backuppc/releases/download/4.4.0/{{ backuppc_version }}.tar.gz
+backuppc_tar: /tmp/BackupPC.tar.gz
+backuppc_xs: /opt/backuppc-xs
+rsync_bpc: /opt/rsync-bpc
+
+home_backuppc: /var/lib/backuppc
+user_backuppc: backuppc
+group_backuppc: backuppc
