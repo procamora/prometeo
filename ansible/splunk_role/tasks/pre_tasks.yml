@@ -1,12 +1,5 @@
 ---
 
-- name: Pre-Tasks | Upgrade all packages with yum
-  yum:
-    name: "*"
-    state: latest
-  when: ansible_os_family == 'RedHat'
-
-
 - name: Pre-Tasks | Copy repo elastic
   copy:
     src: files/elastic.repo
