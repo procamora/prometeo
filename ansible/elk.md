@@ -77,6 +77,10 @@ output.logstash:
 ## Ejecutar logstash en modo imprimir por consola
 
 ```bash
+# Verificar configuracion
+/usr/share/logstash/bin/logstash -f /etc/logstash/pipeline_debug.conf --config.test_and_exit
+
+# Ejecutar 
 /usr/share/logstash/bin/logstash -f /etc/logstash/pipeline_debug.conf
 ```
 

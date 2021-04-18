@@ -1,11 +1,10 @@
 
 [all:vars]
 ansible_user=root
-#ansible_ssh_private_key_file=/home/procamora/.ssh/private
-ansible_ssh_private_key_file=/home/procamora/Documents/prometeo/certificates/openssh/id_rsa
+ansible_ssh_private_key_file=../certificates/openssh/id_rsa
 
 [splunk]
 192.168.1.14
 
 [cowrie]
-192.168.1.37
+192.168.1.25

@@ -1,6 +1,6 @@
 ---
 
-- name: Copy splunk rpm
+- name: Splunk | Copy splunk rpm
   copy:
     src: files/splunk-8.1.3-63079c59e632-linux-2.6-x86_64.rpm
     dest: /tmp/splunk.rpm
@@ -10,7 +10,7 @@
   ignore_errors: true
   register: reboot_required_file
 
-- name: set permission directory splunk
+- name: Splunk | set permission directory splunk
   file:
     path: /opt/splunk/
     state: directory
@@ -20,7 +20,7 @@
   when: reboot_required_file.changed
 
 #iptables -I INPUT 1 -p tcp --dport 8000 -j ACCEPT
-- name: Insert a rule port 8000 (Splunk interface) open in firewall
+- name: Splunk | Insert a rule port 8000 (Splunk interface) open in firewall
   iptables:
     chain: INPUT
     protocol: tcp
@@ -29,7 +29,7 @@
     action: insert
     rule_num: 1
 
-- name: Insert a rule port 5044 (logstash) open in firewall
+- name: Splunk | Insert a rule port 5044 (logstash) open in firewall
   iptables:
     chain: INPUT
     protocol: tcp
@@ -40,7 +40,7 @@
 
 # This will apply to all loaded/active IPv4 tables.
 # ansible-galaxy collection install community.general
-- name: Save current state of the firewall in system file
+- name: Splunk | Save current state of the firewall in system file
   community.general.iptables_state:
     state: saved
     path: /etc/sysconfig/iptables
@@ -53,18 +53,18 @@
     group: splunk
   when: reboot_required_file.changed
 
-- name: Accept license
+- name: Splunk | Accept license
   shell: /opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt
   become: yes
   become_method: su
   become_user: splunk
   when: reboot_required_file.changed
 
-- name: Enable service splunk
+- name: Splunk | Enable service splunk
   shell: /opt/splunk/bin/splunk enable boot-start -user splunk
   when: reboot_required_file.changed
 
-- name: Reboot the box if kernel updated
+- name: Splunk | Reboot the box if kernel updated
   reboot:
     msg: "Reboot initiated by Ansible for apply config splunk"
     connect_timeout: 5
@@ -75,7 +75,7 @@
   when: reboot_required_file.changed
 
 
-- name: Validating web port is open
+- name: Splunk | Validating web port is open
   wait_for:
     host: "{{ ansible_ssh_host }}"
     port: 8000
@@ -87,7 +87,7 @@
   when: reboot_required_file.changed
 
 
-- name: set permission directory audir
+- name: Splunk | set permission directory audit
   file:
     path: /var/log/audit/
     state: directory
@@ -96,7 +96,7 @@
     mode: '0750'
     recurse: yes
 
-- name: set permission directory audir
+- name: Splunk | set permission directory audit
   file:
     path: /var/log/audit/audit.log
     state: file
@@ -105,7 +105,5 @@
     mode: '0740'
 
 
-curl -k "https://192.168.1.14:8088/services/collector" \
- -H "Authorization: Splunk d785742f-c9a1-490a-b508-357c21306c3d" \
- -d '{"event": "Hello world"}'
+
 
