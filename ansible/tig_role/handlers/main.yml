@@ -1,0 +1,24 @@
+---
+# handlers file for tig_role
+
+- name: Restart service Grafana
+  systemd:
+    name: grafana-server
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+  #validate: systemctl is-active grafana-server
+
+- name: Restart service InfluxDB
+  systemd:
+    name: influxd
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: Restart service Telegraf
+  systemd:
+    name: telegraf
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

@@ -1,0 +1,7 @@
+[influxdb]
+name = InfluxDB Repository - Centos 8
+#baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+baseurl = https://repos.influxdata.com/centos/8/amd64/stable/
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key

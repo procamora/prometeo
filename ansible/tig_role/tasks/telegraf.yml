@@ -1,0 +1,48 @@
+---
+
+- name: Telegraf | Copy certificates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tig_path_ssl }}"
+    owner: telegraf
+    group: "{{ group_tig }}"
+    mode: '0600'
+  with_items:
+    - files/ssl/telegraf.key
+    - files/ssl/telegraf.crt
+    - files/ssl/telegraf.pem
+
+- name: Telegraf | Copy custom configuration
+  template:
+    src: "{{ item }}"
+    dest: /etc/telegraf/telegraf.d/
+    owner: telegraf
+    group: telegraf
+  notify: Restart service Telegraf
+  with_items:
+    - telegraf.d/influx.conf
+    - telegraf.d/monitoring.conf
+
+- name: Telegraf | Disable outpit telegraf in main config
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^(#)?\s*\[\[outputs\.influxdb\]\]\s*$'
+    line: "#[[outputs.influxdb]]"
+
+- name: Telegraf | Set hostname in logs
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^(#)?\s*hostname\s*=\s*""\s*$'
+    line: "hostname = {{ telegraf_hostname }}"
+
+- block:
+    - name: Telegraf | Force execute handler restart services
+      meta: flush_handlers
+
+    - name: InfluxDB | Is active service Telegraf
+      shell: systemctl is-active telegraf
+      register: result
+      failed_when:
+        - result.rc != 0
+
+

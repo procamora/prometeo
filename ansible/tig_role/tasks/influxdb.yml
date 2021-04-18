@@ -1,0 +1,62 @@
+---
+
+- name: InfluxDB | Copy certificates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tig_path_ssl }}"
+    owner: influxdb
+    group: "{{ group_tig }}"
+    mode: '0640'
+  with_items:
+    - files/ssl/influx.key
+    - files/ssl/influx_combined.crt
+    - files/ssl/influx.pem
+
+
+- name: InfluxDB | Copy custom configuration
+  template:
+    src: influxdb.conf
+    dest: /etc/influxdb/
+    owner: influxdb
+    group: influxdb
+  notify: Restart service InfluxDB
+
+
+
+#curl -k -XPOST "https://influx.prometeo.sh:8086/query" --data-urlencode "q=CREATE USER admin WITH PASSWORD 'prometeo' WITH ALL PRIVILEGES"
+
+#curl -kG "https://influx.prometeo.sh:8086/query?pretty=true" --data-urlencode "q=show databases"
+#curl -k -XPOST "https://influx.prometeo.sh:8086/query?pretty=true" --data-urlencode "q=CREATE DATABASE telegraf"
+
+#- name: InfluxDB | Create admin user
+#  community.general.influxdb_user:
+#    user_name: "{{ influx_user }}"
+#    user_password: "{{ influx_password }}"
+#    admin: yes
+
+
+#- name: Query connections
+#  community.general.influxdb_query:
+#    hostname: "192.168.1.36:8086"
+#    database_name: "{{ influxdb_database_name }}"
+#    query: "CREATE USER {{ influx_user }} WITH PASSWORD '{{ influx_password }}' WITH ALL PRIVILEGES"
+#  register: connection
+
+#-  name: Create user
+#  uri:
+#    url: "http://192.168.1.36:8086/query?q=CREATE USER {{ influx_user }} WITH PASSWORD '{{ influx_password }}' WITH ALL PRIVILEGES"
+#    method: POST
+#  register: result
+
+
+
+
+- block:
+  - name: InfluxDB | Force execute handler restart services
+    meta: flush_handlers
+
+  - name: InfluxDB | Is active service influxd
+    shell: systemctl is-active influxd
+    register: result
+    failed_when:
+      - result.rc != 0

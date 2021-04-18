@@ -1,0 +1,60 @@
+---
+
+- name: Pre-Tasks | Copy repos
+  copy:
+    src: "{{ item.src }}"
+    dest: "/etc/yum.repos.d/{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - { src: "files/grafana_oss_rpm.repo", dest: 'grafana.repo' }
+    - { src: "files/influxdb_centos.repo", dest: 'influxdb.repo' }
+
+- name: Pre-Tasks | Install Grafana and InfluxDB OSS
+  yum:
+    name:
+      - grafana
+      - influxdb
+      - telegraf  # include in influx repo
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+- name: Pre-Tasks | Create group TIG (Telegraf, InfluxDB, and Grafana)
+  group:
+    name: "{{ group_tig }}"
+    state: present
+
+- name: Add the user 'james' with a bash shell, appending the group 'admins' and 'developers' to the user's groups
+  user:
+    name: "{{ item }}"
+    groups: "{{ group_tig }}"
+    append: yes
+  with_items:
+    - grafana
+    - telegraf
+    - influxdb
+
+- name: InfluxDB | Create a directory certificates
+  file:
+    path: "{{ tig_path_ssl }}"
+    state: directory
+    owner: root
+    group: "{{ group_tig }}"
+    mode: '0750'
+
+- name: Telegraf | Copy certificate CA
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tig_path_ssl }}"
+    owner: root
+    group: "{{ group_tig }}"
+    mode: '0644'
+  with_items:
+    - files/ssl/ca.pem
+
+#- name: Download foo.conf
+#  get_url:
+#    url: https://gist.githubusercontent.com/tsuriga/5bc5bbfaf21c6a51cda7/raw/421b2f4c05b1f992155369660cb39a53bf8dd7d0/validate.py
+#    dest: /usr/local/bin/validate_ini.py
+#    mode: '0755'

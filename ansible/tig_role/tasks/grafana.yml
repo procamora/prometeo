@@ -1,0 +1,38 @@
+---
+
+- name: Grafana | Copy certificates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tig_path_ssl }}"
+    owner: grafana
+    group: "{{ group_tig }}"
+    mode: '0600'
+  with_items:
+    - files/ssl/grafana.key
+    - files/ssl/grafana.crt
+
+- name: Grafana | Copy custom configuration Grafana
+  template:
+    src: grafana.ini
+    dest: /etc/grafana/grafana.ini
+  notify: Restart service Grafana
+
+- name: Grafana | Allow the service to bind to privileged ports.
+  shell: setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
+  notify: Restart service Grafana
+  become: yes
+
+- block:
+  - name: Grafana | Force execute handler restart services
+    meta: flush_handlers
+
+  - name: Grafana | Is active service grafana-server
+    shell: systemctl is-active grafana-server
+    register: result
+    failed_when:
+      - result.rc != 0
+
+#- name: check if TFA is installed
+#  fail:
+#    msg: Tracefile Analyzer is not installed, why? It should have been there!
+#  when: ansible_facts.services["grafana-server.service"] is not defined

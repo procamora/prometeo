@@ -1,0 +1,14 @@
+---
+# tasks file for tig_role
+
+- name: Pre Tasks
+  include: pre_tasks.yml
+
+- name: InfluxDB configuration
+  include: influxdb.yml
+
+- name: Telegraf configuration
+  include: telegraf.yml
+
+- name: Grafana configuration
+  include: grafana.yml
