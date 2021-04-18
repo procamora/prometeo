@@ -3,10 +3,16 @@
 DOMAIN="prometeo.com"
 
 # set variables
-source ./variables.sh
+if [[ -f ./variables.sh  ]]; then
+  vars_files="./variables.sh"
+  source ./variables.sh
+else
+  vars_files="../variables.sh"
+  source ../variables.sh
+fi
 
-mapfile -t my_ips < <(grep -E "^declare -r IP_" ./variables.sh | awk -F " " '{print $3}' | tr -d '"')     # array ips
-mapfile -t my_gw < <(grep -E "^declare -r GATEWAY_" ./variables.sh | awk -F " " '{print $3}' | tr -d '"') # array ips
+mapfile -t my_ips < <(grep -E "^declare -r IP_" "$vars_files" | awk -F " " '{print $3}' | tr -d '"')     # array ips
+mapfile -t my_gw < <(grep -E "^declare -r GATEWAY_" "$vars_files" | awk -F " " '{print $3}' | tr -d '"') # array ips
 
 function generate_inventary() {
     inventory="# DON'T EDIT, auto-generated file\n# $(date)\n"
@@ -18,7 +24,7 @@ function generate_inventary() {
         inventory_yml+="\n${array_groups[i]}:\n"
         inventory_yml+="  hosts:\n"
 
-        mapfile -t array_ips < <(grep -iE "^declare -r IP_${array_groups[i]}" ./variables.sh | grep -v "HEALTH" |
+        mapfile -t array_ips < <(grep -iE "^declare -r IP_${array_groups[i]}" "$vars_files" | grep -v "HEALTH" |
             awk -F " " '{print $3}' | tr -d '"')
 
         for my_ip in "${array_ips[@]}"; do
@@ -33,7 +39,7 @@ function generate_inventary() {
     done
 
     # groups by OS
-    mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_DMZ" ./variables.sh | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
+    mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_DMZ" "$vars_files" | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
     inventory+="\n[DEBIAN]\n"
     inventory_yml+="\ndebian:\n"
     inventory_yml+="  hosts:\n"
@@ -47,7 +53,7 @@ function generate_inventary() {
     inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
     inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
 
-    mapfile -t my_ips_lan < <(grep -E "^declare -r IP_LAN" ./variables.sh | grep -v "HEALTH" | grep -v "WINSERVER" | grep -v "SQLSERVER" |
+    mapfile -t my_ips_lan < <(grep -E "^declare -r IP_LAN" "$vars_files" | grep -v "HEALTH" | grep -v "WINSERVER" | grep -v "SQLSERVER" |
         awk -F " " '{print $3}' | tr -d '"')
     inventory+="\n[CENTOS]\n"
     inventory_yml+="\ncentos:\n"
@@ -92,4 +98,4 @@ function foreach_ips() {
 foreach_ips
 generate_inventary
 
-rm -f generate_hosts.sh #autoclean
+#rm -f generate_hosts.sh #autoclean

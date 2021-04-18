@@ -5,6 +5,7 @@
 *.tfstate
 
 iaac/.terraform/
+ansible/vars_secrets.yml
 
 iaac/lxc/**/provider.tf
 iaac/lxc/**/variables.tf
