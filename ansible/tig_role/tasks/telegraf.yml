@@ -33,7 +33,7 @@
   lineinfile:
     path: /etc/telegraf/telegraf.conf
     regexp: '^(#)?\s*hostname\s*=\s*""\s*$'
-    line: "hostname = {{ telegraf_hostname }}"
+    line: "  hostname = \"{{ telegraf_hostname }}\""
 
 - block:
     - name: Telegraf | Force execute handler restart services
