@@ -6,23 +6,44 @@
     comment: User "{{ cowrie_user }}"
 
 
-- name: Cowrie | Download repo Cowrie
-  git:
-    repo: http://github.com/cowrie/cowrie
-    dest: "{{ cowrie_path }}"
-  become: yes
-  become_method: su
-  become_user: "{{ cowrie_user }}"
-  #register: compile_backuppc_xs
+- block:
+  - name: "Cowrie | Check that {{ cowrie_path }} exists"
+    stat:
+      path: "{{ cowrie_path }}"
+    register: stat_result_cowrie
+
+  - name: Cowrie | git clone repo Cowrie
+    git:
+      repo: https://github.com/cowrie/cowrie
+      dest: "{{ cowrie_path }}"
+      clone: yes
+    become: yes
+    become_method: su
+    become_user: "{{ cowrie_user }}"
+    when: not stat_result_cowrie.stat.exists
+
+  - name: Cowrie | git pull repo Cowrie
+    git:
+      repo: https://github.com/cowrie/cowrie
+      dest: "{{ cowrie_path }}"
+      clone: no
+      update: yes
+      force: yes
+    become: yes
+    become_method: su
+    become_user: "{{ cowrie_user }}"
+    when: stat_result_cowrie.stat.exists
+
 
 - name: Cowrie | Copy config Cowrie
-  copy:
-    src: files/cowrie.cfg
+  template:
+    src: cowrie.cfg
     dest: "{{ cowrie_path }}/etc/"
   become: yes
   become_method: su
   become_user: "{{ cowrie_user }}"
-  #register: compile_backuppc_xs
+  register: config_cowrie
+
 
 #  virtualenv --python=python3 cowrie-env
 - name: Cowrie | Install requirements in virtualenv
@@ -31,19 +52,48 @@
     virtualenv: "{{ cowrie_venv }}"
     virtualenv_python: python3
 
+
 - name: Cowrie | Copy cowrie.service
   template:
-    src: templates/cowrie.j2.service
+    src: cowrie.j2.service
     dest: /etc/systemd/system/cowrie.service
     owner: root
     group: root
     mode: '0644'
 
-- name: Cowrie | Copy cowrie.socket
-  copy:
-    src: "{{ cowrie_path }}/docs/systemd/etc/systemd/system/cowrie.socket"
-    dest: /etc/systemd/system/
-    remote_src: yes
+
+- block:
+  - name: Cowrie | Copy cowrie.socket
+    copy:
+      src: "{{ cowrie_path }}/docs/systemd/etc/systemd/system/cowrie.socket"
+      dest: /etc/systemd/system/
+      remote_src: yes
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Cowrie | Remove telnet in cowrie.socket
+    lineinfile:
+      path: /etc/systemd/system/cowrie.socket
+      regexp: 'ListenStream=2223'
+      line: ''
+
+- block:
+  - name: Cowrie | Check that cowrie.db exists
+    stat:
+      path: "{{ cowrie_path }}/var/log/cowrie/cowrie.db"
+    register: stat_result
+
+  - debug: msg="{{ cowrie_path }}/var/log/cowrie/cowrie.db"
+    when: not stat_result.stat.exists
+
+  - name: Cowrie | Create database cowrie.db, if it doesnt exist already
+    shell: "sqlite3 {{ cowrie_path }}/var/log/cowrie/cowrie.db < {{ cowrie_path }}/docs/sql/sqlite3.sql"
+    when: not stat_result.stat.exists
+  when:
+    - db_enable == "true"
+
+
 
 #- name: Supports a validate command
 #  replace:

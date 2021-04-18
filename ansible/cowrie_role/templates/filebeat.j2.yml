@@ -83,7 +83,7 @@ filebeat.config.modules:
 
 # The tags of the shipper are included in their own field with each
 # transaction published.
-#tags: ["service-X", "web-tier"]
+tags: ["cowrie"]
 
 # Optional fields that you can specify to add additional information to the
 # output.

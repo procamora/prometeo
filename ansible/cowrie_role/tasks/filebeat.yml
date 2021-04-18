@@ -7,16 +7,13 @@
     owner: root
     group: root
     mode: '0644'
-    #validate: filebeat test config -c /etc/filebeat/filebeat.yml
+    validate: filebeat test config -c /etc/filebeat/filebeat.yml
+    register: Enable service filebeat
 
-- name: Filebeat | Check is correct config filebeat.yml
-  shell: filebeat test config -c /etc/filebeat/filebeat.yml
-  register: filebeat
+#- name: Filebeat | Check is correct config filebeat.yml
+#  shell: filebeat test config -c /etc/filebeat/filebeat.yml
+#  register: filebeat
 
 #- debug:
 #    msg: "filebeat test config -c /etc/filebeat/filebeat.yml => {{ filebeat.stdout_lines }}"
 
-- name: Filebeat | Enable service filebeat
-  systemd:
-    name: filebeat
-    enabled: yes

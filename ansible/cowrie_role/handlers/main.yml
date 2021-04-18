@@ -1,2 +1,7 @@
 ---
 # handlers file for cowrie_role
+
+- name: Enable service filebeat
+  systemd:
+    name: filebeat
+    enabled: yes

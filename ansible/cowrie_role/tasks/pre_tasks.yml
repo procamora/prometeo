@@ -13,6 +13,7 @@
       - authbind
       - virtualenv
       - apt-transport-https
+      - sqlite3
     state: present
   when: ansible_os_family == 'Debian'
 
