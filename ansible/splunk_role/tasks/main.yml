@@ -7,5 +7,5 @@
 #- name: Install and configure Splunk
 #  include: splunk.yml
 
-- name: Install and configure logstash
-  include: logstash.yml
+#- name: Install and configure logstash
+#  include: logstash.yml

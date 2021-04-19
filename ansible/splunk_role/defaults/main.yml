@@ -1,4 +1,7 @@
 ---
 # defaults file for splunk
 
-splunk_token: "d785742f-c9a1-490a-b508-357c21306c3d"
+splunk_path: /opt/splunk
+splunk_path_ssl: "{{ splunk_path }}/etc/auth/splunkweb"
+splunk_web_port: 8000
+
