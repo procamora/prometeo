@@ -22,6 +22,7 @@
   notify: Restart service InfluxDB
 
 
+# influx -ssl --unsafeSsl -host influx.prometeo.sh
 
 #curl -k -XPOST "https://influx.prometeo.sh:8086/query" --data-urlencode "q=CREATE USER admin WITH PASSWORD 'prometeo' WITH ALL PRIVILEGES"
 
