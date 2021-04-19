@@ -1,0 +1,37 @@
+---
+
+- name: Apache | Change listen port
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^#?\s*Listen\s*\d+$'
+    line: "Listen {{ apache_port }}"
+  notify: Restart service Apache
+
+
+- name: Apache | Copy web config
+  template:
+    src: 001-default.conf
+    dest: /etc/httpd/conf.d/
+  notify: Restart service Apache
+
+- name: Apache | Copy web config
+  template:
+    src: "{{ item }}"
+    dest: /etc/httpd/conf.d/
+  with_items:
+    - a.conf
+    - b.conf
+  notify: Restart service Apache
+
+#- name: Apache | Enable site
+#  shell: a2ensite 001-default
+#  notify: Restart service Apache
+
+
+- name: Apache | Is valid config
+  shell: httpd -t
+  register: result
+  failed_when:
+    - result.rc != 0
+  changed_when: result.rc != 0
+  notify: Restart service Apache

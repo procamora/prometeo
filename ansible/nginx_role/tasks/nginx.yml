@@ -1,0 +1,63 @@
+---
+
+- name: Nginx | Copy sites conf
+  file:
+    path: "/usr/share/nginx/{{ item }}"
+    state: directory
+    owner: nginx
+    group: nginx
+    mode: '0755'
+  with_items:
+    - c.com
+    - d.com
+    - apache.conf
+
+
+- name: Nginx | Create a files
+  file:
+    path: "/usr/share/nginx/{{ item.dir }}/{{ item.file }}"
+    state: touch
+    owner: nginx
+    group: nginx
+    mode: '0755'
+  with_items:
+    - { dir: c.com, file: index.html }
+    - { dir: d.com, file: index.html }
+    - { dir: c.com, file: info.php }
+    - { dir: d.com, file: info.php }
+
+
+- name: Nginx | Change listen port
+  lineinfile:
+    path: "/usr/share/nginx/{{ item.dir }}/{{ item.file }}"
+    #regexp: '^#?\s*Listen\s*\d+$'
+    line: "{{ item.msg }}"
+  with_items:
+    - { dir: c.com, file: index.html, msg: "<h1 style='color: green;'>CCCCCCCCCCC</h1>" }
+    - { dir: d.com, file: index.html, msg: "<h1 style='color: BLUE;'>DDDDDDDDDDDD</h1>" }
+    - { dir: c.com, file: info.php, msg: "<?php phpinfo(); ?>" }
+    - { dir: d.com, file: info.php, msg: "<?php phpinfo(); ?>" }
+
+- name: Nginx | Copy web config
+  template:
+    src: "{{ item }}"
+    dest: /etc/nginx/conf.d
+  with_items:
+    - c.conf
+    - d.conf
+  notify: Restart service Nginx
+
+
+
+
+
+
+
+
+- name: Nginx | Is valid config
+  shell: nginx -t
+  register: result
+  failed_when:
+    - result.rc != 0
+  changed_when: result.rc != 0
+  notify: Restart service Nginx

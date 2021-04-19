@@ -1,0 +1,4 @@
+---
+# defaults file for nginx_role
+
+apache_port: 8080

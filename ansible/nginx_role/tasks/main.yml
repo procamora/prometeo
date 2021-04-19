@@ -1,0 +1,10 @@
+---
+# tasks file for nginx_role
+- name: Pre Tasks
+  include: pre_tasks.yml
+
+- name: Apache Config
+  include: apache.yml
+
+- name: Nginx Config
+  include: nginx.yml

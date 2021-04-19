@@ -1,0 +1,17 @@
+---
+
+- name: Pre-Tasks | Install packages
+  yum:
+    name:
+      - nginx
+      - httpd
+      - php-fpm
+      - php
+      - php-cli
+      - mod_fcgid
+      - wget
+      - curl
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+

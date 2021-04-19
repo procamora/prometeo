@@ -1,0 +1,17 @@
+---
+# handlers file for nginx_role
+
+- name: Restart service Apache
+  systemd:
+    name: httpd
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+
+- name: Restart service Nginx
+  systemd:
+    name: nginx
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
