@@ -6,31 +6,20 @@ tig_path_ssl: "/etc/ssl"
 #tig_path_ssl: "/etc/ssl/{{ group_tig }}"
 
 # [server]
-grafana_protocol: https
-grafana_port: 443
+
 grafana_cert_file: "{{ tig_path_ssl }}/grafana.crt"
 grafana_cert_key: "{{ tig_path_ssl }}/grafana.key"
-grafana_domain: grafana.prometeo.sh
-grafana_enforce_domain: "true"
-# [security]
-grafana_admin_user: admin
-grafana_admin_password: prometeo
+grafana_domain: "{{ endpoints['grafana'].name }}"
+grafana_enforce_domain: "false"
 # [auth.anonymous]
-grafana_org_name: Prometeo S.L.
+grafana_org_name: "{{ domain }} S.L."
 
 # [http]
-influx_protocol: https
-influx_port: 8086
-influx_domain: influx.prometeo.sh
-
 influx_auth_enabled: "false"  # para que se requieras autenticacion en las queries
 influx_https_enabled: "true"
 influx_path_ssl: /etc/influxdb/ssl
 influx_https_certificate: "{{ tig_path_ssl }}/influx.pem"
 influx_https_private_key: "{{ tig_path_ssl }}/influx.key"
-
-influx_user: "{{ grafana_admin_user }}"
-influx_password: "{{ grafana_admin_password }}"
 
 telegraf_hostname: tig
 telegraf_database_influx: telegraf

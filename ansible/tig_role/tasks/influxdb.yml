@@ -31,8 +31,8 @@
 
 #- name: InfluxDB | Create admin user
 #  community.general.influxdb_user:
-#    user_name: "{{ influx_user }}"
-#    user_password: "{{ influx_password }}"
+#    user_name: "{{ prometeo_user }}"
+#    user_password: "{{ prometeo_pass }}"
 #    admin: yes
 
 
@@ -40,12 +40,12 @@
 #  community.general.influxdb_query:
 #    hostname: "192.168.1.36:8086"
 #    database_name: "{{ influxdb_database_name }}"
-#    query: "CREATE USER {{ influx_user }} WITH PASSWORD '{{ influx_password }}' WITH ALL PRIVILEGES"
+#    query: "CREATE USER {{ prometeo_user }} WITH PASSWORD '{{ prometeo_pass }}' WITH ALL PRIVILEGES"
 #  register: connection
 
 #-  name: Create user
 #  uri:
-#    url: "http://192.168.1.36:8086/query?q=CREATE USER {{ influx_user }} WITH PASSWORD '{{ influx_password }}' WITH ALL PRIVILEGES"
+#    url: "http://192.168.1.36:8086/query?q=CREATE USER {{ prometeo_user }} WITH PASSWORD '{{ prometeo_pass }}' WITH ALL PRIVILEGES"
 #    method: POST
 #  register: result
 

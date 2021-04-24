@@ -6,6 +6,9 @@ reverse_dns: "{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network
 dns_ext1: 8.8.8.8
 dns_ext2: 8.8.4.4
 
+prometeo_user: admin
+prometeo_pass: prometeo
+
 endpoints:
   nginx:
     service: nginx
@@ -56,7 +59,7 @@ endpoints:
     service: influx
     name: "influx.{{ domain }}"
     port: 8086
-    protocol: http
+    protocol: https
     name_rp: "influx.rp.{{ domain }}"
     ip: 192.168.1.36
     rp: false
