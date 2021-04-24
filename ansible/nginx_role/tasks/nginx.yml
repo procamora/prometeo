@@ -13,14 +13,14 @@
   register: dir_certificates
   delegate_to: localhost
 
-#- name: Nginx | Copy all certificates
-#  copy:
-#    src: "{{ path_certificate }}/{{ item }}"
-#    dest: /etc/pki/nginx/
-#    owner: nginx
-#    group: nginx
-#    mode: '0600'
-#  with_items: "{{ dir_certificates.stdout_lines }}"
+- name: Nginx | Copy all certificates
+  copy:
+    src: "{{ path_certificate }}/{{ item }}"
+    dest: /etc/pki/nginx/
+    owner: nginx
+    group: nginx
+    mode: '0600'
+  with_items: "{{ dir_certificates.stdout_lines }}"
 
 - name: Nginx | Copy basic config
   template:
@@ -28,28 +28,29 @@
     dest: /etc/nginx/nginx.conf
   notify: Restart service Nginx
 
-- debug:
-    msg: "dict: {{ servers[item] }}"
-  with_items: "{{ servers.keys() }}"
-
-- debug:
-    msg: "/etc/nginx/conf.d/{{ servers[item].name }}.{{ servers[item].port }}.conf"
-  with_items: "{{ servers }}"
+#- debug:
+#    msg: "dict: {{ endpoints[item] }}"
+#  with_items: "{{ endpoints.keys() }}"
+#
+#- debug:
+#    msg: "/etc/nginx/conf.d/{{ endpoints[item].name }}.{{ endpoints[item].port }}.conf"
+#  with_items: "{{ endpoints }}"
 
 - name: Nginx | Copy config websites reverse proxy
   template:
     src: templates/nginx/conf.d/webconf.conf.j2
-    dest: "/etc/nginx/conf.d/{{ servers[item].name }}.{{ servers[item].port }}.conf"
+    dest: "/etc/nginx/conf.d/{{ endpoints[item].name }}.{{ endpoints[item].port }}.conf"
     owner: nginx
     group: nginx
     mode: '0640'
   with_items:
-    - "{{ servers.keys() }}"
+    - "{{ endpoints.keys() }}"
+  when: endpoints[item].rp is true
   notify: Restart service Nginx
 
-- name: Nginx | Remove webconfig nginx servers without web
+- name: Nginx | Remove webconfig nginx endpoints without web
   file:
-    path: "/etc/nginx/conf.d/{{ servers[item].name }}.{{ servers[item].port }}.conf"
+    path: "/etc/nginx/conf.d/{{ endpoints[item].name }}.{{ endpoints[item].port }}.conf"
     state: absent
   with_items:
     - nginx

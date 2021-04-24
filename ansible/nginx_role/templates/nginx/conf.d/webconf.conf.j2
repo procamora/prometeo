@@ -8,30 +8,30 @@
 
 server {
   listen                        80;
-  server_name                   {{ servers[item].name_rp }};
+  server_name                   {{ endpoints[item].name_rp }};
   rewrite ^(.*)                 https://$server_name$1 permanent;
 }
 
 server {
   #listen                       443 ssl default_server;
   listen                        443 ssl;
-  server_name                   {{ servers[item].name_rp }};
+  server_name                   {{ endpoints[item].name_rp }};
 
   ssl                           on;
-  ssl_certificate               /etc/pki/nginx/{{ servers[item].name_rp }}.crt;
-  ssl_certificate_key           /etc/pki/nginx/{{ servers[item].name_rp }}.key;
+  ssl_certificate               /etc/pki/nginx/{{ endpoints[item].name_rp }}.crt;
+  ssl_certificate_key           /etc/pki/nginx/{{ endpoints[item].name_rp }}.key;
   ssl_protocols                 TLSv1 TLSv1.1 TLSv1.2;
   ssl_ciphers                   HIGH:!aNULL:!MD5;
 
   #charset koi8-r
-  access_log                    /var/log/nginx/{{ servers[item].name_rp }}.{{ servers[item].port }}.log main;
-  error_log                     /var/log/nginx/{{ servers[item].name_rp }}.{{ servers[item].port }}.error.log warn;
+  access_log                    /var/log/nginx/{{ endpoints[item].name_rp }}.{{ endpoints[item].port }}.log main;
+  error_log                     /var/log/nginx/{{ endpoints[item].name_rp }}.{{ endpoints[item].port }}.error.log warn;
 
   location / {
 
     proxy_ssl_session_reuse     off;
     proxy_ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
-    proxy_pass                  {{ servers[item].protocol }}://{{ servers[item].name }}:{{ servers[item].port }}/;
+    proxy_pass                  {{ endpoints[item].protocol }}://{{ endpoints[item].name }}:{{ endpoints[item].port }}/;
 
     proxy_redirect              off;
     proxy_set_header            Host $host;

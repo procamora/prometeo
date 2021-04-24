@@ -16,7 +16,7 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    # resolver {{ servers['dns'].ip }} valid=30s;
+    # resolver {{ endpoints['dns'].ip }} valid=30s;
     resolver 127.0.0.1 valid=30s;
 
     server_names_hash_bucket_size 128;
