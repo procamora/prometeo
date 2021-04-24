@@ -1,0 +1,40 @@
+---
+
+domain: prometeo.sh
+
+servers:
+  nginx:
+    name: "nginx.{{ domain }}"
+    port: 443
+    protocol: https
+    name_rp: "nginx.rp.{{ domain }}"
+    ip: 192.168.1.26
+
+  grafana:
+    name: "grafana.{{ domain }}"
+    port: 443
+    protocol: https
+    name_rp: "grafana.rp.{{ domain }}"
+    ip: 192.168.1.36
+
+  splunk:
+    name: "splunk.{{ domain }}"
+    port: 8000
+    protocol: https
+    name_rp: "splunk.rp.{{ domain }}"
+    ip: 192.168.1.14
+
+  transmission:
+    name: "transmission.{{ domain }}"
+    port: 9091
+    protocol: http
+    name_rp: "transmission.rp.{{ domain }}"
+    ip: 192.168.1.201
+
+  dns:
+    name: "ns1.{{ domain }}"
+    port: 80
+    protocol: http
+    name_rp: "ns1.rp.{{ domain }}"
+    ip: 192.168.1.26
+

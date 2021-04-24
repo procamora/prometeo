@@ -1,0 +1,11 @@
+---
+# defaults file for bind_role
+
+path_named: /etc/named.conf
+
+path_conf: "/etc/named.{{ domain }}.conf"
+path_rp_conf: "/etc/named.rp.{{ domain }}.conf"
+path_forward: "/var/named/forward.{{ domain }}.zones"
+path_reverse: "/var/named/reverse.{{ domain }}.zones"
+path_rp_forward: "/var/named/forward.rp.{{ domain }}.zones"
+path_rp_reverse: "/var/named/reverse.rp.{{ domain }}.zones"

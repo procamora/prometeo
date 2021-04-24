@@ -1,0 +1,29 @@
+$TTL 86400
+@   		IN  	SOA     	{{ endpoints['dns'].name }}. root.{{ domain }}. (
+        	{{ cur_date }}  		;Serial
+        	3600        		;Refresh
+        	1800        		;Retry
+        	604800      		;Expire
+        	86400  )     		;Minimum TTL
+
+; name servers
+@		IN   NS			{{ endpoints['dns'].name }}.
+ns1		IN   A			{{ endpoints['dns'].ip }}
+
+; PTR Records
+{% for server in endpoints %}
+{% if endpoints[server].service == "ns1" %}
+{{ endpoints["dns"].ip.split('.')[-1] }}		IN   PTR		{{ endpoints["dns"].name }}.
+{% else %}
+{{ endpoints[server].ip.split('.')[-1] }}		IN   PTR		{{ endpoints[server].name }}.
+{% endif %}
+{% endfor %}
+
+; PTR Records Reverse Proxy
+{% for server in endpoints %}
+{% if endpoints[server].service == "ns1" %}
+;{{ endpoints["dns"].ip.split('.')[-1] }}		IN   PTR		{{ endpoints["dns"].name_rp }}.
+{% elif endpoints[server].rp %}
+;{{ endpoints[server].ip.split('.')[-1] }}		IN   PTR		{{ endpoints[server].name_rp }}.
+{% endif %}
+{% endfor %}

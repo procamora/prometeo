@@ -1,0 +1,40 @@
+---
+
+- block:
+  - name: Get timestamp from the system
+    shell: "date +%Y%m%d%H"
+    register: tstamp
+
+  - name: Set variables
+    set_fact:
+      cur_date: "{{ tstamp.stdout }}"
+
+  - name: "Bind | Copy files to domain {{ domain }}"
+    template:
+      src: "{{ item.file }}"
+      dest: "{{ item.dest }}"
+      owner: named
+      group: named
+    with_items:
+      - { file: named.conf, dest: /etc/named.conf }
+      - { file: forward.prometeo.sh.zones, dest: "{{ path_forward }}" }
+      - { file: reverse.prometeo.sh.zones, dest: "{{ path_reverse }}" }
+      - { file: named.prometeo.sh.conf, dest: "{{ path_conf }}" }
+      - { file: forward.rp.prometeo.sh.zones, dest: "{{ path_rp_forward }}" }
+#      - { file: reverse.rp.prometeo.sh.zones, dest: "{{ path_rp_reverse }}" }
+#      - { file: named.rp.prometeo.sh.conf, dest: "{{ path_rp_conf }}" }
+
+#- name: Bind | Include custom config
+#  lineinfile:
+#    path: "{{ path_named }}"
+#    regexp: "{{ item.regexp }}"
+#    line: "{{ item.line }}"
+#    backrefs: yes
+#  with_items:
+#    - { regexp: '^#?(\s*)include\s*"{{ path_conf }}";\s*$', line: '\1include "{{ path_conf }}";' }
+#    - { regexp: '^#?(\s*)listen-on port 53.*;\s*$', line: '\1listen-on port 53 { 127.0.0.1; {{ network }}; };' }
+#    - { regexp: '^#?(\s*)(allow-query\s*{.*)( };\s*$)', line: '\1\2 {{ network }};\3' }
+##    - { regexp: '^#?\s*include\s*"{{ path_rp_conf }}";\s*$', line: 'include "{{ path_rp_conf }}";' }
+#  notify: Restart service Bind
+
+# FIXME pendiente por ver como meter el forwarders a google

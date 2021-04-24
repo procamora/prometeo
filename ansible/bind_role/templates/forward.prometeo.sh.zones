@@ -1,0 +1,19 @@
+$TTL 86400
+@   			IN  	SOA     {{ endpoints['dns'].name }}. root.{{ domain }}. (
+        		{{ cur_date }}  	;Serial
+        		3600        	;Refresh
+        		1800        	;Retry
+        		604800      	;Expire
+        		86400 )     	;Minimum TTL
+
+; name servers - NS records
+@		IN  	NS      {{ endpoints['dns'].name }}.
+; name servers - A records
+ns1		IN  	A   	 {{ endpoints['dns'].ip }}
+; MX records
+;		IN  	MX  10   mail.{{ domain }}.
+
+; {{ network }} - A records
+{% for server in endpoints %}
+{{ endpoints[server].service }}		IN   A		{{ endpoints[server].ip }}
+{% endfor %}

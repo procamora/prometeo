@@ -1,0 +1,11 @@
+---
+# tasks file for bind_role
+
+- name: Pre Tasks
+  include: pre_tasks.yml
+
+- name: Bind
+  include: bind.yml
+
+- name: Post Tasks
+  include: post_tasks.yml

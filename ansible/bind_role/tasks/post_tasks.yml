@@ -1,0 +1,80 @@
+---
+
+- name: Post Tasks | flush_handlers
+  meta: flush_handlers
+  register: result
+  failed_when:
+    - result.rc != 0
+
+- name: Restart service Bind
+  systemd:
+    name: named
+    state: restarted
+
+- name: Post Tasks | Is valid config
+  shell: "named-checkconf {{ item }}"
+  with_items:
+    - /etc/named.conf
+  register: result
+  failed_when:
+    - result.rc != 0
+  changed_when: result.rc != 0
+  notify: Restart service Bind
+
+- block:
+  - name: Post Tasks | Is valid zones
+    shell: "named-checkzone {{ item.domain }} {{ item.path }}"
+    with_items:
+      - { domain: "{{ domain }}", path: /var/named/forward.prometeo.sh.zones }
+      - { domain: "{{ reverse_dns }}", path: /var/named/reverse.prometeo.sh.zones }
+      - { domain: "rp.{{ domain }}", path: /var/named/forward.rp.prometeo.sh.zones }
+  #    - { domain: "rp.{{ domain }}", path: /var/named/reverse.rp.prometeo.sh.zones }
+    register: result
+    failed_when:
+      - result.rc != 0
+    changed_when: result.rc != 0
+    notify: Restart service Bind
+
+- block:
+  - name: Post Tasks | dig all domains forwarding
+    shell: "dig @127.0.0.1 {{ endpoints[item].name }} | grep -vq 'ANSWER: 0'"
+    with_items:
+      - "{{ endpoints.keys() }}"
+    register: result
+    failed_when:
+      - result.rc != 0
+    changed_when: result.rc != 0
+    notify: Restart service Bind
+
+  - name: Post Tasks | dig all domains reverse
+    shell: "dig -x @127.0.0.1 {{ endpoints[item].ip }} | grep -vq 'ANSWER: 0'"
+    with_items:
+      - "{{ endpoints.keys() }}"
+    register: result
+    failed_when:
+      - result.rc != 0
+    changed_when: result.rc != 0
+    notify: Restart service Bind
+
+- block:
+  - name: Post Tasks | dig all domains rp forward
+    shell: "dig @127.0.0.1 {{ endpoints[item].name_rp }} | grep -vq 'ANSWER: 0'"
+    when: endpoints[item].rp
+    with_items:
+      - "{{ endpoints.keys() }}"
+    register: result
+    failed_when:
+      - result.rc != 0
+    changed_when: result.rc != 0
+    notify: Restart service Bind
+
+#  - name: Post Tasks | dig all domains rp reverse
+#    shell: "dig -x @127.0.0.1 {{ endpoints[item].name_rp }} | grep -vq 'ANSWER: 0'"
+#    when: endpoints[item].rp
+#    with_items:
+#      - "{{ endpoints.keys() }}"
+#    register: result
+#    failed_when:
+#      - result.rc != 0
+#    changed_when: result.rc != 0
+#    notify: Restart service Bind
