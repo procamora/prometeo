@@ -1,40 +1,92 @@
 ---
 
 domain: prometeo.sh
+network: 192.168.1.0/24
+reverse_dns: "{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network.split('.')[0] }}.in-addr.arpa"
+dns_ext1: 8.8.8.8
+dns_ext2: 8.8.4.4
 
-servers:
+endpoints:
   nginx:
+    service: nginx
     name: "nginx.{{ domain }}"
     port: 443
     protocol: https
     name_rp: "nginx.rp.{{ domain }}"
     ip: 192.168.1.26
-
-  grafana:
-    name: "grafana.{{ domain }}"
-    port: 443
-    protocol: https
-    name_rp: "grafana.rp.{{ domain }}"
-    ip: 192.168.1.36
+    rp: false
 
   splunk:
+    service: splunk
     name: "splunk.{{ domain }}"
     port: 8000
     protocol: https
     name_rp: "splunk.rp.{{ domain }}"
     ip: 192.168.1.14
+    rp: true
 
   transmission:
+    service: transmission
     name: "transmission.{{ domain }}"
     port: 9091
     protocol: http
     name_rp: "transmission.rp.{{ domain }}"
     ip: 192.168.1.201
+    rp: true
 
   dns:
+    service: ns1
     name: "ns1.{{ domain }}"
-    port: 80
+    port: 53
     protocol: http
     name_rp: "ns1.rp.{{ domain }}"
     ip: 192.168.1.26
+    rp: false
+
+  logstash:
+    service: logstash
+    name: "logstash.{{ domain }}"
+    port: 9600
+    protocol: http
+    name_rp: "logstash.rp.{{ domain }}"
+    ip: 192.168.1.14
+    rp: false
+
+  influx:
+    service: influx
+    name: "influx.{{ domain }}"
+    port: 8086
+    protocol: http
+    name_rp: "influx.rp.{{ domain }}"
+    ip: 192.168.1.36
+    rp: false
+
+  telegraf:
+    service: telegraf
+    name: "telegraf.{{ domain }}"
+    port: 443
+    protocol: http
+    name_rp: "telegraf.rp.{{ domain }}"
+    ip: 192.168.1.36
+    rp: false
+
+  grafana:
+    service: grafana
+    name: "grafana.{{ domain }}"
+    port: 443
+    protocol: https
+    name_rp: "grafana.rp.{{ domain }}"
+    ip: 192.168.1.36
+    rp: true
+
+
+  mail:
+    service: mail
+    name: "mail.{{ domain }}"
+    port: 80
+    protocol: http
+    name_rp: "mail.rp.{{ domain }}"
+    ip: 192.168.1.26
+    rp: false
+
 

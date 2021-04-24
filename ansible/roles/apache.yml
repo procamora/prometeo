@@ -1,5 +1,5 @@
 ---
-- name: update web servers
+- name: update web endpoints
   hosts: apache.prometeo.com
   remote_user: root
 

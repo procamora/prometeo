@@ -21,10 +21,14 @@
 #    state: latest
 #  when: ansible_os_family == 'RedHat'
 
-
 - name: Pre-Tasks | Upgrade all packages with pkg
   community.general.apk:
     name: "*"
     update_cache: yes
     cache_valid_time: 3600
   when: ansible_os_family == 'Alpine'
+
+- name: Pre-Tasks | Check is defined var endpoints
+  fail:
+    msg: "The variable endpoints is not defined"
+  when: endpoints is not defined
