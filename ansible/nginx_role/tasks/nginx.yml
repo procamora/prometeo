@@ -1,63 +1,57 @@
 ---
 
-- name: Nginx | Copy sites conf
+- name: Nginx | Create a directory certificates
   file:
-    path: "/usr/share/nginx/{{ item }}"
+    path: /etc/pki/nginx/
     state: directory
     owner: nginx
     group: nginx
-    mode: '0755'
-  with_items:
-    - c.com
-    - d.com
-    - apache.conf
+    mode: '0750'
 
+- name: Nginx | Get all local certificates
+  shell: "ls {{ path_certificate }}"
+  register: dir_certificates
+  delegate_to: localhost
 
-- name: Nginx | Create a files
-  file:
-    path: "/usr/share/nginx/{{ item.dir }}/{{ item.file }}"
-    state: touch
+#- name: Nginx | Copy all certificates
+#  copy:
+#    src: "{{ path_certificate }}/{{ item }}"
+#    dest: /etc/pki/nginx/
+#    owner: nginx
+#    group: nginx
+#    mode: '0600'
+#  with_items: "{{ dir_certificates.stdout_lines }}"
+
+- name: Nginx | Copy basic config
+  template:
+    src: nginx/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: Restart service Nginx
+
+- debug:
+    msg: "dict: {{ servers[item] }}"
+  with_items: "{{ servers.keys() }}"
+
+- debug:
+    msg: "/etc/nginx/conf.d/{{ servers[item].name }}.{{ servers[item].port }}.conf"
+  with_items: "{{ servers }}"
+
+- name: Nginx | Copy config websites reverse proxy
+  template:
+    src: templates/nginx/conf.d/webconf.conf.j2
+    dest: "/etc/nginx/conf.d/{{ servers[item].name }}.{{ servers[item].port }}.conf"
     owner: nginx
     group: nginx
-    mode: '0755'
+    mode: '0640'
   with_items:
-    - { dir: c.com, file: index.html }
-    - { dir: d.com, file: index.html }
-    - { dir: c.com, file: info.php }
-    - { dir: d.com, file: info.php }
-
-
-- name: Nginx | Change listen port
-  lineinfile:
-    path: "/usr/share/nginx/{{ item.dir }}/{{ item.file }}"
-    #regexp: '^#?\s*Listen\s*\d+$'
-    line: "{{ item.msg }}"
-  with_items:
-    - { dir: c.com, file: index.html, msg: "<h1 style='color: green;'>CCCCCCCCCCC</h1>" }
-    - { dir: d.com, file: index.html, msg: "<h1 style='color: BLUE;'>DDDDDDDDDDDD</h1>" }
-    - { dir: c.com, file: info.php, msg: "<?php phpinfo(); ?>" }
-    - { dir: d.com, file: info.php, msg: "<?php phpinfo(); ?>" }
-
-- name: Nginx | Copy web config
-  template:
-    src: "{{ item }}"
-    dest: /etc/nginx/conf.d
-  with_items:
-    - c.conf
-    - d.conf
+    - "{{ servers.keys() }}"
   notify: Restart service Nginx
 
+- name: Nginx | Remove webconfig nginx servers without web
+  file:
+    path: "/etc/nginx/conf.d/{{ servers[item].name }}.{{ servers[item].port }}.conf"
+    state: absent
+  with_items:
+    - nginx
+    - dns
 
-
-
-
-
-
-
-- name: Nginx | Is valid config
-  shell: nginx -t
-  register: result
-  failed_when:
-    - result.rc != 0
-  changed_when: result.rc != 0
-  notify: Restart service Nginx

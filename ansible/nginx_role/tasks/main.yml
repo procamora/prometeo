@@ -3,8 +3,11 @@
 - name: Pre Tasks
   include: pre_tasks.yml
 
-- name: Apache Config
-  include: apache.yml
+#- name: Apache Config
+#  include: apache.yml
 
 - name: Nginx Config
   include: nginx.yml
+
+- name: Post Tasks
+  include: post_tasks.yml

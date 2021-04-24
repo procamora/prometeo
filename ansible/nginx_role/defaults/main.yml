@@ -1,4 +1,8 @@
 ---
 # defaults file for nginx_role
 
-apache_port: 8080
+path_certificate: "{{ playbook_dir }}/../certificates/services"
+
+dns_server_IP: 8.8.8.8
+
+
