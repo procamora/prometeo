@@ -21,8 +21,6 @@
       - { file: reverse.prometeo.sh.zones, dest: "{{ path_reverse }}" }
       - { file: named.prometeo.sh.conf, dest: "{{ path_conf }}" }
       - { file: forward.rp.prometeo.sh.zones, dest: "{{ path_rp_forward }}" }
-#      - { file: reverse.rp.prometeo.sh.zones, dest: "{{ path_rp_reverse }}" }
-#      - { file: named.rp.prometeo.sh.conf, dest: "{{ path_rp_conf }}" }
 
 #- name: Bind | Include custom config
 #  lineinfile:

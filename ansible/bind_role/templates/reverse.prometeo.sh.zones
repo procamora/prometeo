@@ -22,8 +22,8 @@ ns1		IN   A			{{ endpoints['dns'].ip }}
 ; PTR Records Reverse Proxy
 {% for server in endpoints %}
 {% if endpoints[server].service == "ns1" %}
-;{{ endpoints["dns"].ip.split('.')[-1] }}		IN   PTR		{{ endpoints["dns"].name_rp }}.
+{{ endpoints["dns"].ip.split('.')[-1] }}		IN   PTR		{{ endpoints["dns"].name_rp }}.
 {% elif endpoints[server].rp %}
-;{{ endpoints[server].ip.split('.')[-1] }}		IN   PTR		{{ endpoints[server].name_rp }}.
+{{ endpoints['nginx'].ip.split('.')[-1] }}		IN   PTR		{{ endpoints[server].name_rp }}.
 {% endif %}
 {% endfor %}
