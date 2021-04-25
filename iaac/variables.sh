@@ -91,30 +91,57 @@ declare -r NETMASK_LAN="255.255.255.0"
 declare -r GATEWAY_LAN="10.10.0.1"
 
 declare -r VMID_LAN_ASTERISK="321"
+declare -r PORT_LAN_ASTERISK="5060"
+declare -r PROTOCOL_LAN_ASTERISK="sip"
+declare -r PROXY_LAN_ASTERISK="false"
 declare -r IP_LAN_ASTERISK="10.10.0.21"
 
 declare -r VMID_LAN_LDAP="322"
+declare -r PORT_LAN_LDAP="389"
+declare -r PROTOCOL_LAN_LDAP="ldap"
+declare -r PROXY_LAN_LDAP="false"
 declare -r IP_LAN_LDAP="10.10.0.22"
 
 declare -r VMID_LAN_ELK="323"
+declare -r PORT_LAN_ELK="80"
+declare -r PROTOCOL_LAN_ELK="http"
+declare -r PROXY_LAN_ELK="323"
 declare -r IP_LAN_ELK="10.10.0.23"
 
 declare -r VMID_LAN_SPLUNK="324"
+declare -r PORT_LAN_SPLUNK="8000"
+declare -r PROTOCOL_LAN_SPLUNK="http"
+declare -r PROXY_LAN_SPLUNK="true"
 declare -r IP_LAN_SPLUNK="10.10.0.24"
 
 declare -r VMID_LAN_WINSERVER="325"
+declare -r PORT_LAN_WINSERVER="80"
+declare -r PROTOCOL_LAN_WINSERVER="http"
+declare -r PROXY_LAN_WINSERVER="false"
 declare -r IP_LAN_WINSERVER="10.10.0.25"
 
 declare -r VMID_LAN_OAUTH="326"
+declare -r PORT_LAN_OAUTH="80"
+declare -r PROTOCOL_LAN_OAUTH="http"
+declare -r PROXY_LAN_OAUTH="false"
 declare -r IP_LAN_OAUTH="10.10.0.26"
 
 declare -r VMID_LAN_OPENID="327"
+declare -r PORT_LAN_OPENID="80"
+declare -r PROTOCOL_LAN_OPENID="http"
+declare -r PROXY_LAN_OPENID="false"
 declare -r IP_LAN_OPENID="10.10.0.27"
 
 declare -r VMID_LAN_SQLSERVER="328"
+declare -r PORT_LAN_SQLSERVER="1433"
+declare -r PROTOCOL_LAN_SQLSERVER="http"
+declare -r PROXY_LAN_SQLSERVER="false"
 declare -r IP_LAN_SQLSERVER="10.10.0.28"
 
 declare -r VMID_LAN_ANSIBLE="329"
+declare -r PORT_LAN_ANSIBLE="80"
+declare -r PROTOCOL_LAN_ANSIBLE="http"
+declare -r PROXY_LAN_ANSIBLE="false"
 declare -r IP_LAN_ANSIBLE="10.10.0.29"
 
 ################
@@ -253,6 +280,9 @@ declare -r NETMASK_IDS="255.255.255.248"
 declare -r GATEWAY_IDS="10.30.0.1"
 
 declare -r VMID_IDS_SURICATA="621"
+declare -r PORT_IDS_SURICATA="80"
+declare -r PROTOCOL_IDS_SURICATA="http"
+declare -r PROXY_IDS_SURICATA="false"
 declare -r IP_IDS_SURICATA="10.30.0.2"
 
 ###################
