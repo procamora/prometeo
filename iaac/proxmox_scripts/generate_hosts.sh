@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#DOMAIN="prometeo.com"
-
 read -r -d '' template_terraform << EOM
 resource "proxmox_lxc" "$resource" {
   vmid = var.$vmid # var.vmid_dmz_mariadb
@@ -11,8 +9,8 @@ resource "proxmox_lxc" "$resource" {
   start = false
 
   cores = 1
-  memory = 128
-  swap = 128
+  memory = 512
+  swap = 256
 
   network {
     name = var.pct_ethernet
@@ -54,10 +52,10 @@ function generate_inventary() {
             inventory+="$host.$DOMAIN\n"
             #servers_yml+="    $host.$DOMAIN:\n"
             resource="$host"
-            vmid="$host"
-            hostname="$host"
-            gateway="$host"
-            vlan="$host"
+            vmid="vmid_dmz_$host"
+            hostname="$host.$DOMAIN"
+            gateway="gateway_dmz_$host"
+            vlan="vlan_dmz_$host"
             echo "$template_terraform"
         done
         #servers_yml+="  vars:\n"
