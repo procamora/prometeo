@@ -1,0 +1,84 @@
+---
+
+- name: Filebeat | Install in Debian OS
+  block:
+  # Add an Apt signing key, uses whichever key is at the URL
+  # wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+  - name: Filebeat | Add an Apt signing key Elastic
+    apt_key:
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      state: present
+
+    #echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+  - name: Filebeat | Copy repo elastic
+    copy:
+      src: elastic-7.x.list
+      dest: /etc/apt/sources.list.d/
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Filebeat | Update repository with apt for append repo Elastic
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: Pre-Tasks | Install required packages with apt
+    apt:
+      pkg:
+        - filebeat
+      state: present
+
+  when: ansible_os_family == 'Debian'
+
+- name: Filebeat | Install in RedHat OS
+  block:
+    # Add an Apt signing key, uses whichever key is at the URL
+    # sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+    - name: Filebeat | Add an rpm signing key Elastic
+      rpm_key:
+        key: https://packages.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Filebeat | Copy repo elastic
+      copy:
+        src: elastic-7.x.repo
+        dest: /etc/yum.repos.d/
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Filebeat | Install filebeat with dnf
+      dnf:
+        name:
+          - filebeat
+        state: present
+
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Filebeat | Template a file to /etc/filebeat/filebeat.yml
+  template:
+    src: templates/filebeat.j2.yml
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: '0644'
+    #validate: filebeat test config -c /etc/filebeat/filebeat.yml
+    register: Enable service filebeat
+
+- name: Filebeat | Is valid config
+  shell: filebeat test config -c /etc/filebeat/filebeat.yml
+  register: result
+  failed_when:
+    - result.rc != 0
+  changed_when: result.rc != 0
+  notify: Enable service filebeat
+
+#- name: Filebeat | Check is correct config filebeat.yml
+#  shell: filebeat test config -c /etc/filebeat/filebeat.yml
+#  register: filebeat
+
+#- debug:
+#    msg: "filebeat test config -c /etc/filebeat/filebeat.yml => {{ filebeat.stdout_lines }}"
+

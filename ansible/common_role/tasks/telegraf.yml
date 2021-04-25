@@ -1,0 +1,85 @@
+---
+
+- name: Telegraf | Copy repo Telegraf
+  copy:
+    src: "{{ item.src }}"
+    dest: "/etc/yum.repos.d/{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - { src: "files/influxdb_centos.repo", dest: 'influxdb.repo' }
+
+- name: Telegraf | Install Telegraf
+  yum:
+    name:
+      - telegraf
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+- name: Telegraf | Create a directory certificates telegraf
+  file:
+    path: "{{ path_ssl_telegraf }}/"
+    state: directory
+    owner: telegraf
+    group: telegraf
+    mode: '0750'
+
+- name: Telegraf | Copy certificate CA
+  copy:
+    src: "{{ item }}"
+    dest: "{{ path_ssl_telegraf }}"
+    owner: telegraf
+    group: telegraf
+    mode: '0640'
+  with_items:
+    - "{{ path_certificate }}/../ca.pem"
+
+- name: Telegraf | Get all local certificates
+  shell: "ls {{ path_certificate }}/{{ endpoints['telegraf'].name }}.*"
+  register: dir_certificates
+  delegate_to: localhost
+
+- name: Telegraf | Copy certificates telegraf
+  copy:
+    src: "{{ item }}"
+    dest: "{{ path_ssl_telegraf }}/"
+    owner: telegraf
+    group: telegraf
+    mode: '0600'
+  with_items: "{{ dir_certificates.stdout_lines }}"
+
+- name: Telegraf | Copy custom configuration
+  template:
+    src: "{{ item }}"
+    dest: /etc/telegraf/telegraf.d/
+    owner: telegraf
+    group: telegraf
+  notify: Restart service Telegraf
+  with_items:
+    - telegraf.d/influx.conf
+    - telegraf.d/monitoring.conf
+
+- name: Telegraf | Disable output telegraf in main config
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^(#)?\s*\[\[outputs\.influxdb\]\]\s*$'
+    line: "#[[outputs.influxdb]]"
+
+- name: Telegraf | Set hostname in logs
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^#?(\s*)hostname\s*=.*$'
+    line: '\1hostname = "{{ ansible_hostname }}"'
+    backrefs: true
+
+- block:
+    - name: Telegraf | Force execute handler restart services
+      meta: flush_handlers
+
+    - name: InfluxDB | Is active service Telegraf
+      shell: systemctl is-active telegraf
+      register: result
+      failed_when:
+        - result.rc != 0
+

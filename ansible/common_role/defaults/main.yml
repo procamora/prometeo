@@ -1,2 +1,4 @@
 ---
 # defaults file for common_role
+
+path_ssl_telegraf: "{{ path_ssl }}/telegraf"

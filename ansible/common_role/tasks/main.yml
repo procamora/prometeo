@@ -1,27 +1,37 @@
 ---
 # tasks file for common_role
 
-- name: Pre-Tasks | Update repository with apt
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
+- name: Inlcude vars all endpoints
+  include_vars:
+    file: "{{ playbook_dir }}/../var_servers.yml"
+
+- block:
+  - name: Pre-Tasks | Update repository with apt
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: Pre-Tasks | Upgrade all packages with apt
+    apt:
+      name: "*"
+      state: latest
   when: ansible_os_family == 'Debian'
 
+- block:
+  - name: Pre-Tasks | Upgrade all packages with dnf
+    dnf:
+      name: "*"
+      state: latest
 
-- name: Pre-Tasks | Upgrade all packages with apt
-  apt:
-    name: "*"
-    state: latest
-  when: ansible_os_family == 'Debian'
+  - name: Pre-Tasks | Install packages with dnf
+    dnf:
+      name:
+        - nc
+        - vim
+      state: latest
+  when: ansible_os_family == 'RedHat'
 
-
-#- name: Pre-Tasks | Upgrade all packages with dnf
-#  dnf:
-#    name: "*"
-#    state: latest
-#  when: ansible_os_family == 'RedHat'
-
-- name: Pre-Tasks | Upgrade all packages with pkg
+- name: Pre-Tasks | Upgrade all packages with apk
   community.general.apk:
     name: "*"
     update_cache: yes
@@ -32,3 +42,17 @@
   fail:
     msg: "The variable endpoints is not defined"
   when: endpoints is not defined
+
+- name: Telegraf | Create a directory certificates
+  file:
+    path: "{{ path_ssl }}/"
+    state: directory
+    owner: root
+    group: root
+    mode: '0765'
+
+- name: Install Filebeat
+  include: filebeat.yml
+
+- name: Install Telegraf
+  include: telegraf.yml

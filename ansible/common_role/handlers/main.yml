@@ -1,0 +1,9 @@
+---
+# handlers file for tig_role
+
+- name: Restart service Telegraf
+  systemd:
+    name: telegraf
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
