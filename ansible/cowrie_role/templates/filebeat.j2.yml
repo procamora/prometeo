@@ -101,7 +101,7 @@ tags: ["cowrie"]
 output.logstash:
   enabled: true
   # The Logstash hosts
-  hosts: ["{{ logstash_ip }}:5044"]
+  hosts: ["{{ endpoints['logstash'].name }}:{{ endpoints['logstash'].port }}"]
 
   # Optional SSL. By default is off.
   # List of root certificates for HTTPS server verifications

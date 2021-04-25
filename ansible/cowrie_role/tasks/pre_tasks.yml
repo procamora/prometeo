@@ -18,37 +18,6 @@
   when: ansible_os_family == 'Debian'
 
 
-# Add an Apt signing key, uses whichever key is at the URL
-# wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-- name: Pre-Tasks | Add an Apt signing key Elastic
-  apt_key:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    state: present
-
-
-  #echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
-- name: Pre-Tasks | Copy repo elastic
-  copy:
-    src: files/elastic-7.x.list
-    dest: /etc/apt/sources.list.d/
-    owner: root
-    group: root
-    mode: '0644'
-
-
-- name: Pre-Tasks | Update repository with apt for append repo Elastic
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
-  when: ansible_os_family == 'Debian'
-
-
-- name: Pre-Tasks | Install required packages with apt
-  apt:
-    pkg:
-      - filebeat
-    state: present
-  when: ansible_os_family == 'Debian'
 
 #sudo apt-get update && sudo apt-get install filebeat
 #sudo systemctl enable filebeat
