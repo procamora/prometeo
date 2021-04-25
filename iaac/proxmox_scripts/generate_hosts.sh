@@ -64,7 +64,8 @@ function generate_inventary() {
     inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
 
     #echo -e "$inventory_yml"
-    echo -e "$inventory_yml" >inventory.yml
+    echo -e "$inventory" >inventory
+    echo -e "$inventory_yml" >vars_servers.yml
 }
 
 function foreach_ips() {
