@@ -44,6 +44,7 @@ function generate_inventary() {
     #inventory_yml+="  hosts:\n"
     for my_ip in "${my_ips_dmz[@]}"; do
         host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
+        host_ip=$(echo "$my_ip" | awk -F "=" '{print $2}' | tr -d '"')
         proxy=$(grep -iE "PROXY_(DMZ|IDS|LAN)_$host" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
         protocol=$(grep -iE "PROTOCOL_(DMZ|IDS|LAN)_$host" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
         port=$(grep -iE "PORT_(DMZ|IDS|LAN)_$host" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
@@ -53,7 +54,7 @@ function generate_inventary() {
         inventory_yml+="    port: $port\n"
         inventory_yml+="    protocol: $protocol\n"
         inventory_yml+="    name_rp: ${host}.rp.${DOMAIN}\n"
-        inventory_yml+="    ip: $my_ip\n"
+        inventory_yml+="    ip: $host_ip\n"
         inventory_yml+="    rp: $proxy\n"
         inventory_yml+="  \n"
     done
