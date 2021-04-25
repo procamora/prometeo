@@ -16,13 +16,13 @@ mapfile -t my_gw < <(grep -E "^declare -r GATEWAY_" "$vars_files" | awk -F " " '
 
 function generate_inventary() {
     inventory="# DON'T EDIT, auto-generated file\n# $(date)\n"
-    inventory_yml="---\n\n# DON'T EDIT, auto-generated file\n# $(date)\n"
+    servers_yml="---\n\n# DON'T EDIT, auto-generated file\n# $(date)\n"
 
     array_groups=("dmz" "lan" "pc")
     for ((i = 0; i < ${#array_groups[@]}; ++i)); do
         inventory+="\n[${array_groups[i]}]\n"
-        #inventory_yml+="\n${array_groups[i]}:\n"
-        #inventory_yml+="  hosts:\n"
+        #servers_yml+="\n${array_groups[i]}:\n"
+        #servers_yml+="  hosts:\n"
 
         mapfile -t array_ips < <(grep -iE "^declare -r IP_${array_groups[i]}" "$vars_files" | grep -v "HEALTH" |
             awk -F " " '{print $3}' | tr -d '"')
@@ -30,56 +30,56 @@ function generate_inventary() {
         for my_ip in "${array_ips[@]}"; do
             host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
             inventory+="$host.$DOMAIN\n"
-            #inventory_yml+="    $host.$DOMAIN:\n"
+            #servers_yml+="    $host.$DOMAIN:\n"
         done
-        #inventory_yml+="  vars:\n"
-        #inventory_yml+="    ansible_user: root\n"
-        #inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
-        #inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
+        #servers_yml+="  vars:\n"
+        #servers_yml+="    ansible_user: root\n"
+        #servers_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
+        #servers_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
     done
 
     # asdasd
     network=$(grep -iE "PCT_NETWORK" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
-    inventory_yml+="\ndefault_interface: $PCT_ETHERNET\n"
-    inventory_yml+="domain: $DOMAIN\n"
-    inventory_yml+="network: $network\n"
-    inventory_yml+="reverse_dns: \"{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network.split('.')[0] }}.in-addr.arpa\""
-    inventory_yml+="dns_ext1: 8.8.8.8\n"
-    inventory_yml+="dns_ext2: 8.8.4.4\n"
-    inventory_yml+="\nprometeo_user: admin\n"
-    inventory_yml+="prometeo_pass: $PCT_PASSWORD\n"
-    inventory_yml+="\ntelegraf_database_influx: telegraf\n"
-    inventory_yml+="\npath_certificate: \"{{ playbook_dir }}/../../certificates/services\"\n"
-    inventory_yml+="path_ssl: /etc/pki\n"
+    servers_yml+="\ndefault_interface: $PCT_ETHERNET\n"
+    servers_yml+="domain: $DOMAIN\n"
+    servers_yml+="network: $network\n"
+    servers_yml+="reverse_dns: \"{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network.split('.')[0] }}.in-addr.arpa\"\n"
+    servers_yml+="dns_ext1: 8.8.8.8\n"
+    servers_yml+="dns_ext2: 8.8.4.4\n"
+    servers_yml+="\nprometeo_user: admin\n"
+    servers_yml+="prometeo_pass: $PCT_PASSWORD\n"
+    servers_yml+="\ntelegraf_database_influx: telegraf\n"
+    servers_yml+="\npath_certificate: \"{{ playbook_dir }}/../../certificates/services\"\n"
+    servers_yml+="path_ssl: /etc/pki\n"
 
     # groups by OS
     mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_(DMZ|IDS|LAN)" "$vars_files" | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
-    inventory_yml+="\nendpoints:\n"
-    #inventory_yml+="  hosts:\n"
+    servers_yml+="\nendpoints:\n"
+    #servers_yml+="  hosts:\n"
     for my_ip in "${my_ips_dmz[@]}"; do
         host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
         host_ip=$(echo "$my_ip" | awk -F "=" '{print $2}' | tr -d '"')
         proxy=$(grep -iE "PROXY_(DMZ|IDS|LAN)_$host" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
         protocol=$(grep -iE "PROTOCOL_(DMZ|IDS|LAN)_$host" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
         port=$(grep -iE "PORT_(DMZ|IDS|LAN)_$host" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
-        inventory_yml+="  $host:\n"
-        inventory_yml+="    service: $host\n"
-        inventory_yml+="    name: $host.$DOMAIN\n"
-        inventory_yml+="    port: $port\n"
-        inventory_yml+="    protocol: $protocol\n"
-        inventory_yml+="    name_rp: ${host}.rp.${DOMAIN}\n"
-        inventory_yml+="    ip: $host_ip\n"
-        inventory_yml+="    rp: $proxy\n"
-        inventory_yml+="  \n"
+        servers_yml+="  $host:\n"
+        servers_yml+="    service: $host\n"
+        servers_yml+="    name: $host.$DOMAIN\n"
+        servers_yml+="    port: $port\n"
+        servers_yml+="    protocol: $protocol\n"
+        servers_yml+="    name_rp: ${host}.rp.${DOMAIN}\n"
+        servers_yml+="    ip: $host_ip\n"
+        servers_yml+="    rp: $proxy\n"
+        servers_yml+="  \n"
     done
-    #inventory_yml+="  vars:\n"
-    #inventory_yml+="    ansible_user: root\n"
-    #inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
-    #inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
+    #servers_yml+="  vars:\n"
+    #servers_yml+="    ansible_user: root\n"
+    #servers_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
+    #servers_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
 
-    #echo -e "$inventory_yml"
+    #echo -e "$servers_yml"
     echo -e "$inventory" >inventory
-    echo -e "$inventory_yml" >vars_servers.yml
+    echo -e "$servers_yml" >vars_servers.yml
 }
 
 function foreach_ips() {
