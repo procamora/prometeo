@@ -21,8 +21,8 @@ function generate_inventary() {
     array_groups=("dmz" "lan" "pc")
     for ((i = 0; i < ${#array_groups[@]}; ++i)); do
         inventory+="\n[${array_groups[i]}]\n"
-        inventory_yml+="\n${array_groups[i]}:\n"
-        inventory_yml+="  hosts:\n"
+        #inventory_yml+="\n${array_groups[i]}:\n"
+        #inventory_yml+="  hosts:\n"
 
         mapfile -t array_ips < <(grep -iE "^declare -r IP_${array_groups[i]}" "$vars_files" | grep -v "HEALTH" |
             awk -F " " '{print $3}' | tr -d '"')
@@ -30,12 +30,12 @@ function generate_inventary() {
         for my_ip in "${array_ips[@]}"; do
             host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
             inventory+="$host.$DOMAIN\n"
-            inventory_yml+="    $host.$DOMAIN:\n"
+            #inventory_yml+="    $host.$DOMAIN:\n"
         done
-        inventory_yml+="  vars:\n"
-        inventory_yml+="    ansible_user: root\n"
-        inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
-        inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
+        #inventory_yml+="  vars:\n"
+        #inventory_yml+="    ansible_user: root\n"
+        #inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
+        #inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
     done
 
     # asdasd
@@ -71,10 +71,10 @@ function generate_inventary() {
         inventory_yml+="    rp: $proxy\n"
         inventory_yml+="  \n"
     done
-    inventory_yml+="  vars:\n"
-    inventory_yml+="    ansible_user: root\n"
-    inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
-    inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
+    #inventory_yml+="  vars:\n"
+    #inventory_yml+="    ansible_user: root\n"
+    #inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
+    #inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
 
     #echo -e "$inventory_yml"
     echo -e "$inventory" >inventory
