@@ -2,7 +2,7 @@
 
 #DOMAIN="prometeo.com"
 
-cat > "$template_terraform" <<EOF
+read -r -d '' template_terraform << EOM
 resource "proxmox_lxc" "$resource" {
   vmid = var.$vmid # var.vmid_dmz_mariadb
   hostname = "$hostname"
@@ -22,7 +22,7 @@ resource "proxmox_lxc" "$resource" {
     tag = var.$vlan # var.vlan_dmz
   }
 
-EOF
+EOM
 
 # set variables
 if [[ -f ./variables.sh  ]]; then
