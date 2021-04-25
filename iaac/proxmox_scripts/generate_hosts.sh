@@ -38,6 +38,19 @@ function generate_inventary() {
         inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
     done
 
+    # asdasd
+    network=$(grep -iE "PCT_NETWORK" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
+    inventory_yml+="\ndefault_interface: $PCT_ETHERNET\n"
+    inventory_yml+="domain: $DOMAIN\n"
+    inventory_yml+="reverse_dns: \"{{ $network.split('.')[2] }}.{{ $network.split('.')[1] }}.{{ $network.split('.')[0] }}.in-addr.arpa\""
+    inventory_yml+="dns_ext1: 8.8.8.8\n"
+    inventory_yml+="dns_ext2: 8.8.4.4\n"
+    inventory_yml+="\nprometeo_user: admin\n"
+    inventory_yml+="prometeo_pass: $PCT_PASSWORD\n"
+    inventory_yml+="\ntelegraf_database_influx: telegraf\n"
+    inventory_yml+="\npath_certificate: \"{{ playbook_dir }}/../../certificates/services\"\n"
+    inventory_yml+="path_ssl: /etc/pki\n"
+
     # groups by OS
     mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_(DMZ|IDS|LAN)" "$vars_files" | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
     inventory_yml+="\nendpoints:\n"
