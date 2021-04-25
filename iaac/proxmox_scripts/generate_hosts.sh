@@ -15,9 +15,9 @@ resource "proxmox_lxc" "$resource" {
   network {
     name = var.pct_ethernet
     bridge = var.pm_bridge_prometeo
-    ip = "\${var.ip_dmz_mariadb}/\${var.mask_dmz}"
-    gw = var.$gateway # var.gateway_dmz
-    tag = var.$vlan # var.vlan_dmz
+    ip = "\\${var.ip_dmz_mariadb}/\\${var.mask_dmz}"
+    gw = var.\$gateway # var.gateway_dmz
+    tag = var.\$vlan # var.vlan_dmz
   }
 
 EOM
