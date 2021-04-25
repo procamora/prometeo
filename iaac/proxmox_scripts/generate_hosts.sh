@@ -42,7 +42,8 @@ function generate_inventary() {
     network=$(grep -iE "PCT_NETWORK" "$vars_files" | awk -F "=" '{print $2}' | tr -d '"')
     inventory_yml+="\ndefault_interface: $PCT_ETHERNET\n"
     inventory_yml+="domain: $DOMAIN\n"
-    inventory_yml+="reverse_dns: \"{{ $network.split('.')[2] }}.{{ $network.split('.')[1] }}.{{ $network.split('.')[0] }}.in-addr.arpa\""
+    inventory_yml+="network: $network\n"
+    inventory_yml+="reverse_dns: \"{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network.split('.')[0] }}.in-addr.arpa\""
     inventory_yml+="dns_ext1: 8.8.8.8\n"
     inventory_yml+="dns_ext2: 8.8.4.4\n"
     inventory_yml+="\nprometeo_user: admin\n"
