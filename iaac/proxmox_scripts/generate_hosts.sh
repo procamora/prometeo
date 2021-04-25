@@ -39,13 +39,11 @@ function generate_inventary() {
     done
 
     # groups by OS
-    mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_DMZ" "$vars_files" | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
-    inventory+="\n[DEBIAN]\n"
-    inventory_yml+="\ndebian:\n"
+    mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_(DMZ|IDS|LAN)" "$vars_files" | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
+    inventory_yml+="\nendpoints:\n"
     inventory_yml+="  hosts:\n"
     for my_ip in "${my_ips_dmz[@]}"; do
         host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
-        inventory+="$host.$DOMAIN\n"
         inventory_yml+="    $host.$DOMAIN:\n"
     done
     inventory_yml+="  vars:\n"
@@ -53,22 +51,6 @@ function generate_inventary() {
     inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
     inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
 
-    mapfile -t my_ips_lan < <(grep -E "^declare -r IP_LAN" "$vars_files" | grep -v "HEALTH" | grep -v "WINSERVER" | grep -v "SQLSERVER" |
-        awk -F " " '{print $3}' | tr -d '"')
-    inventory+="\n[CENTOS]\n"
-    inventory_yml+="\ncentos:\n"
-    inventory_yml+="  hosts:\n"
-    for my_ip in "${my_ips_lan[@]}"; do
-        host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
-        inventory+="$host.$DOMAIN\n"
-        inventory_yml+="    $host.$DOMAIN:\n"
-    done
-    inventory_yml+="  vars:\n"
-    inventory_yml+="    ansible_user: root\n"
-    inventory_yml+="    ansible_private_key_file: /root/.ssh/id_rsa\n"
-    inventory_yml+="    ansible_python_interpreter: /usr/bin/python3\n"
-
-    echo -e "$inventory" >inventory
     #echo -e "$inventory_yml"
     echo -e "$inventory_yml" >inventory.yml
 }
