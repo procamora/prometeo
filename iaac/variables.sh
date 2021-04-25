@@ -257,11 +257,11 @@ declare -r PROTOCOL_DMZ_DNS="http"
 declare -r PROXY_DMZ_DNS="false"
 declare -r IP_DMZ_DNS="10.20.0.53" # Ip custom para que quede bonito
 
-declare -r VMID_DMZ_HONEYPOT="3534"
-declare -r PORT_DMZ_HONEYPOT="22"
-declare -r PROTOCOL_DMZ_HONEYPOT="http"
-declare -r PROXY_DMZ_HONEYPOT="false"
-declare -r IP_DMZ_HONEYPOT="10.20.0.34"
+declare -r VMID_DMZ_COWRIE="3534"
+declare -r PORT_DMZ_COWRIE="22"
+declare -r PROTOCOL_DMZ_COWRIE="http"
+declare -r PROXY_DMZ_COWRIE="false"
+declare -r IP_DMZ_COWRIE="10.20.0.34"
 
 declare -r VMID_DMZ_MAIL="3535"
 declare -r PORT_DMZ_MAIL="25"
