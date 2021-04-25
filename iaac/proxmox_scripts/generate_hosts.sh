@@ -41,10 +41,17 @@ function generate_inventary() {
     # groups by OS
     mapfile -t my_ips_dmz < <(grep -E "^declare -r IP_(DMZ|IDS|LAN)" "$vars_files" | grep -v "HEALTH" | awk -F " " '{print $3}' | tr -d '"')
     inventory_yml+="\nendpoints:\n"
-    inventory_yml+="  hosts:\n"
+    #inventory_yml+="  hosts:\n"
     for my_ip in "${my_ips_dmz[@]}"; do
         host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
-        inventory_yml+="    $host.$DOMAIN:\n"
+        inventory_yml+="  $host:\n"
+        inventory_yml+="    service: $host\n"
+        inventory_yml+="    name: $host.$DOMAIN\n"
+        inventory_yml+="    port: $host.$DOMAIN\n"
+        inventory_yml+="    protocol: $host.$DOMAIN\n"
+        inventory_yml+="    name_rp: ${host}.rp.${DOMAIN}\n"
+        inventory_yml+="    ip: $my_ip\n"
+        inventory_yml+="    rp: $host.$DOMAIN\n"
     done
     inventory_yml+="  vars:\n"
     inventory_yml+="    ansible_user: root\n"
