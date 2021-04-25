@@ -3,7 +3,7 @@
 
 - name: Inlcude vars all endpoints
   include_vars:
-    file: "{{ playbook_dir }}/../var_servers.yml"
+    file: "{{ playbook_dir }}/../vars_servers.yml"
 
 - block:
   - name: Pre-Tasks | Update repository with apt

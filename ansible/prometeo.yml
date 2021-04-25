@@ -1,0 +1,8 @@
+---
+
+#- import_playbook: roles/backuppc.yml
+- import_playbook: roles/bind.yml
+#- import_playbook: roles/cowrie.yml
+#- import_playbook: roles/nginx.yml
+#- import_playbook: roles/splunk.yml
+#- import_playbook: roles/tig.yml

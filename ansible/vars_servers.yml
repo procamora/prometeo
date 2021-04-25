@@ -1,5 +1,7 @@
 ---
 
+default_interface: eth0
+
 domain: prometeo.sh
 network: 192.168.1.0/24
 reverse_dns: "{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network.split('.')[0] }}.in-addr.arpa"
@@ -8,6 +10,11 @@ dns_ext2: 8.8.4.4
 
 prometeo_user: admin
 prometeo_pass: prometeo
+
+telegraf_database_influx: telegraf
+
+path_certificate: "{{ playbook_dir }}/../../certificates/services"
+path_ssl: /etc/pki
 
 endpoints:
   nginx:
@@ -49,7 +56,7 @@ endpoints:
   logstash:
     service: logstash
     name: "logstash.{{ domain }}"
-    port: 9600
+    port: 5044
     protocol: http
     name_rp: "logstash.rp.{{ domain }}"
     ip: 192.168.1.14

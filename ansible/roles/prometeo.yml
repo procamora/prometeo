@@ -1,4 +1,0 @@
----
-
-- import_playbook: splunk.yml
-#- import_playbook: cowrie.yml

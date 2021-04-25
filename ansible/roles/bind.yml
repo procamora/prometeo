@@ -7,10 +7,6 @@
     - name: Distribution
       debug: msg="{{ ansible_os_family }} -> {{ ansible_distribution }} {{ ansible_distribution_version }}.{{ ansible_distribution_major_version }}"
 
-    - name: Inlcude vars all endpoints
-      include_vars:
-        file: ../var_servers.yml
-
   roles:
     - common_role
     - bind_role

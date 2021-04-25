@@ -9,7 +9,7 @@
 
     - name: Inlcude vars all endpoints
       include_vars:
-        file: ../var_servers.yml
+        file: ../vars_servers.yml
 
   roles:
     - common_role
