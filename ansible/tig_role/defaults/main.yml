@@ -22,7 +22,6 @@ influx_https_certificate: "{{ tig_path_ssl }}/influx.pem"
 influx_https_private_key: "{{ tig_path_ssl }}/influx.key"
 
 telegraf_hostname: tig
-telegraf_database_influx: telegraf
 telegraf_https_ca: "{{ tig_path_ssl }}/ca.pem"
 telegraf_https_certificate: "{{ tig_path_ssl }}/telegraf.pem"
 telegraf_https_private_key: "{{ tig_path_ssl }}/telegraf.key"

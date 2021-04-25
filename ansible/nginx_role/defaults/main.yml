@@ -1,6 +1,3 @@
 ---
 # defaults file for nginx_role
 
-path_certificate: "{{ playbook_dir }}/../../certificates/services"
-
-

@@ -2,7 +2,7 @@
 
 - name: Nginx | Create a directory certificates
   file:
-    path: /etc/pki/nginx/
+    path: "{{ path_ssl }}/nginx/"
     state: directory
     owner: nginx
     group: nginx
@@ -16,7 +16,7 @@
 - name: Nginx | Copy all certificates
   copy:
     src: "{{ path_certificate }}/{{ item }}"
-    dest: /etc/pki/nginx/
+    dest: "{{ path_ssl }}"
     owner: nginx
     group: nginx
     mode: '0600'

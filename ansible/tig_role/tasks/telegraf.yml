@@ -23,7 +23,7 @@
     - telegraf.d/influx.conf
     - telegraf.d/monitoring.conf
 
-- name: Telegraf | Disable outpit telegraf in main config
+- name: Telegraf | Disable output telegraf in main config
   lineinfile:
     path: /etc/telegraf/telegraf.conf
     regexp: '^(#)?\s*\[\[outputs\.influxdb\]\]\s*$'

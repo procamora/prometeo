@@ -11,7 +11,7 @@
     - { src: "files/grafana_oss_rpm.repo", dest: 'grafana.repo' }
     - { src: "files/influxdb_centos.repo", dest: 'influxdb.repo' }
 
-- name: Pre-Tasks | Install Grafana and InfluxDB OSS
+- name: Pre-Tasks | Install Grafana OSS, InfluxDB OSS and Telegraf
   yum:
     name:
       - grafana
@@ -34,14 +34,6 @@
     - grafana
     - telegraf
     - influxdb
-
-- name: Pre-Tasks | Create a directory certificates
-  file:
-    path: "{{ tig_path_ssl }}"
-    state: directory
-    owner: root
-    group: "{{ group_tig }}"
-    mode: '0750'
 
 - name: Pre-Tasks | Copy certificate CA
   copy:
