@@ -7,8 +7,10 @@ pip3 install ansible-lint
 
 sed -E -i.back 's/#?host_key_checking = (False|True)/host_key_checking = False/g' /etc/ansible/ansible.cfg
 
-wget https://releases.hashicorp.com/terraform/0.15.0/terraform_0.15.0_linux_amd64.zip -O /tmp/terraform.zip
-unzip -o /tmp/terraform.zip -d /usr/local/bin/ >/dev/null
+#wget https://releases.hashicorp.com/terraform/0.15.0/terraform_0.15.0_linux_amd64.zip -O /tmp/terraform.zip
+#unzip -o /tmp/terraform.zip -d /usr/local/bin/ >/dev/null
+#git clone https://github.com/procamora/prometeo.git ~/prometeo && cd ~/prometeo
+#cd iaac/ && terraform init
 
 
 #cd /root/ || exit 2

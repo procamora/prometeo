@@ -2,6 +2,28 @@
 
 #DOMAIN="prometeo.com"
 
+cat > "$template_terraform" <<EOF
+resource "proxmox_lxc" "$resource" {
+  vmid = var.$vmid # var.vmid_dmz_mariadb
+  hostname = "$hostname"
+  description = "Container with $hostname"
+  ostype = var.pct_centos
+  start = false
+
+  cores = 1
+  memory = 128
+  swap = 128
+
+  network {
+    name = var.pct_ethernet
+    bridge = var.pm_bridge_prometeo
+    ip = "\${var.ip_dmz_mariadb}/\${var.mask_dmz}"
+    gw = var.$gateway # var.gateway_dmz
+    tag = var.$vlan # var.vlan_dmz
+  }
+
+EOF
+
 # set variables
 if [[ -f ./variables.sh  ]]; then
   vars_files="./variables.sh"
@@ -18,7 +40,7 @@ function generate_inventary() {
     inventory="# DON'T EDIT, auto-generated file\n# $(date)\n"
     servers_yml="---\n\n# DON'T EDIT, auto-generated file\n# $(date)\n"
 
-    array_groups=("dmz" "lan" "pc")
+    array_groups=( "dmz" "lan" "pc" "ids" )
     for ((i = 0; i < ${#array_groups[@]}; ++i)); do
         inventory+="\n[${array_groups[i]}]\n"
         #servers_yml+="\n${array_groups[i]}:\n"
@@ -31,6 +53,12 @@ function generate_inventary() {
             host=$(echo "$my_ip" | awk -F "_" '{print $3}' | awk -F "=" '{print tolower($1)}')
             inventory+="$host.$DOMAIN\n"
             #servers_yml+="    $host.$DOMAIN:\n"
+            resource="$host"
+            vmid="$host"
+            hostname="$host"
+            gateway="$host"
+            vlan="$host"
+            echo "$template_terraform"
         done
         #servers_yml+="  vars:\n"
         #servers_yml+="    ansible_user: root\n"
