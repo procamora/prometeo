@@ -16,7 +16,7 @@ mapfile -t my_gw < <(grep -E "^declare -r GATEWAY_" "$vars_files" | awk -F " " '
 
 function generate_inventary() {
     inventory="# DON'T EDIT, auto-generated file\n# $(date)\n"
-    inventory_yml="# DON'T EDIT, auto-generated file\n# $(date)\n"
+    inventory_yml="---\n\n# DON'T EDIT, auto-generated file\n# $(date)\n"
 
     array_groups=("dmz" "lan" "pc")
     for ((i = 0; i < ${#array_groups[@]}; ++i)); do

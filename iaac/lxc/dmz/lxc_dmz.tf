@@ -23,7 +23,7 @@ resource "proxmox_lxc" "mariadb-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -52,7 +52,7 @@ resource "proxmox_lxc" "mongo-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -81,7 +81,7 @@ resource "proxmox_lxc" "vsftpd-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -110,7 +110,7 @@ resource "proxmox_lxc" "dojo-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -139,7 +139,7 @@ resource "proxmox_lxc" "apache-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -168,7 +168,7 @@ resource "proxmox_lxc" "nagios-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -197,7 +197,7 @@ resource "proxmox_lxc" "muna-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -226,7 +226,7 @@ resource "proxmox_lxc" "owncloud-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -255,7 +255,7 @@ resource "proxmox_lxc" "joomla-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -284,7 +284,7 @@ resource "proxmox_lxc" "prestashop-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -313,7 +313,7 @@ resource "proxmox_lxc" "drupal-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -342,7 +342,7 @@ resource "proxmox_lxc" "wordpress-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -371,7 +371,7 @@ resource "proxmox_lxc" "radius-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -400,7 +400,7 @@ resource "proxmox_lxc" "dns-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -429,7 +429,7 @@ resource "proxmox_lxc" "honeypot-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }
@@ -458,7 +458,7 @@ resource "proxmox_lxc" "mail-dmz" {
   password = var.pct_password
   pool = var.pm_pool
   storage = var.pm_storage
-  ostemplate = "${var.dump_path}/${var.template_debian_name}"
+  ostemplate = "${var.dump_path}/${var.template_centos_name}"
   target_node = var.pm_node
   unprivileged = false
 }

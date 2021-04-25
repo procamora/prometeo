@@ -189,24 +189,24 @@ function ct_create_template_health() {
     dump_and_rename "$VMID_TEMPLATE_HEALTH" "$TEMPLATE_HEALTH_NAME"
 }
 
-#function ct_create_ansible() {
-#    echo -e "${BLUE_COLOUR}ct_create_ansible${RESET_COLOUR}"
+function ct_create_ansible() {
+    echo -e "${BLUE_COLOUR}ct_create_ansible${RESET_COLOUR}"
 
-# if exits ct then remove ct
-#    remove_pct "$VMID_ANSIBLE"
+    # if exits ct then remove ct
+    remove_pct "$VMID_LAN_ANSIBLE"
 
-#   pct clone "$VMID_TEMPLATE_DEBIAN" "$VMID_ANSIBLE" \
-#      --description "Ansible Container Template" \
-#      --hostname "ansible" \
-#      --pool "$PM_POOL"
-#     --storage $PM_STORAGE \
+    pct clone "$VMID_TEMPLATE_DEBIAN" "$VMID_LAN_ANSIBLE" \
+      --description "Ansible Container Template" \
+      --hostname "ansible" \
+      --pool "$PM_POOL" \
+      --storage "$PM_STORAGE" \
 
-#  pct start "$VMID_ANSIBLE"
-#  sleep "$TIME_SLEEP"
+    pct start "$VMID_LAN_ANSIBLE"
+    sleep "$TIME_SLEEP"
 
-# pct push "$VMID_ANSIBLE" "$MY_PATH/ansible.sh" /root/ansible.sh
-# echo 'sh /root/ansible.sh' | pct enter "$VMID_ANSIBLE"
-#}
+    pct push "$VMID_LAN_ANSIBLE" "$MY_PATH/ansible.sh" /root/ansible.sh
+    echo 'sh /root/ansible.sh' | pct enter "$VMID_LAN_ANSIBLE"
+}
 
 function qm_create_mikrotik() {
     # https://mikrotik.com/download
@@ -250,7 +250,7 @@ ct_create_template_alpine
 ct_create_template_centos
 ct_create_template_debian
 ct_create_template_health
-#ct_create_ansible
+ct_create_ansible
 qm_create_mikrotik
 
 # autoclean

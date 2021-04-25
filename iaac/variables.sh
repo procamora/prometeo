@@ -70,7 +70,9 @@ declare -r TEMPLATE_HEALTH_NAME="health.tar.gz"
 declare -r VMID_MK="111"
 declare -r MAC_WAN_MK="4C:5E:0C:BB:8A:01"
 
-# VMID HEALTH SERVERS
+#######################
+# VMID HEALTH SERVERS #
+#######################
 declare -r VMID_DMZ_HEALTH="221"
 declare -r IP_DMZ_HEALTH="10.20.0.254"
 declare -r VMID_LAN_HEALTH="222"
