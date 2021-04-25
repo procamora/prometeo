@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOMAIN="prometeo.com"
+#DOMAIN="prometeo.com"
 
 # set variables
 if [[ -f ./variables.sh  ]]; then

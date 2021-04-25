@@ -11,6 +11,8 @@ set -o nounset
 # Use the error status of the first failure, rather than that of the last item in a pipeline.
 set -o pipefail
 
+declare -r DOMAIN="prometeo.sh"
+
 declare -r MY_PATH="/root/prometeo"
 
 KEY="$(pwd)/../certificates/openssh/id_rsa"
