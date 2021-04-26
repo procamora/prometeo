@@ -1,6 +1,8 @@
 ---
 # defaults file for bind_role
 
+reverse_dns: "{{ network.split('.')[2] }}.{{ network.split('.')[1] }}.{{ network.split('.')[0] }}.in-addr.arpa"
+
 path_named: /etc/named.conf
 
 path_conf: "/etc/named.{{ domain }}.conf"

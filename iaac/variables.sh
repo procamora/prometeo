@@ -288,10 +288,10 @@ declare -r PROXY_DMZ_TELEGRAF="false"
 declare -r IP_DMZ_TELEGRAF="10.20.0.38"
 
 declare -r VMID_DMZ_NGINX="3539"
-declare -r PORT_DMZ_NGINXF="443"
+declare -r PORT_DMZ_NGINX="443"
 declare -r PROTOCOL_DMZ_NGINX="https"
 declare -r PROXY_DMZ_NGINX="false"
-declare -r IP_DMZ_NGINXF="10.20.0.39"
+declare -r IP_DMZ_NGINX="10.20.0.39"
 
 #################
 # VMID SURICATA #
