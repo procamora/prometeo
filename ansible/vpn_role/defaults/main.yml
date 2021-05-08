@@ -1,0 +1,23 @@
+---
+# defaults file for vpn_role
+
+path_easy_rsa: /root/easy_rsa
+
+
+easyrsa_algo: ec   # Elliptic Curve
+easyrsa_digest: sha512
+
+
+path_client: /etc/openvpn/clients
+
+key_tls: ta.key
+
+vpn_cn: server
+
+
+path_ssl: /etc/openvpn/ssl
+
+# Client conf
+server_ip: vpn.procamora.com
+server_port: 1194
+server_protocol: udp

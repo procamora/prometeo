@@ -1,0 +1,13 @@
+---
+- hosts: vpn
+  gather_facts: true
+  serial: 1
+
+  pre_tasks:
+    - name: Distribution
+      debug: msg="{{ ansible_os_family }} -> {{ ansible_distribution }} {{ ansible_distribution_version }}.{{ ansible_distribution_major_version }}"
+
+  roles:
+    #- common_role
+    - vpn_role
+

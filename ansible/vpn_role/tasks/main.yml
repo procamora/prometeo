@@ -1,0 +1,8 @@
+---
+# tasks file for vpn_role
+
+- name: Pre Tasks
+  include: pre_tasks.yml
+
+- name: OpenVPN
+  include: openvpn.yml

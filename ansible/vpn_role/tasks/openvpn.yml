@@ -1,0 +1,182 @@
+---
+
+# ERROR: Cannot open TUN/TAP dev /dev/net/tun:
+#https://blog.guillen.io/2016/08/22/lxc-openvz-openvpn-tun-tap-error/
+
+# Paso 1: Instalar OpenVPN y Easy-RSA
+- block:
+  - name: OpenVPN | Create dir easy_rsa
+    file:
+      path: "{{ path_easy_rsa }}"
+      state: directory
+      owner: root
+      group: root
+
+  - name: OpenVPN | Create link easy_rsa
+    shell: ln -s /usr/share/easy-rsa/3/* "{{ path_easy_rsa }}"
+    ignore_errors: true
+    no_log: true
+
+  #- name: OpenVPN | Create link easy_rsa
+  #  file:
+  ##    path: "{{ path_easy_rsa }}"
+  ##    state: directory
+  #    src: /usr/share/easy-rsa/3/
+  #    dest: "{{ path_easy_rsa }}/"
+  #    state: link
+  #    force: yes
+
+# Paso 2: Crear una PKI para OpenVPN
+- block:
+  - name: OpenVPN | Create vars PKI
+    template:
+      src: vars.j2
+      dest: "{{ path_easy_rsa }}/vars"
+      mode: 0644
+      owner: root
+      group: root
+
+  - name: "OpenVPN | Remove {{ path_easy_rsa }}/pki"
+    file:
+      path: "{{ path_easy_rsa }}/pki"
+      state: absent
+
+  - name: OpenVPN | Create PKI
+    shell: "{{ path_easy_rsa }}/easyrsa init-pki"
+    args:
+      chdir: "{{ path_easy_rsa }}"
+
+  - name: OpenVPN | Create CA
+    shell: "{{ path_easy_rsa }}/easyrsa --batch build-ca nopass"
+    args:
+      chdir: "{{ path_easy_rsa }}"
+
+# Paso 3: Crear una solicitud de certificado de servidor de OpenVPN y una clave privada
+- block:
+  - name: OpenVPN | gen-req {{ vpn_cn }}
+    shell: "{{ path_easy_rsa }}/easyrsa --batch gen-req {{ vpn_cn }} nopass"
+    args:
+      chdir: "{{ path_easy_rsa }}"
+
+
+# Paso 4: Firmar la solicitud de certificado del servidor de OpenVPN
+- name: OpenVPN | sign-req {{ vpn_cn }}
+  shell: "{{ path_easy_rsa }}/easyrsa --batch sign-req server {{ vpn_cn }}"
+  args:
+    chdir: "{{ path_easy_rsa }}"
+
+# Paso 5: Configurar materiales de cifrado de OpenVPN
+- block:
+  - name: OpenVPN | Generate key tls-crypt
+    shell: "openvpn --genkey --secret {{ key_tls }}"
+    args:
+      chdir: "{{ path_easy_rsa }}"
+
+
+
+# Paso 6: Generar un par de certificado y clave de cliente
+- block:
+  - name: OpenVPN | Create dir client
+    file:
+      path: "{{ path_client }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: OpenVPN | Create dir client certificates
+    file:
+      path: "{{ path_client }}/keys"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+
+  - name: OpenVPN | Generate clients certificates
+    shell: "{{ path_easy_rsa }}/easyrsa --batch gen-req {{ item }} nopass"
+    args:
+      chdir: "{{ path_easy_rsa }}"
+    with_items:
+      - client1
+      - client2
+
+  - name: OpenVPN | sign-req clients
+    shell: "{{ path_easy_rsa }}/easyrsa --batch sign-req client {{ item }}"
+    args:
+      chdir: "{{ path_easy_rsa }}"
+    with_items:
+      - client1
+      - client2
+
+- block:
+  - name: OpenVPN | Copy key tls-crypt
+    copy:
+      src: "{{ path_easy_rsa }}/{{ key_tls }}"
+      dest: "{{ path_ssl }}"
+      remote_src: true
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: OpenVPN | Copy certificates
+    copy:
+      src: "{{ path_easy_rsa }}/pki/{{ item.path }}/{{ item.file }}"
+      dest: "{{ path_ssl }}"
+      remote_src: true
+      owner: root
+      group: root
+      mode: 0600
+    with_items:
+      - { path: private, file: ca.key }
+      - { path: ., file: ca.crt }
+      - { path: private, file: "{{ vpn_cn }}.key" }
+      - { path: issued, file: "{{ vpn_cn }}.crt" }
+      - { path: private, file: client1.key }
+      - { path: private, file: client2.key }
+
+# Paso 7: Configurar OpenVPN
+- name: OpenVPN | Create vars PKI
+  template:
+    src: server.conf
+    dest: /etc/openvpn/server/server.conf
+    mode: 0666
+    owner: root
+    group: root
+
+# Paso 8: Ajustar la configuración de redes del servidor de OpenVPN
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+
+# Paso 9: Configuración del firewall
+
+
+# Paso 10: Iniciar OpenVPN
+- name: Enable and Start service OpenVPN
+  systemd:
+    name: openvpn-server@server.service
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+# Paso 11: Crear la infraestructura de configuración de clientes
+- block:
+  - name: OpenVPN | Create vars PKI
+    template:
+      src: client.conf
+      dest: /etc/openvpn/client/client.conf
+      mode: 0644
+      owner: root
+      group: root
+
+  - name: OpenVPN | Copy key tls-crypt
+    template:
+      src: openvpn_add.sh
+      dest: /usr/local/bin/
+      mode: 0766
+
+
+
+
+

@@ -1,0 +1,11 @@
+---
+
+- name: Pre-Tasks | Install packages
+  yum:
+    name:
+      - openvpn
+      - easy-rsa
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+
