@@ -28,6 +28,9 @@
       name:
         - nc
         - vim
+        - epel-release
+        - wget
+        - curl
       state: latest
   when: ansible_os_family == 'RedHat'
 

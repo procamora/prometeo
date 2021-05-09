@@ -1,9 +1,16 @@
 ---
-# handlers file for tig_role
+# handlers file for common_role
 
 - name: Restart service Telegraf
   systemd:
     name: telegraf
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: Restart service Filebeat
+  systemd:
+    name: filebeat
     state: restarted
     daemon_reload: yes
     enabled: yes
