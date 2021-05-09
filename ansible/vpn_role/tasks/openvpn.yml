@@ -36,7 +36,7 @@
       owner: root
       group: root
 
-  - name: "OpenVPN | Remove {{ path_easy_rsa }}/pki"
+  - name: "OpenVPN | Remove {{ path_easy_rsa }}/pki if exists"
     file:
       path: "{{ path_easy_rsa }}/pki"
       state: absent
@@ -76,9 +76,10 @@
 
 # Paso 6: Generar un par de certificado y clave de cliente
 - block:
+
   - name: OpenVPN | Create dir client
     file:
-      path: "{{ path_client }}"
+      path: "{{ path_clients }}"
       state: directory
       owner: root
       group: root
@@ -86,7 +87,7 @@
 
   - name: OpenVPN | Create dir client certificates
     file:
-      path: "{{ path_client }}/keys"
+      path: "{{ path_clients_ssl }}"
       state: directory
       owner: root
       group: root
@@ -97,16 +98,14 @@
     args:
       chdir: "{{ path_easy_rsa }}"
     with_items:
-      - client1
-      - client2
+      - "{{ test_client }}"
 
   - name: OpenVPN | sign-req clients
     shell: "{{ path_easy_rsa }}/easyrsa --batch sign-req client {{ item }}"
     args:
       chdir: "{{ path_easy_rsa }}"
     with_items:
-      - client1
-      - client2
+      - "{{ test_client }}"
 
 - block:
   - name: OpenVPN | Copy key tls-crypt
@@ -121,18 +120,18 @@
   - name: OpenVPN | Copy certificates
     copy:
       src: "{{ path_easy_rsa }}/pki/{{ item.path }}/{{ item.file }}"
-      dest: "{{ path_ssl }}"
+      dest: "{{ item.dest }}"
       remote_src: true
       owner: root
       group: root
       mode: 0600
     with_items:
-      - { path: private, file: ca.key }
-      - { path: ., file: ca.crt }
-      - { path: private, file: "{{ vpn_cn }}.key" }
-      - { path: issued, file: "{{ vpn_cn }}.crt" }
-      - { path: private, file: client1.key }
-      - { path: private, file: client2.key }
+      - { path: private, file: ca.key, dest: "{{ path_ssl }}"}
+      - { path: ., file: ca.crt, dest: "{{ path_ssl }}"}
+      - { path: private, file: "{{ vpn_cn }}.key", dest: "{{ path_ssl }}"}
+      - { path: issued, file: "{{ vpn_cn }}.crt", dest: "{{ path_ssl }}"}
+      - { path: private, file: "{{ test_client }}.key", dest: "{{ path_clients_ssl }}"}
+      - { path: issued, file: "{{ test_client }}.crt", dest: "{{ path_clients_ssl }}"}
 
 # Paso 7: Configurar OpenVPN
 - name: OpenVPN | Create vars PKI
@@ -144,13 +143,29 @@
     group: root
 
 # Paso 8: Ajustar la configuración de redes del servidor de OpenVPN
-- ansible.posix.sysctl:
+- name: OpenVPN | Forward IPv4
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: '1'
     sysctl_set: yes
 
 # Paso 9: Configuración del firewall
-
+# sudo firewall-cmd --permanent --direct --passthrough ipv4 -t nat -A POSTROUTING -s 172.16.0.0/24 -o eth0 -j MASQUERADE
+# sudo iptables -t nat -A POSTROUTING -s 172.16.0.0/24 -o eth0 -j MASQUERADE
+#- name: OpenVPN | Postrouting vpn network
+#  iptables:
+#    table: nat
+#    chain: POSTROUTING
+#    source: "{{ vpn_net }}/{{ vpn_mask }}"
+#    out_interface: eth0
+#    jump: MASQUERADE
+#
+#    #protocol: tcp
+#    #match: tcp
+##    destination_port: 80
+##    to_ports: 8600
+#    comment: Redirect web traffic to port 8600
+#  become: yes
 
 # Paso 10: Iniciar OpenVPN
 - name: Enable and Start service OpenVPN
@@ -162,20 +177,30 @@
 
 # Paso 11: Crear la infraestructura de configuración de clientes
 - block:
-  - name: OpenVPN | Create vars PKI
+  - name: OpenVPN | Create dir client files
+    file:
+      path: "{{ path_clients }}/files"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: OpenVPN | Copy config clients
     template:
-      src: client.conf
-      dest: /etc/openvpn/client/client.conf
+      src: clients.conf
+      dest: "{{ path_clients }}/clients.conf"
       mode: 0644
       owner: root
       group: root
 
-  - name: OpenVPN | Copy key tls-crypt
+  - name: OpenVPN | Copy script generate clients
     template:
       src: openvpn_add.sh
       dest: /usr/local/bin/
-      mode: 0766
+      mode: 0755
 
+  - name: OpenVPN | Generate config client
+    shell: "openvpn_add.sh {{ test_client }}"
 
 
 
